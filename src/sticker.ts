@@ -1,0 +1,176 @@
+import { Client, MessageTypes, MessageMedia } from 'whatsapp-web.js';
+import { createCanvas, loadImage, registerFont, Canvas, Image } from 'canvas';
+import * as fs from 'fs';
+import axios, { AxiosRequestConfig } from 'axios';
+import FormData from 'form-data';
+import * as path from 'path';
+import { obterNomeAleatorio } from './util';
+import msgs_texto from './msgs';
+
+class Stickers {
+    public static textoParaFoto = async (texto: string): Promise<any> => {
+        try {
+            registerFont('./fonts/impact.ttf', { family: 'impact' });
+            const canvas: Canvas = createCanvas(512, 512);
+            const ctx = canvas.getContext('2d');
+            const fontColor: string = 'white';
+
+            ctx.fillStyle = 'rgba(0, 0, 0, 0)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            const maxFontSize: number = 100;
+            const minFontSize: number = 20;
+            const margin: number = 40;
+
+            let fontSize: number = maxFontSize;
+            const words: string[] = texto.split(' ');
+
+            let textFits: boolean = false;
+            let lines: string[] = [];
+
+            while (!textFits && fontSize >= minFontSize) {
+                ctx.font = `${fontSize}px 'impact'`;
+
+                lines = [];
+                let currentLine: string = '';
+
+                words.forEach(word => {
+                    const testLine: string = currentLine + ' ' + word;
+                    const testWidth: number = ctx.measureText(testLine).width;
+
+                    if (testWidth > canvas.width - margin * 2) {
+                        lines.push(currentLine.trim());
+                        currentLine = word;
+                    } else {
+                        currentLine = testLine;
+                    }
+                });
+
+                lines.push(currentLine.trim());
+
+                const totalTextHeight: number = lines.length * (fontSize * 1.2);
+                if (totalTextHeight <= canvas.height - margin * 2) {
+                    textFits = true;
+                } else {
+                    fontSize--;
+                }
+            }
+
+            const lineHeight: number = fontSize * 1.2;
+            const startY: number = (canvas.height - lineHeight * lines.length) / 2;
+
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 8;
+            ctx.fillStyle = fontColor;
+            ctx.font = `${fontSize}px 'impact'`;
+
+            lines.forEach((line, index) => {
+                const lineY: number = startY + index * lineHeight;
+                ctx.strokeText(line, canvas.width / 2, lineY);
+                ctx.fillText(line, canvas.width / 2, lineY);
+            });
+
+            const dataURL: string = canvas.toDataURL();
+            const image: Image = await loadImage(dataURL);
+            ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+            const imageBase64: string = canvas.toDataURL().replace(/^data:image\/png;base64,/, '');
+
+            fs.writeFileSync('sticker.png', canvas.toBuffer('image/png'));
+            fs.unlinkSync('sticker.png');
+
+            return imageBase64;
+        } catch (err: any) {
+            console.log(err.message, 'STICKER textoParaFoto');
+            throw new Error('Erro na conversão de texto para imagem.');
+        }
+    };
+
+    private static getApiKey(): string {
+        const apiKey = process.env.API_REMOVEBG;
+        if (!apiKey) {
+            throw new Error('API_REMOVEBG not defined in environment variables.');
+        }
+        return apiKey.trim();
+    }
+
+    public static removerFundoImagem = async (buffer: Buffer, mimetype: string): Promise<string> => {
+        try {
+            const imagemEntradaCaminho: string = path.resolve('media/img/tmp/' + obterNomeAleatorio('.jpg'));
+            fs.writeFileSync(imagemEntradaCaminho, buffer);
+
+            const data: FormData = new FormData();
+            data.append('size', 'auto');
+            data.append('image_file', fs.createReadStream(imagemEntradaCaminho));
+
+            interface Config {
+                method: string;
+                url: string;
+                data: FormData;
+                responseType: string;
+                headers: {
+                    'X-Api-Key': string;
+                };
+                encoding: null;
+            }
+
+            const config: AxiosRequestConfig = {
+                method: 'post',
+                url: 'https://api.remove.bg/v1.0/removebg',
+                data: data,
+                responseType: 'arraybuffer',
+                headers: {
+                    ...data.getHeaders(),
+                    'X-Api-Key': Stickers.getApiKey(),
+                },
+            };
+
+            const res = await axios(config);
+            const base64 = Buffer.from(res.data).toString('base64');
+
+            fs.unlinkSync(imagemEntradaCaminho);
+            return base64;
+        } catch (err) {
+            // Restante do seu código aqui...
+            throw new Error('Erro ao remover o fundo da imagem.');
+        }
+    };
+    public static autoSticker = async (message: any, client: Client): Promise<void> => {
+        interface DadosStickers {
+            sendMediaAsSticker: boolean;
+            stickerAuthor: string;
+            stickerName: string;
+        }
+
+        const dadosStickers: DadosStickers = {
+            sendMediaAsSticker: true,
+            stickerAuthor: `${process.env.NOME_AUTOR_FIGURINHAS}`,
+            stickerName: `${process.env.NOME_BOT}`,
+        };
+
+        if (message.type === MessageTypes.IMAGE) {
+            const media_quoted: any = await message.getQuotedMessage();
+            const mediaData: MessageMedia = (await message.downloadMedia()) || (await media_quoted.downloadMedia());
+            dadosStickers.stickerName += ' Sticker';
+            await client.sendMessage(message.from, mediaData, dadosStickers).catch((err: any) => {
+                console.log(err);
+                message.reply(msgs_texto.figurinhas.sticker.erro_s);
+            });
+        }
+        if (message.type == MessageTypes.VIDEO) {
+            if (message.duration > 11) return;
+            const media_quoted: any = await message.getQuotedMessage();
+            const mediaData: MessageMedia = (await message.downloadMedia()) || (await media_quoted.downloadMedia());
+            dadosStickers.stickerName += ' Sticker animado';
+            if (!mediaData) return await message.reply(msgs_texto.figurinhas.sticker.download);
+            await client.sendMessage(message.from, mediaData, dadosStickers).catch((err: any) => {
+                console.log(err);
+                message.reply(msgs_texto.figurinhas.sticker.erro_sgif);
+            });
+        }
+    };
+}
+
+export default Stickers;

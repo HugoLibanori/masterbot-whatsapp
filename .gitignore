@@ -1,0 +1,21 @@
+# Ignorar node_modules
+node_modules
+# Ignorar Session data
+session
+# Ignorar package-lok
+package-lock.json
+#Ignorar .env
+*.env
+#Ignorar logs
+*.log
+logs/session/*
+#Ignorar arquivos de mídia
+media/img/tmp/*.jpg
+media/img/tmp/*.png
+media/audios/*.mp3
+media/videos/*.mp4
+media/videos/*.jpg
+#Ignorar arquivos db
+database/db/*.db
+#Ignorar arquivos json
+database/json/*.json
