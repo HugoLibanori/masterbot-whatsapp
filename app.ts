@@ -35,7 +35,7 @@ client.on('ready', async () => {
     if (necessitaCriar) {
         console.log(corTexto(msgs_texto.inicio.arquivos_criados));
         setTimeout(() => {
-            return client.logout();
+            return client.destroy();
         }, 5000);
     } else {
         console.log(corTexto(await atualizarParticipantes(client)));
