@@ -1,4 +1,4 @@
-import { Client, LocalAuth, Call, Message, GroupNotification } from 'whatsapp-web.js';
+import { Client, LocalAuth, Call, GroupNotification } from 'whatsapp-web.js';
 import qrcode from 'qrcode-terminal';
 import { ChamandoComandos } from './src/chamandoComandos';
 import { ChecandoMensagens } from './src/checandoMensagens';
@@ -15,7 +15,8 @@ const client: Client = new Client({
         dataPath: 'session',
     }),
     puppeteer: {
-        executablePath: process.env.PATH_CHROME,
+        executablePath: process.env.PATH_CHROME_WIN || undefined,
+        args: ['--no-sandbox'],
     },
     webVersionCache: {
         type: 'local',
@@ -43,7 +44,7 @@ client.on('ready', async () => {
 });
 
 // Ouvindo mensagens!
-client.on('message', async (message: Message) => {
+client.on('message', async (message: any) => {
     if (!(await new ChecandoMensagens().start(client, message))) return;
     await new ChamandoComandos().start(client, message);
 });

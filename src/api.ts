@@ -48,10 +48,12 @@ export = {
 
     realizarDownload: async (url: string): Promise<string> => {
         try {
-            const nomeAleatorio: string = obterNomeAleatorio('.avi') ?? 'GIHieiu2837.avi';
+            const nomeAleatorio: string = obterNomeAleatorio('.mp4') ?? 'GIHieiu2837.mp4';
             const caminhoDestino = path.resolve(`media/videos/${nomeAleatorio}`);
             const ffmpegCommand = `ffmpeg -i "${url}" -c:v libx264 -c:a aac -strict experimental -b:a 192k ${caminhoDestino}`;
-            await asyncExec(ffmpegCommand);
+            await asyncExec(ffmpegCommand).catch((err: any) => {
+                consoleErro(err.message, 'REALIZAR DOWNLOAD');
+            });
             return caminhoDestino;
         } catch (erro: any) {
             console.error('Erro ao fazer o download:', erro.message);

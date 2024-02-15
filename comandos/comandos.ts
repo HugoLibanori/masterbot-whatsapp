@@ -1,10 +1,11 @@
-require('dotenv').config();
+require(`dotenv`).config();
 
 interface Comandos {
     figurinhas: string[];
     grupo: string[];
     info: string[];
     download: string[];
+    admin: string[];
 }
 
 const comandos: Comandos = {
@@ -41,6 +42,42 @@ const comandos: Comandos = {
         `${process.env.PREFIX}fb`,
         `${process.env.PREFIX}img`,
         `${process.env.PREFIX}yt`,
+    ],
+    admin: [
+        `${process.env.PREFIX}sair`,
+        `${process.env.PREFIX}pvliberado`,
+        `${process.env.PREFIX}bcmdglobal`,
+        `${process.env.PREFIX}dcmdglobal`,
+        `${process.env.PREFIX}sairgrupos`,
+        `${process.env.PREFIX}infocompleta`,
+        `${process.env.PREFIX}entrargrupo`,
+        `${process.env.PREFIX}bctodos`,
+        `${process.env.PREFIX}bccontatos`,
+        `${process.env.PREFIX}bcgrupos`,
+        `${process.env.PREFIX}print`,
+        `${process.env.PREFIX}fotobot`,
+        `${process.env.PREFIX}limpartudo`,
+        `${process.env.PREFIX}autostickerpv`,
+        `${process.env.PREFIX}limpar`,
+        `${process.env.PREFIX}listablock`,
+        `${process.env.PREFIX}bloquear`,
+        `${process.env.PREFIX}usuarios`,
+        `${process.env.PREFIX}limpartipo`,
+        `${process.env.PREFIX}limitediario`,
+        `${process.env.PREFIX}taxalimite`,
+        `${process.env.PREFIX}limitarmsgs`,
+        `${process.env.PREFIX}desbloquear`,
+        `${process.env.PREFIX}estado`,
+        `${process.env.PREFIX}admin`,
+        `${process.env.PREFIX}rconfig`,
+        `${process.env.PREFIX}mudarlimite`,
+        `${process.env.PREFIX}alterartipo`,
+        `${process.env.PREFIX}grupos`,
+        `${process.env.PREFIX}tipos`,
+        `${process.env.PREFIX}rtodos`,
+        `${process.env.PREFIX}r`,
+        `${process.env.PREFIX}verdados`,
+        `${process.env.PREFIX}desligar`,
     ],
 };
 

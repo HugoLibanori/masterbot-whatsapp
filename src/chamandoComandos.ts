@@ -1,4 +1,4 @@
-import { Client, MessageTypes } from 'whatsapp-web.js';
+import { Client, MessageTypes, Message } from 'whatsapp-web.js';
 import Figurinhas from '../comandos/figurinhas';
 import Info from '../comandos/info';
 import Grupo from '../comandos/grupo';
