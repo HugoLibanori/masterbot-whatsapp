@@ -117,13 +117,13 @@ export const botInfo = {
     botAlterarPvLiberado: async (status = true) => {
         const botData = JSON.parse(fs.readFileSync(botFilePath, { encoding: 'utf-8' }));
         botData.pvliberado = status;
-        await fs.writeFileSync(botFilePath, JSON.stringify(botData));
+        fs.writeFileSync(botFilePath, JSON.stringify(botData));
     },
 
     botAlterarAutoSticker: async (status = true) => {
         const botData = JSON.parse(fs.readFileSync(botFilePath, { encoding: 'utf-8' }));
         botData.autosticker = status;
-        await fs.writeFileSync(botFilePath, JSON.stringify(botData));
+        fs.writeFileSync(botFilePath, JSON.stringify(botData));
     },
 
     botAlterarAntitrava: async (status = true, maxCaracteres = 1500) => {

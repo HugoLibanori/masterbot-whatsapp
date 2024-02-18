@@ -4,11 +4,12 @@ import { ChamandoComandos } from './src/chamandoComandos';
 import { ChecandoMensagens } from './src/checandoMensagens';
 import { criarArquivosNecessarios, corTexto } from './src/util';
 import msgs_texto from './src/msgs';
-import { atualizarParticipantes } from './src/controleParticipante';
+import { atualizarParticipantes, participanteExiste, adicionarParticipante, removerParticipante } from './src/controleParticipante';
 import { cadastrarGrupo } from './src/cadastrarGrupo';
 import db from './src/dataBase';
 import BemVindo from './src/bemVindo';
 import AntiFake from './src/antifake';
+import AntiLink from './src/alink';
 
 const client: Client = new Client({
     authStrategy: new LocalAuth({
@@ -45,6 +46,8 @@ client.on('ready', async () => {
 
 // Ouvindo mensagens!
 client.on('message', async (message: any) => {
+    // console.log(message);
+    if (!(await new AntiLink().antiLink(client, message))) return;
     if (!(await new ChecandoMensagens().start(client, message))) return;
     await new ChamandoComandos().start(client, message);
 });
@@ -61,6 +64,10 @@ client.on('group_join', async (add: GroupNotification) => {
     if (add.type === 'add' || add.type === 'invite') {
         new BemVindo().bemVindo(client, add, g_info);
         new AntiFake().antiFake(client, add, g_info);
+        if (await participanteExiste(add.chatId, add.recipientIds[0])) return;
+        await adicionarParticipante(add.chatId, add.recipientIds[0]);
+    } else {
+        await removerParticipante(add.chatId, add.recipientIds[0]);
     }
 });
 

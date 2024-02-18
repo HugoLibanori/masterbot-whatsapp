@@ -3,10 +3,10 @@ import db from './dataBase';
 import msgs_texto from './msgs';
 
 const controleParticipante = {
-    // participanteExiste: async (event: Event): Promise<boolean> => {
-    //     const participanteExiste = await db.participanteExiste(event.chat, event.who);
-    //     return participanteExiste;
-    // },
+    participanteExiste: async (idGroup: string, particpante: string): Promise<boolean> => {
+        const participanteExiste = await db.participanteExiste(idGroup, particpante);
+        return participanteExiste;
+    },
 
     atualizarParticipantes: async (client: Client): Promise<string> => {
         try {
@@ -39,4 +39,4 @@ const controleParticipante = {
     },
 };
 
-export const { atualizarParticipantes } = controleParticipante;
+export const { atualizarParticipantes, participanteExiste, adicionarParticipante, removerParticipante } = controleParticipante;

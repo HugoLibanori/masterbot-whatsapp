@@ -120,7 +120,14 @@ class Grupo {
                 const estadoNovo = !grupoInfo.antilink.status;
                 if (estadoNovo) {
                     const filtros = body.slice(7).trim().toLowerCase().split(' ');
-                    await db.alterarAntiLink(from, true, filtros);
+                    const objetoFiltros: { [key in 'youtube' | 'whatsapp' | 'facebook' | 'instagram']: boolean } = filtros.reduce(
+                        (obj: any, filtro: string) => {
+                            obj[filtro] = true;
+                            return obj;
+                        },
+                        { youtube: false, whatsapp: false, facebook: false, instagram: false },
+                    );
+                    await db.alterarAntiLink(from, true, objetoFiltros);
                     message.reply(msgs_texto.grupo.antilink.ligado);
                 } else {
                     await db.alterarAntiLink(from, false);

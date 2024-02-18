@@ -34,6 +34,7 @@ const comandos: Comandos = {
         `${process.env.PREFIX}f`,
         `${process.env.PREFIX}afake`,
         `${process.env.PREFIX}mutar`,
+        `${process.env.PREFIX}alink`,
     ],
     info: [`${process.env.PREFIX}menu`],
     download: [
@@ -44,6 +45,7 @@ const comandos: Comandos = {
         `${process.env.PREFIX}yt`,
     ],
     admin: [
+        `${process.env.PREFIX}admin`,
         `${process.env.PREFIX}sair`,
         `${process.env.PREFIX}pvliberado`,
         `${process.env.PREFIX}bcmdglobal`,

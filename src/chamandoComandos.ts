@@ -3,6 +3,7 @@ import Figurinhas from '../comandos/figurinhas';
 import Info from '../comandos/info';
 import Grupo from '../comandos/grupo';
 import Download from '../comandos/download';
+import Admin from '../comandos/admin';
 import db from './dataBase';
 import msgs_texto from './msgs';
 import { consoleComando, isAdminGroup, consoleErro } from './util';
@@ -36,7 +37,8 @@ export class ChamandoComandos {
                 lista_comandos.figurinhas.includes(comando) ||
                 lista_comandos.grupo.includes(comando) ||
                 lista_comandos.info.includes(comando) ||
-                lista_comandos.download.includes(comando);
+                lista_comandos.download.includes(comando) ||
+                lista_comandos.admin.includes(comando);
 
             const abrirMenu =
                 (comando.match(/comandos|comando|ajuda|menu|help|oi|oii|oiii/gim) && !isGroup && !comandoExiste && !message.fromMe) ||
@@ -67,6 +69,11 @@ export class ChamandoComandos {
                     const formattedTitle: string = (await client.getChatById(from)).name;
                     consoleComando(isGroup, 'DOWNLOAD', comando, '#ae45d1', t, notifyName, formattedTitle);
                     new Download().download(client, message);
+                } else if (lista_comandos.admin.includes(comando)) {
+                    if (msgGuia) return await message.reply(guiaComandoMsg('admin', comando));
+                    const formattedTitle: string = (await client.getChatById(from)).name;
+                    consoleComando(isGroup, 'ADMIN', comando, '#ae45d1', t, notifyName, formattedTitle);
+                    new Admin().admin(client, message);
                 }
             } else {
                 //SE NÃO FOR UM COMANDO EXISTENTE
@@ -85,7 +92,7 @@ export class ChamandoComandos {
                 }
             }
         } catch (err: any) {
-            consoleErro(err.message, 'CHAMADA COMANDO');
+            consoleErro(err.message, 'CHAMANDO COMANDOS');
         }
     }
 }

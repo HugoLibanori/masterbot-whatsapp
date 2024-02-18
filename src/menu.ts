@@ -236,10 +236,46 @@ const menu: {
 |
 |>---- ☾ 👑 *ADMINISTRAÇÃO* 👑☽
 |
-|- *${process.env.PREFIX}adicionar* +55 (21) 9xxxx-xxxx - Adiciona ao grupo.
-|- *${process.env.PREFIX}remover* @marcarmembro - Remove do grupo.
-|- *${process.env.PREFIX}promover* @marcarmembro - Promove a ADM.
-|- *${process.env.PREFIX}rebaixar* @marcaradmin - Rebaixa a MEMBRO.
+|-- ☾ GERAL ☽
+|
+|- *${process.env.PREFIX}infocompleta* - Informação completa do BOT.
+|- *${process.env.PREFIX}bloquear* @usuario  - Bloqueia o usuário mencionado.
+|- *${process.env.PREFIX}desbloquear* @usuario  - Desbloqueia o usuário mencionado.
+|- *${process.env.PREFIX}listablock*  - Lista todos os usuários bloqueados.
+|- *${process.env.PREFIX}fotobot* - Altera foto do BOT
+|- *${process.env.PREFIX}bctodos* [mensagem] - Faz um anúncio com uma mensagem para todos os CHATS.
+|- *${process.env.PREFIX}bcgrupos* [mensagem] - Faz um anúncio com uma mensagem somente para os GRUPOS.
+|- *${process.env.PREFIX}bccontatos* [mensagem] - Faz um anúncio com uma mensagem somente para os CONTATOS.
+|
+|-- ☾ BLOQUEIO DE COMANDOS ☽ 
+|
+|- *${process.env.PREFIX}bcmdglobal* [comando1 comando2 etc] - Bloqueia os comandos escolhidos globalmente.
+|- *${process.env.PREFIX}dcmdglobal* [comando1 comando2 etc] - Desbloqueia os comandos escolhidos globalmente.
+|
+|-- ☾ BOT USUÁRIOS ☽
+|
+|- *${process.env.PREFIX}tipos* - Mostra todos os tipos de usuário disponíveis.
+|- *${process.env.PREFIX}alterartipo* [tipo] @usuario - Muda o tipo de conta do usuário.
+|- *${process.env.PREFIX}limpartipo* [tipo] @usuario - Limpa todos os usuários desse tipo e transforma em usuarios comuns.
+|- *${process.env.PREFIX}usuarios* [tipo]  - Mostra todos os usuários do tipo escolhido.
+|
+|-- ☾ CONTROLE/LIMITE ☽
+|
+|- *${process.env.PREFIX}pvliberado* - Ativa/desativa os comandos em mensagens privadas.
+|- *${process.env.PREFIX}autostickerpv* - Ativa/desativa a criação automática de stickers no privado.
+|- *${process.env.PREFIX}taxalimite* [qtd-comandos] [tempo-bloqueio] - Ativa/desativa a taxa de comandos por minuto.
+|- *${process.env.PREFIX}limitediario* - Ativa/desativa o limite diario de comandos por dia.
+|- *${process.env.PREFIX}limitarmsgs* [qtd-msgs] [intervalo] - Ativa/desativa o limite de mensagens privadas em um intervalo.
+|- *${process.env.PREFIX}mudarlimite* [tipo] [novo-limite] - Muda o limite de comandos por dia de um tipo de usuário.
+|- *${process.env.PREFIX}rtodos* - Reseta os comandos diários de todos.
+|- *${process.env.PREFIX}r* @usuario - Reseta os comandos diários de um usuário.
+|
+|-- ☾ GRUPOS ☽
+|
+|- *${process.env.PREFIX}sair* - Sai do grupo.
+|- *${process.env.PREFIX}sairgrupos* - Sai de todos os grupos.
+|- *${process.env.PREFIX}entrargrupo* [link-grupo] - BOT entra no grupo.
+|- *${process.env.PREFIX}rconfig* - Reseta as configurações dos grupos.
 |
 ╰╼❥ ${nomeBot.trim()}® by *${nomeAdm.trim()}*`;
     },

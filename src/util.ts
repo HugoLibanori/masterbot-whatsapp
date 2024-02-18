@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { criacaoEnv } from './env';
 import { botInfo } from './bot';
+import axios from 'axios';
 
 const corTexto = (texto: string | undefined, cor?: string) => {
     return !cor ? chalk.green(texto) : chalk.hex(cor)(texto);
@@ -131,6 +132,17 @@ const criarArquivosNecessarios = async (): Promise<boolean> => {
     }
 };
 
+const imageToBase64 = async (url: string): Promise<string> => {
+    try {
+        const response = await axios.get(url, { responseType: 'arraybuffer' });
+        const base64Data = Buffer.from(response.data, 'binary').toString('base64');
+        return `data:${response.headers['content-type']};base64,${base64Data}`;
+    } catch (error: any) {
+        console.error('Erro ao converter imagem para base64:', error.message);
+        throw error;
+    }
+};
+
 export {
     consoleComando,
     corTexto,
@@ -142,4 +154,5 @@ export {
     isAdminGroup,
     consoleErro,
     criarArquivosNecessarios,
+    imageToBase64,
 };

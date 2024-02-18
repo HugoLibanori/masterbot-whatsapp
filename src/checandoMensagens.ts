@@ -26,6 +26,7 @@ export class ChecandoMensagens {
             const msgGuia: boolean = args.length === 2 ? args[1].toLowerCase() === 'guia' : false;
             const ownerNumber = process.env.NUMERO_DONO?.trim();
             const isOwner = isGroup ? ownerNumber === author.replace(/@c.us/g, '') : false;
+            const autor = isGroup ? author : from;
             // COMANDOS
             const comandoExiste =
                 lista_comandos.figurinhas.includes(comando) ||
@@ -40,16 +41,16 @@ export class ChecandoMensagens {
             if (isGroup && !grupoInfo) await cadastrarGrupo(client, 'msg');
 
             //SE O USUARIO NÃO FOR REGISTRADO, FAÇA O REGISTRO
-            const registrado = await db.verificarRegistro(author);
+            const registrado = await db.verificarRegistro(autor);
             if (!registrado) {
                 if (isOwner) {
-                    await db.verificarDonoAtual(author);
-                    await db.registrarDono(author, notifyName);
+                    await db.verificarDonoAtual(autor);
+                    await db.registrarDono(autor, notifyName);
                 } else {
-                    await db.registrarUsuario(author, notifyName);
+                    await db.registrarUsuario(autor, notifyName);
                 }
             } else {
-                if (isOwner) await db.verificarDonoAtual(author);
+                if (isOwner) await db.verificarDonoAtual(autor);
             }
 
             if (comandoExiste) {

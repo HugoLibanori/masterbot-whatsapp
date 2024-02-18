@@ -59,11 +59,11 @@ class Download {
                 if (args.length === 1) return await message.reply(erroComandoMsg(command));
                 try {
                     const usuarioURL: string = body.slice(4).trim();
+                    await message.reply(msgs_texto.downloads.fb.espera);
                     const resultadosMidia: string = await api.obterMidiaFacebook(usuarioURL);
                     const caminhoVideo = await api.realizarDownload(resultadosMidia);
                     await new Promise(resolve => setTimeout(resolve, 2000));
                     const video: MessageMedia = MessageMedia.fromFilePath(caminhoVideo);
-                    await message.reply(msgs_texto.downloads.fb.espera);
                     await client
                         .sendMessage(from, video, { caption: 'Aqui seu video/image.' })
                         .then(() => {
