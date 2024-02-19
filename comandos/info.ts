@@ -1,5 +1,5 @@
 import { Client } from 'whatsapp-web.js';
-import { removerNegritoComando, erroComandoMsg, criarTexto } from '../src/util';
+import { removerNegritoComando, criarTexto } from '../src/util';
 import db from '../src/dataBase';
 import menu from '../src/menu';
 import msgs_texto from '../src/msgs';

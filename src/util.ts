@@ -1,5 +1,4 @@
 import chalk from 'chalk';
-import { from } from 'form-data';
 import fs from 'fs';
 import path from 'path';
 import { criacaoEnv } from './env';

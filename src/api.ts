@@ -1,5 +1,4 @@
 import axios from 'axios';
-import fs from 'fs';
 import msgs_texto from '../src/msgs';
 import Youtube from 'youtube-sr';
 import ytdl from 'ytdl-core';

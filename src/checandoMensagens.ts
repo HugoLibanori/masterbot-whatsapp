@@ -1,8 +1,6 @@
-import { Client, MessageTypes } from 'whatsapp-web.js';
+import { Client } from 'whatsapp-web.js';
 import db from './dataBase';
-import msgs_texto from './msgs';
-import { consoleComando, isAdminGroup, consoleErro } from './util';
-import { guiaComandoMsg } from './guias';
+import { isAdminGroup, consoleErro } from './util';
 import comandos from '../comandos/comandos';
 import botInfo from './bot';
 import { cadastrarGrupo } from './cadastrarGrupo';

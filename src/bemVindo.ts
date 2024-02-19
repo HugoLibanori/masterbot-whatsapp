@@ -1,4 +1,4 @@
-import { GroupNotification, Client, Contact } from 'whatsapp-web.js';
+import { GroupNotification, Client } from 'whatsapp-web.js';
 import { criarTexto } from './util';
 import msgs_texto from './msgs';
 
