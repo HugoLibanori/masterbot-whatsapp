@@ -6,15 +6,15 @@ import menu from '../src/menu';
 import botInfo from '../src/bot';
 import fs from 'fs';
 import path from 'path';
-import { criarTexto, imageToBase64 } from '../src/util';
+import { criarTexto, erroComandoMsg } from '../src/util';
 import { version } from '../package.json';
 
 export default class Admin {
     async admin(client: Client, message: any) {
         try {
-            const { body, from, caption, quotedMsg, type } = message;
-            const { notifyName, t, author } = message._data;
-            const command: string = quotedMsg ? caption : body;
+            const { body, from, type, hasMedia, mentionedIds } = message;
+            const { mimetype, author, quotedMsg } = message._data;
+            const command: string = body;
             const dadosGrupo = await message.getChat();
             const isGroup = dadosGrupo.isGroup;
             const dadosAdmin = isGroup ? await dadosGrupo?.groupMetadata?.participants : '';
@@ -26,6 +26,7 @@ export default class Admin {
             const ownerNumber = process.env.NUMERO_DONO?.trim();
             const isOwner = isGroup ? ownerNumber === author.replace(/@c.us/g, '') : ownerNumber === from.replace(/@c.us/g, '');
             const botNumber = client.info.wid._serialized;
+            const blockNumber = await client.getBlockedContacts();
             if (!isOwner) return message.reply(msgs_texto.permissao.apenas_dono_bot);
 
             if (comando === `${process.env.PREFIX}admin`) {
@@ -60,6 +61,108 @@ export default class Admin {
                     await client.sendMessage(from, mediaFotoBot, { caption: resposta });
                 } else {
                     await client.sendMessage(from, resposta);
+                }
+            } else if (comando === `${process.env.PREFIX}autostickerpv`) {
+                const novoEstado = !botInfo.botInfo().autosticker;
+                if (novoEstado) {
+                    botInfo.botAlterarAutoSticker(true);
+                    await message.reply(msgs_texto.admin.autostickerpv.ativado);
+                } else {
+                    botInfo.botAlterarAutoSticker(false);
+                    await message.reply(msgs_texto.admin.autostickerpv.desativado);
+                }
+            } else if (comando === `${process.env.PREFIX}fotobot`) {
+                if (hasMedia || quotedMsg) {
+                    const dadosMensagem = {
+                        tipo: hasMedia ? type : quotedMsg.type,
+                        mimetype: hasMedia ? mimetype : quotedMsg.mimetype,
+                        mensagem: message,
+                    };
+
+                    if (dadosMensagem.tipo === 'image') {
+                        const media_quoted = await message.getQuotedMessage();
+                        const mediaData = (await message.downloadMedia()) || (await media_quoted.downloadMedia());
+                        const res = await client.setProfilePicture(mediaData);
+                        if (res) await message.reply(msgs_texto.admin.fotobot.sucesso);
+                        else await message.reply(msgs_texto.admin.fotobot.erro);
+                    } else {
+                        return await message.reply(erroComandoMsg(command));
+                    }
+                } else {
+                    return await message.reply(erroComandoMsg(command));
+                }
+            } else if (comando === `${process.env.PREFIX}bloquear`) {
+                let usuariosBloqueados = [];
+                if (quotedMsg) {
+                    usuariosBloqueados.push(quotedMsg.quotedParticipant);
+                } else if (mentionedIds.length > 1) {
+                    usuariosBloqueados = mentionedIds;
+                } else {
+                    const numeroInserido = body.slice(10).trim();
+                    if (numeroInserido.length == 0) return await message.reply(erroComandoMsg(command));
+                    usuariosBloqueados.push(numeroInserido.replace(/\W+/g, '') + '@c.us');
+                }
+                for (const usuario of usuariosBloqueados) {
+                    const contato = await client.getContactById(usuario);
+                    if (contato) {
+                        const mentions = [];
+                        if (ownerNumber == usuario.replace(/@c.us/g, '')) {
+                            mentions.push(usuario);
+                            await client.sendMessage(from, criarTexto(msgs_texto.admin.bloquear.erro_dono, usuario.replace(/@c.us/g, '')), {
+                                mentions,
+                            });
+                        } else {
+                            if (blockNumber.includes(usuario)) {
+                                mentions.push(usuario);
+                                await client.sendMessage(
+                                    from,
+                                    criarTexto(msgs_texto.admin.bloquear.ja_bloqueado, usuario.replace(/@c.us/g, '')),
+                                    { mentions },
+                                );
+                            } else {
+                                mentions.push(usuario);
+                                await contato.block();
+                                await client.sendMessage(
+                                    from,
+                                    criarTexto(msgs_texto.admin.bloquear.sucesso, usuario.replace(/@c.us/g, '')),
+                                    { mentions },
+                                );
+                            }
+                        }
+                    } else {
+                        await message.reply(criarTexto(msgs_texto.admin.bloquear.erro, usuario.replace('@c.us', '')));
+                    }
+                }
+            } else if (comando === `${process.env.PREFIX}desbloquear`) {
+                let usuariosBloqueados = [];
+                if (quotedMsg) {
+                    usuariosBloqueados.push(quotedMsg.quotedParticipant);
+                } else if (mentionedIds.length > 1) {
+                    usuariosBloqueados = mentionedIds;
+                } else {
+                    const numeroInserido = body.slice(13).trim();
+                    if (numeroInserido.length === 0) return await message.reply(erroComandoMsg(command));
+                    usuariosBloqueados.push(numeroInserido.replace(/\W+/g, '') + '@c.us');
+                }
+                for (const usuario of usuariosBloqueados) {
+                    const contato = await client.getContactById(usuario);
+                    const mentions = [];
+                    if (!blockNumber.includes(usuario)) {
+                        mentions.push(usuario);
+                        await client.sendMessage(
+                            from,
+                            criarTexto(msgs_texto.admin.desbloquear.ja_desbloqueado, usuario.replace(/@c.us/g, '')),
+                            {
+                                mentions,
+                            },
+                        );
+                    } else {
+                        mentions.push(usuario);
+                        await contato.unblock();
+                        await client.sendMessage(from, criarTexto(msgs_texto.admin.desbloquear.sucesso, usuario.replace(/@c.us/g, '')), {
+                            mentions,
+                        });
+                    }
                 }
             }
         } catch (err: any) {
