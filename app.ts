@@ -1,4 +1,4 @@
-import { Client, LocalAuth, Call, GroupNotification } from 'whatsapp-web.js';
+import { Client, LocalAuth, Call, GroupNotification, Contact } from 'whatsapp-web.js';
 import qrcode from 'qrcode-terminal';
 import { ChamandoComandos } from './src/chamandoComandos';
 import { ChecandoMensagens } from './src/checandoMensagens';
@@ -46,7 +46,7 @@ client.on('ready', async () => {
 
 // Ouvindo mensagens!
 client.on('message', async (message: any) => {
-    // console.log(message);
+    // console.log(await client.getBlockedContacts());
     if (!(await new AntiLink().antiLink(client, message))) return;
     if (!(await new ChecandoMensagens().start(client, message))) return;
     await new ChamandoComandos().start(client, message);
@@ -57,6 +57,9 @@ client.on('call', async (call: Call) => {
     if (call.from === undefined) return;
     await client.sendMessage(call.from, msgs_texto.geral.sem_ligacoes);
     await call.reject();
+    const block = call as unknown;
+    const castBlock = block as Contact;
+    await castBlock.block();
 });
 
 client.on('group_join', async (add: GroupNotification) => {
