@@ -1,4 +1,4 @@
-import { GroupNotification, Client, GroupChat } from 'whatsapp-web.js';
+import { GroupNotification, Client, GroupChat, Contact } from 'whatsapp-web.js';
 import { criarTexto, consoleErro } from './util';
 import msgs_texto from './msgs';
 import db from '../src/dataBase';
@@ -8,7 +8,7 @@ export default class AntiFake {
         try {
             if (g_info.antifake.status) {
                 const nomeBot = process.env.NOME_BOT || 'Bot';
-                const dadosGrupo = client.getChatById(event.chatId);
+                const dadosGrupo = await client.getChatById(event.chatId);
                 const castGrupo = dadosGrupo as unknown;
                 const dadosGrupoCast = castGrupo as GroupChat;
                 const isGroup = dadosGrupoCast.isGroup;
@@ -25,7 +25,11 @@ export default class AntiFake {
                     for (const ddi of g_info.antifake.ddi_liberados) {
                         if (event.recipientIds[0].startsWith(ddi)) return true;
                     }
+                    const array: string[] = [];
                     await dadosGrupoCast.removeParticipants([event.recipientIds[0]]);
+                    array.push(event.recipientIds[0]);
+                    const arrayCast = array as unknown;
+                    const mentions = arrayCast as Contact[];
                     await client.sendMessage(
                         event.chatId,
                         criarTexto(
@@ -34,6 +38,7 @@ export default class AntiFake {
                             msgs_texto.grupo.antifake.motivo,
                             nomeBot,
                         ),
+                        { mentions },
                     );
                     return false;
                 }

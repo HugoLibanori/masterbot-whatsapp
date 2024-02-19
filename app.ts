@@ -65,8 +65,8 @@ client.on('call', async (call: Call) => {
 client.on('group_join', async (add: GroupNotification) => {
     const g_info = await db.obterGrupo(add.chatId);
     if (add.type === 'add' || add.type === 'invite') {
+        if (!(await new AntiFake().antiFake(client, add, g_info))) return;
         new BemVindo().bemVindo(client, add, g_info);
-        new AntiFake().antiFake(client, add, g_info);
         if (await participanteExiste(add.chatId, add.recipientIds[0])) return;
         await adicionarParticipante(add.chatId, add.recipientIds[0]);
     } else {
