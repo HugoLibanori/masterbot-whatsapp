@@ -10,6 +10,8 @@ import { consoleComando, isAdminGroup, consoleErro } from './util';
 import { guiaComandoMsg } from './guias';
 import comandos from '../comandos/comandos';
 import AutoSticker from './sticker';
+import botInfo from './bot';
+
 require('dotenv').config();
 
 const lista_comandos = comandos;
@@ -30,7 +32,7 @@ export class ChamandoComandos {
             const isGroupAdmins: boolean = isGroup ? isAdminGroup(author, dadosAdmin) : false;
             const msgGuia: boolean = args.length === 2 ? args[1].toLowerCase() === 'guia' : false;
             const ownerNumber = process.env.NUMERO_DONO?.trim();
-            const isOwner = isGroup ? ownerNumber === author.replace(/@c.us/g, '') : false;
+            const isOwner = isGroup ? ownerNumber === author.replace(/@c.us/g, '') : ownerNumber === from.replace(/@c.us/g, '');
 
             // COMANDOS
             let comandoExiste =
@@ -86,7 +88,7 @@ export class ChamandoComandos {
                     consoleComando(isGroup, 'FIGURINHAS', 'AUTO-STICKER', '#ae45d1', t, notifyName, formattedTitle);
                 }
                 //AUTO-STICKER PRIVADO
-                if (!isGroup && (type === MessageTypes.IMAGE || type === MessageTypes.VIDEO) && grupoInfo?.autosticker) {
+                if (!isGroup && (type === MessageTypes.IMAGE || type === MessageTypes.VIDEO) && botInfo.botInfo().autosticker) {
                     AutoSticker.autoSticker(message, client);
                     consoleComando(isGroup, 'FIGURINHAS', 'AUTO-STICKER', '#ae45d1', t, notifyName, formattedTitle);
                 }

@@ -25,8 +25,10 @@ export class ChecandoMensagens {
             const isGroupAdmins: boolean = isGroup ? isAdminGroup(author, dadosAdmin) : false;
             const msgGuia: boolean = args.length === 2 ? args[1].toLowerCase() === 'guia' : false;
             const ownerNumber = process.env.NUMERO_DONO?.trim();
-            const isOwner = isGroup ? ownerNumber === author.replace(/@c.us/g, '') : false;
+            const isOwner = isGroup ? ownerNumber === author.replace(/@c.us/g, '') : ownerNumber === from.replace(/@c.us/g, '');
             const autor = isGroup ? author : from;
+            const blockNumber = await client.getBlockedContacts();
+            const isBlocked = blockNumber.includes(autor);
             // COMANDOS
             const comandoExiste =
                 lista_comandos.figurinhas.includes(comando) ||
@@ -39,6 +41,9 @@ export class ChecandoMensagens {
 
             //SE O GRUPO NÃO FOR CADASTRADO
             if (isGroup && !grupoInfo) await cadastrarGrupo(client, 'msg');
+
+            //SE NÃO FOR MENSAGEM DE GRUPO E FOR  BLOQUEADO RETORNE
+            if (!isGroup && isBlocked) return false;
 
             //SE O USUARIO NÃO FOR REGISTRADO, FAÇA O REGISTRO
             const registrado = await db.verificarRegistro(autor);
@@ -54,6 +59,12 @@ export class ChecandoMensagens {
             }
 
             if (comandoExiste) {
+                //ATUALIZE NOME DO USUÁRIO
+                await db.atualizarNome(autor, notifyName);
+
+                //SE FOR MENSAGEM DE GRUPO E USUARIO FOR BLOQUEADO RETORNE
+                if (isGroup && isBlocked) return false;
+
                 //SE O GRUPO ESTIVER COM O RECURSO 'MUTADO' LIGADO E USUARIO NÃO FOR ADMINISTRADOR
                 if (isGroup && !isGroupAdmins && grupoInfo?.mutar) return false;
             }
