@@ -30,7 +30,7 @@
         "@xaviabot/fb-downloader": "^1.0.14",
         "axios": "^1.6.7",
         "canvas": "^2.11.2",
-        "chalk": "^5.3.0",
+        "chalk": "^4.1.2",
         "dotenv": "^16.4.1",
         "fluent-ffmpeg": "^2.1.2",
         "form-data": "^4.0.0",
