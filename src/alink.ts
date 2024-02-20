@@ -41,7 +41,9 @@ export default class AntiLink {
                         let links_permitidos_qtd = 0;
 
                         if (al_info.antilink.filtros.youtube) {
-                            const isYoutube = new RegExp(/^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/|youtu\.be)/i);
+                            const isYoutube = new RegExp(
+                                /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/[^\/\n\s]+\/|(?:youtu\.be\/))([^\s]+)/g,
+                            );
                             const links_youtube_qtd = mensagem.match(isYoutube) ? mensagem.match(isYoutube)!.length : 0;
                             links_permitidos_qtd += links_youtube_qtd;
                         }
@@ -53,7 +55,7 @@ export default class AntiLink {
                         }
 
                         if (al_info.antilink.filtros.instagram) {
-                            const isInstagram = new RegExp(/^https:\/\/www\.instagram\.com/i);
+                            const isInstagram = new RegExp(/(?:^|\s)(https?:\/\/www\.instagram\.com\/\w+\/[^\s]+)(?=\s|$)/i);
                             const links_instagram_qtd = mensagem.match(isInstagram) ? mensagem.match(isInstagram)!.length : 0;
                             links_permitidos_qtd += links_instagram_qtd;
                         }
