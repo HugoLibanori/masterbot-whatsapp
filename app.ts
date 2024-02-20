@@ -46,7 +46,6 @@ client.on('ready', async () => {
 
 // Ouvindo mensagens!
 client.on('message', async (message: any) => {
-    // console.log(await client.getBlockedContacts());
     if (!(await new AntiLink().antiLink(client, message))) return;
     if (!(await new ChecandoMensagens().start(client, message))) return;
     await new ChamandoComandos().start(client, message);

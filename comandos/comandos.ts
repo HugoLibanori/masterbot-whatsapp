@@ -6,6 +6,7 @@ interface Comandos {
     info: string[];
     download: string[];
     admin: string[];
+    diversao: string[];
 }
 
 const comandos: Comandos = {
@@ -81,6 +82,7 @@ const comandos: Comandos = {
         `${process.env.PREFIX}verdados`,
         `${process.env.PREFIX}desligar`,
     ],
+    diversao: [`${process.env.PREFIX}viadometro`, `${process.env.PREFIX}bafometro`, `${process.env.PREFIX}gadometro`],
 };
 
 export default comandos;
