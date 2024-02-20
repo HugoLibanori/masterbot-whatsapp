@@ -233,14 +233,12 @@ class Grupo {
                 const usuarioNumeros: string[] = body.slice(5).split(',');
                 for (const numero of usuarioNumeros) {
                     const numeroCompleto: string = numero.trim().replace(/\W+/g, '') + '@c.us';
-                    console.log(numeroCompleto);
                     const res: any = await dadosGrupo
                         .addParticipants(numeroCompleto, { sleep: [1000, 2000], autoSendInviteV4: false })
                         .catch((err: any) => {
                             console.log(err);
                             message.reply(criarTexto(msgs_texto.grupo.add.add_erro, numeroCompleto.replace('@c.us', '')));
                         });
-                    console.log(res);
                     if (res[numeroCompleto].code === 403) {
                         await message.reply(criarTexto(msgs_texto.grupo.add.convite, numeroCompleto.replace('@c.us', '')));
                     } else if (res[numeroCompleto].code === 408) {
