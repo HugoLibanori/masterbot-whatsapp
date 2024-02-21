@@ -107,6 +107,6 @@
         "skipLibCheck": true /* Skip type checking all .d.ts files. */
     },
     "files": ["types/google-it.d.ts"],
-    "include": ["src/**/*.ts", "types/*.d.ts"],
+    "include": ["src/*.ts", "types/*.d.ts"],
     "exclude": ["node_modules"]
 }
