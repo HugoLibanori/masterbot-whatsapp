@@ -140,7 +140,11 @@ class Figurinhas {
                         } catch (err: any) {
                             console.log(err);
                         }
+                    } else {
+                        return await message.reply(msgs_texto.figurinhas.sticker.ssf_imagem);
                     }
+                } else {
+                    await message.reply(erroComandoMsg(command));
                 }
             } else if (command === `${process.env.PREFIX}figurinhas`) {
                 const imageFolder = path.resolve('figurinhas');
