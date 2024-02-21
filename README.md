@@ -53,7 +53,7 @@ Todos os comandos agora tem um guia ao digitar **!comando guia**
 ### Pronto! Seu bot já está funcionando!!
 
 <br>
-Para que o comando **!figurinhas** funcione, adicione imagens dentro da pasta figurinhas, que se encontra na raiz do projeto. caso não tenha crie essa pasta.
+Para que o comando __!figurinhas__ funcione, adicione imagens dentro da pasta 'figurinhas', que se encontra na raiz do projeto. caso não tenha crie essa pasta.
 <br>
 
 ## 5 - Configuração do arquivo .env :
