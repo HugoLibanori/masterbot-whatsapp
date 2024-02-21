@@ -13,3 +13,6 @@ logs/session/*
 database/db/*.db
 #Ignorar arquivos json
 database/json/*.json
+#Ignorar imagens pasta figurinhas
+figurinhas/*.png
+figurinhas/*.jpg

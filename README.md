@@ -53,6 +53,8 @@ Todos os comandos agora tem um guia ao digitar **!comando guia**
 ### Pronto! Seu bot já está funcionando!!
 
 <br>
+Para que o comando **!figurinhas** funcione, adicione imagens dentro da pasta figurinhas, que se encontra na raiz do projeto. caso não tenha crie essa pasta.
+<br>
 
 ## 5 - Configuração do arquivo .env :
 
@@ -77,16 +79,7 @@ Todos os comandos agora tem um guia ao digitar **!comando guia**
 
         API_NEWS_ORG=??????
 
-        # ACRCLOUD - Coloque abaixo suas chaves do ACRCloud (Reconhecimento de Músicas)
-
-        acr_host=??????
-        acr_access_key=??????
-        acr_access_secret=??????
-
-        # DEEPAI- Coloque abaixo sua chave do deepai.org (Detector de nudez/pornografia)
-
-        API_DEEPAI=??????
-
+        # API REMOVEBG - coloque sua api removebg aqui
         API_REMOVEBG=??????
 
         ############ PATH GOOGLE CHROME ##############

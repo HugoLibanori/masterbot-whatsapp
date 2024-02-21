@@ -3,6 +3,8 @@ require('dotenv').config();
 import { removerNegritoComando, erroComandoMsg } from '../src/util';
 import Stickers from '../src/sticker';
 import msgs_texto from '../src/msgs';
+import fs from 'fs';
+import path from 'path';
 
 class Figurinhas {
     async criarFigurinhas(client: Client, message: any): Promise<void> {
@@ -139,6 +141,28 @@ class Figurinhas {
                             console.log(err);
                         }
                     }
+                }
+            } else if (command === `${process.env.PREFIX}figurinhas`) {
+                const imageFolder = path.resolve('figurinhas');
+
+                try {
+                    const files = fs.readdirSync(imageFolder);
+                    const imageFiles = files.filter(file => /\.(jpg|jpeg|png|gif)$/i.test(file));
+                    if (imageFiles.length === 0)
+                        return await message.reply('Sem imagens para enviar, adicione dentro da pasta figurinhas do seu projeto.');
+                    await message.reply(`Ok, vou enviar um total de ${imageFiles.length} figurinhas, ⏳ aguarde!`);
+
+                    dadosStickers.stickerName += ' Sticker';
+                    for (const file of files) {
+                        const media = MessageMedia.fromFilePath(`${imageFolder}/${file}`);
+                        await client.sendMessage(from, media, dadosStickers);
+
+                        // Atraso de 1 segundo antes de enviar a próxima figurinha
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
+                    await message.reply('✅ Figurinhas enviadas com sucesso.');
+                } catch (error) {
+                    console.error('Erro ao ler a pasta de imagens:', error);
                 }
             }
         } catch (err: any) {

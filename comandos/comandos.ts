@@ -17,6 +17,7 @@ const comandos: Comandos = {
         `${process.env.PREFIX}ssf`,
         `${process.env.PREFIX}tps`,
         `${process.env.PREFIX}simg`,
+        `${process.env.PREFIX}figurinhas`,
     ],
     grupo: [
         `${process.env.PREFIX}add`,
