@@ -6,6 +6,8 @@ import FormData from 'form-data';
 import * as path from 'path';
 import { obterNomeAleatorio } from './util';
 import msgs_texto from './msgs';
+import sharp from 'sharp';
+const gifyImport = require('gify') as any;
 
 class Stickers {
     public static textoParaFoto = async (texto: string): Promise<any> => {
@@ -170,6 +172,41 @@ class Stickers {
                 message.reply(msgs_texto.figurinhas.sticker.erro_sgif);
             });
         }
+    };
+
+    public static imageCircular = async (base64: MessageMedia) => {
+        const imageBuffer = Buffer.from(base64.data, 'base64');
+
+        // Usa o sharp para recortar a imagem em círculo e redimensionar para 512x512
+        const circularImageBuffer = await sharp(imageBuffer)
+            .resize(512, 512)
+            .composite([{ input: Buffer.from('<svg><circle cx="256" cy="256" r="256"/></svg>'), blend: 'dest-in' }])
+            .png()
+            .toBuffer();
+
+        const circularImageBase64 = circularImageBuffer.toString('base64');
+
+        return circularImageBase64;
+    };
+
+    public static videoCircular = async (base64: MessageMedia): Promise<string> => {
+        let videoBuffer;
+
+        if (base64.mimetype === 'image/gif') {
+            videoBuffer = await gifyImport(Buffer.from(base64.data, 'base64'));
+        } else {
+            videoBuffer = Buffer.from(base64.data, 'base64');
+        }
+        const circularVideoBuffer = await sharp({
+            create: { width: 512, height: 512, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
+        })
+            .composite([{ input: videoBuffer, blend: 'dest-in' }])
+            .webp() // ou o formato desejado (webp, png, etc.)
+            .toBuffer();
+
+        // Converte o vídeo circular para base64
+        const circularVideoBase64 = circularVideoBuffer.toString('base64');
+        return circularVideoBase64;
     };
 }
 
