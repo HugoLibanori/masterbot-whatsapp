@@ -39,6 +39,7 @@ const guias: Comandos = {
             cabecalho +
             `Ex: Responda um sticker com *${process.env.PREFIX}simg* - Transforma o sticker em imagem.\n\n` +
             `*Obs*: Este comando funciona apenas com *STICKERS*.`,
+        figurinhas: cabecalho + `Ex: Envia varias figuinhas para o usuário.`,
     },
     downloads: {
         play: cabecalho + `Ex: *${process.env.PREFIX}play* musica - Faz download de uma música do Youtube e envia como audio.`,
