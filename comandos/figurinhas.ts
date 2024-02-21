@@ -41,9 +41,20 @@ class Figurinhas {
                         if (dadosMsgImg.tipo === 'image') {
                             await message.reply('[AGUARDE] Em andamento ⏳ espere por favor.');
                             const media_quoted: any = await message.getQuotedMessage();
+                            dadosStickers.stickerName += ' Sticker';
                             const mediaData: MessageMedia = (await message.downloadMedia()) || (await media_quoted.downloadMedia());
                             if (!mediaData) return await message.reply('Erro ao fazer o download da imagem, por favor não apague!');
-                            dadosStickers.stickerName += ' Sticker';
+
+                            if (args[1] === '1') {
+                                const imageCircle = await Stickers.imageCircular(mediaData);
+                                const imageCircular = new MessageMedia('image/png', imageCircle);
+                                await client.sendMessage(from, imageCircular, dadosStickers).catch((err: any) => {
+                                    console.log(err);
+                                    message.reply(msgs_texto.figurinhas.sticker.erro_s);
+                                });
+                                return;
+                            }
+
                             await client.sendMessage(from, mediaData, dadosStickers).catch((err: any) => {
                                 console.log(err);
                                 message.reply(msgs_texto.figurinhas.sticker.erro_s);
@@ -77,6 +88,17 @@ class Figurinhas {
                             const mediaData: MessageMedia = (await message.downloadMedia()) || (await media_quoted.downloadMedia());
                             dadosStickers.stickerName += ' Sticker animado';
                             if (!mediaData) return await message.reply(msgs_texto.figurinhas.sticker.download);
+
+                            // if (args[1] === '1') {
+                            //     const videoCircle = await Stickers.videoCircular(mediaData);
+                            //     const videoCircular = new MessageMedia(mediaData.mimetype, videoCircle);
+                            //     await client.sendMessage(from, videoCircular, dadosStickers).catch((err: any) => {
+                            //         console.log(err);
+                            //         message.reply(msgs_texto.figurinhas.sticker.erro_s);
+                            //     });
+                            //     return;
+                            // }
+
                             await client.sendMessage(from, mediaData, dadosStickers).catch((err: any) => {
                                 console.log(err);
                                 message.reply(msgs_texto.figurinhas.sticker.erro_sgif);
