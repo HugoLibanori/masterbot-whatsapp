@@ -32,7 +32,10 @@ export class ChecandoMensagens {
                 lista_comandos.figurinhas.includes(comando) ||
                 lista_comandos.grupo.includes(comando) ||
                 lista_comandos.info.includes(comando) ||
-                lista_comandos.download.includes(comando);
+                lista_comandos.download.includes(comando) ||
+                lista_comandos.admin.includes(comando) ||
+                lista_comandos.diversao.includes(comando) ||
+                lista_comandos.utilidades.includes(comando);
 
             //SE O PV DO BOT NÃO ESTIVER LIBERADO
             if (!isGroup && !isOwner && !botInfo.botInfo().pvliberado) return false;
