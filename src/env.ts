@@ -6,8 +6,7 @@ import { corTexto } from './util';
 interface CriacaoEnvResult {
     numero_dono: string;
     newsapi: string;
-    acrcloud: string;
-    deepai: string;
+    apiremovebg: string;
 }
 
 const criacaoEnv = async (): Promise<void> => {
@@ -49,25 +48,17 @@ const criacaoEnv = async (): Promise<void> => {
 const verificarEnv = (): void => {
     const numDono = process.env.NUMERO_DONO ?? 'SEM NUMERO';
     const newsApi = process.env.API_NEWS_ORG ?? 'SEM API_NEWS';
-    const acrHost = process.env.acr_host ?? 'SEM_ACR_HOST';
-    const acrAccess = process.env.acr_access_key ?? 'SEM_ACR_ACCESS';
-    const acrSecret = process.env.acr_access_secret ?? 'SEM_ACR_SECRET';
-    const apiDeepai = process.env.API_DEEPAI ?? 'SEM_API_DEEPAI';
+    const apiremovebg = process.env.API_REMOVEBG ?? 'SEM API_REMOVEBG';
 
     const resposta: CriacaoEnvResult = {
-        numero_dono: numDono.trim() == '55219xxxxxxxx' ? 'O número do DONO ainda não foi configurado' : '✓ Número do DONO configurado.',
-        newsapi: newsApi.trim() == '??????' ? 'A API do NEWSAPI ainda não foi configurada' : '✓ API NEWSAPI Configurada.',
-        acrcloud:
-            acrHost.trim() == '??????' || acrAccess.trim() == '??????' || acrSecret.trim() == '??????'
-                ? 'A API do ACRCloud ainda não foi configurada corretamente'
-                : '✓ API ACRCloud Configurada.',
-        deepai: apiDeepai.trim() == '??????' ? 'A API do DEEPAI ainda não foi configurada' : '✓ API DEEPAI Configurada.',
+        numero_dono: numDono.trim() === '55219xxxxxxxx' ? 'O número do DONO ainda não foi configurado' : '✓ Número do DONO configurado.',
+        newsapi: newsApi.trim() === '??????' ? 'A API do NEWSAPI ainda não foi configurada' : '✓ API NEWSAPI configurada.',
+        apiremovebg: apiremovebg.trim() === '??????' ? 'A API do REMOVEBG ainda não foi configurada' : '✓ API REMOVEBG configurada.',
     };
 
     console.log('[ENV]', corTexto(resposta.numero_dono));
     console.log('[ENV]', corTexto(resposta.newsapi));
-    console.log('[ENV]', corTexto(resposta.acrcloud));
-    console.log('[ENV]', corTexto(resposta.deepai));
+    console.log('[ENV]', corTexto(resposta.apiremovebg));
 };
 
 export { criacaoEnv, verificarEnv };

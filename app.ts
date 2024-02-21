@@ -10,6 +10,7 @@ import db from './src/dataBase';
 import BemVindo from './src/bemVindo';
 import AntiFake from './src/antifake';
 import AntiLink from './src/alink';
+import { verificarEnv } from './src/env';
 
 const client: Client = new Client({
     authStrategy: new LocalAuth({
@@ -41,6 +42,7 @@ client.on('ready', async () => {
     } else {
         console.log(corTexto(await atualizarParticipantes(client)));
         console.log(corTexto(await cadastrarGrupo(client, 'inicio')));
+        verificarEnv();
     }
 });
 
