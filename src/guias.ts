@@ -21,12 +21,12 @@ const guias: Comandos = {
         s:
             cabecalho +
             `Ex: Envie/responda uma *imagem* com *${process.env.PREFIX}s* - Transforma a imagem em sticker.\n\n` +
-            // `Ex: Envie/responda uma *imagem* com *${process.env.PREFIX}s* 1 - Transforma a imagem em sticker circular.\n\n` +
+            `Ex: Envie/responda uma *imagem* com *${process.env.PREFIX}s* 1 - Transforma a imagem em sticker circular.\n\n` +
             `*Obs*: Este comando funciona apenas com *IMAGENS*.`,
         sgif:
             cabecalho +
             `Ex: Envie/responda um gif/video com *${process.env.PREFIX}sgif* - Transforma o gif/video em sticker animado.\n\n` +
-            // `Ex: Envie/responda um gif/video com *${process.env.PREFIX}sgif* 1 - Transforma o gif/video em sticker animado com as proporções originais.\n\n` +
+            // `Ex: Envie/responda um gif/video com *${process.env.PREFIX}sgif* 1 - Transforma o gif/video em sticker animado recortado.\n\n` +
             // `Ex: Envie/responda um gif/video com *${process.env.PREFIX}sgif* 2 - Transforma o gif/video em sticker animado com formato circular.\n\n` +
             `*Obs*: Este comando funciona apenas com *GIFS/VIDEOS*.`,
         ssf:
