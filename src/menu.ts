@@ -53,7 +53,6 @@ const menu: {
 |- *${process.env.PREFIX}sgif* 2 - Transforme um VIDEO/GIF em sticker circular.
 |- *${process.env.PREFIX}simg* - Transforme um STICKER em foto.
 |- *${process.env.PREFIX}tps* - Transforme um TEXTO em sticker.
-|- *${process.env.PREFIX}atps* - Transforme um TEXTO em sticker animado.
 |- *${process.env.PREFIX}ssf* - Transforme uma IMAGEM em sticker sem fundo.
 |
 ╰╼❥ ${nomeBot.trim()}® by *${nomeAdm.trim()}*`;
@@ -97,9 +96,7 @@ const menu: {
 |>---- ☾ ⚒️ *UTILITÁRIOS* ⚒️☽
 |
 |- *${process.env.PREFIX}voz* [idioma] [mensagem] - Transforma texto em audio.
-|- *${process.env.PREFIX}qualmusica* - Responda um audio/video para identificar a música.
 |- *${process.env.PREFIX}pesquisa* [tema] - Faz uma rápida pesquisa na internet.
-|- *${process.env.PREFIX}clima* [cidade] - Mostra a temperatura atual.
 |- *${process.env.PREFIX}noticias* - Obtem noticias atuais.
 |
 ╰╼❥ ${nomeBot.trim()}® by *${nomeAdm.trim()}*`;
@@ -150,7 +147,6 @@ const menu: {
 |- *${process.env.PREFIX}alink* - Ativa/desativa o anti-link.
 |- *${process.env.PREFIX}bv* - Ativa/desativa o bem-vindo.
 |- *${process.env.PREFIX}afake* - Ativa/desativa o anti-fake.
-|- *${process.env.PREFIX}aflood* - Ativa/desativa o anti-flood.
 |
 |-- ☾ ADMINISTRATIVO ☽
 |
@@ -161,12 +157,9 @@ const menu: {
 |- *${process.env.PREFIX}rebaixar* @marcaradmin - Rebaixa a MEMBRO.
 |- *${process.env.PREFIX}link* - Exibe o link do grupo.
 |- *${process.env.PREFIX}rlink* - Redefine o link do grupo.
-|- *${process.env.PREFIX}apg* - Apaga mensagem do BOT.
+|- *${process.env.PREFIX}apg* - Apaga mensagem.
 |- *${process.env.PREFIX}bantodos* - Bane todos os membros.
 |
-|-- ☾ ETC.. ☽
-|
-|- *${process.env.PREFIX}roletarussa* - Expulsa um membro aleatório do grupo.
 |
 ╰╼❥ ${nomeBot.trim()}® by *${nomeAdm.trim()}*`;
         } else {
@@ -193,12 +186,9 @@ const menu: {
 |
 |>---- ☾ 🧩 *DIVERSÃO/OUTROS* ☽
 |
-|- *${process.env.PREFIX}caracoroa* - Decide no cara ou coroa.
-|- *${process.env.PREFIX}ppt* [pedra, papel, tesoura] - Pedra, papel ou tesoura.
 |- *${process.env.PREFIX}viadometro* - Mede o nível de viadagem de alguma pessoa.
-|- *${process.env.PREFIX}casal* - Seleciona aleatoriamente um casal.
 |- *${process.env.PREFIX}gadometro* - Mencione um membro ou responda ele para descobrir.
-|- *${process.env.PREFIX}top5* - Mostra o top 5 de pessoas mais ativas no bot.
+|- *${process.env.PREFIX}bafometro* - Mede o nível de álcool de uma pessoa.
 |
 ╰╼❥ ${nomeBot.trim()}® by *${nomeAdm.trim()}*`;
         } else {
@@ -209,9 +199,7 @@ const menu: {
 |>---- ☾ 🧩 *DIVERSÃO/OUTROS* ☽
 |
 |- *${process.env.PREFIX}viadometro* - Mede o nível de viadagem de alguma pessoa.
-|- *${process.env.PREFIX}casal* - Seleciona aleatoriamente um casal.
 |- *${process.env.PREFIX}gadometro* - Mencione um membro ou responda ele para descobrir.
-|- *${process.env.PREFIX}chance* - Calcula a chance de algo acontecer.
 |- *${process.env.PREFIX}bafometro* - Mede o nível de álcool de uma pessoa.
 |
 ╰╼❥ ${nomeBot.trim()}® by *${nomeAdm.trim()}*`;
@@ -263,19 +251,10 @@ const menu: {
 |
 |- *${process.env.PREFIX}pvliberado* - Ativa/desativa os comandos em mensagens privadas.
 |- *${process.env.PREFIX}autostickerpv* - Ativa/desativa a criação automática de stickers no privado.
-|- *${process.env.PREFIX}taxalimite* [qtd-comandos] [tempo-bloqueio] - Ativa/desativa a taxa de comandos por minuto.
-|- *${process.env.PREFIX}limitediario* - Ativa/desativa o limite diario de comandos por dia.
-|- *${process.env.PREFIX}limitarmsgs* [qtd-msgs] [intervalo] - Ativa/desativa o limite de mensagens privadas em um intervalo.
-|- *${process.env.PREFIX}mudarlimite* [tipo] [novo-limite] - Muda o limite de comandos por dia de um tipo de usuário.
-|- *${process.env.PREFIX}rtodos* - Reseta os comandos diários de todos.
-|- *${process.env.PREFIX}r* @usuario - Reseta os comandos diários de um usuário.
 |
 |-- ☾ GRUPOS ☽
 |
 |- *${process.env.PREFIX}sair* - Sai do grupo.
-|- *${process.env.PREFIX}sairgrupos* - Sai de todos os grupos.
-|- *${process.env.PREFIX}entrargrupo* [link-grupo] - BOT entra no grupo.
-|- *${process.env.PREFIX}rconfig* - Reseta as configurações dos grupos.
 |
 ╰╼❥ ${nomeBot.trim()}® by *${nomeAdm.trim()}*`;
     },
