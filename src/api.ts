@@ -12,8 +12,8 @@ import { ndown as instagramGetUrl } from 'nayan-media-downloader';
 import gis from 'g-i-s';
 import { exec } from 'child_process';
 import { promisify } from 'util';
-
 const asyncExec = promisify(exec);
+import googleIt from 'google-it';
 
 export = {
     obterInfoVideoYT: async (query: string): Promise<any> => {
@@ -144,6 +144,82 @@ export = {
             } else {
                 throw err;
             }
+        }
+    },
+    textoParaVoz: async (idioma: string, texto: string): Promise<string> => {
+        return new Promise<string>((resolve, reject) => {
+            const ttsLanguages: Record<string, any> = {
+                pt: require('node-gtts')('pt'),
+                en: require('node-gtts')('en'),
+                jp: require('node-gtts')('ja'),
+                es: require('node-gtts')('es'),
+                it: require('node-gtts')('it'),
+                ru: require('node-gtts')('ru'),
+                ko: require('node-gtts')('ko'),
+                sv: require('node-gtts')('sv'),
+            };
+
+            const tts = ttsLanguages[idioma];
+
+            if (tts) {
+                const outputPath = path.resolve(`media/audios/res${idioma.toUpperCase()}.mp3`);
+
+                tts.save(outputPath, texto, () => {
+                    resolve(outputPath);
+                });
+            } else {
+                reject(new Error('Idioma não suportado'));
+            }
+        }).catch(err => {
+            const errors = ['Idioma não suportado'];
+            if (!errors.includes(err.message)) {
+                console.error(err.message, 'API textoParaVoz');
+                throw new Error('Erro ao gerar áudio');
+            } else {
+                throw err;
+            }
+        });
+    },
+    obterPesquisaWeb: async (pesquisaTexto: string) => {
+        try {
+            let resultados = await googleIt({ disableConsole: true, query: pesquisaTexto });
+            const resposta = [];
+            if (resultados.length == 0) throw new Error(msgs_texto.utilidades.pesquisa.sem_resultados);
+            resultados = resultados.slice(0, 5);
+            for (const resultado of resultados) {
+                resposta.push({
+                    titulo: resultado.title,
+                    link: resultado.link,
+                    descricao: resultado.snippet,
+                });
+            }
+            return resposta;
+        } catch (err: any) {
+            const errors = [msgs_texto.utilidades.pesquisa.sem_resultados];
+            if (!errors.includes(err.message)) {
+                consoleErro(err.message, 'API obterPesquisaWeb');
+                throw new Error(msgs_texto.utilidades.pesquisa.erro_servidor);
+            } else {
+                throw err;
+            }
+        }
+    },
+    obterNoticias: async () => {
+        try {
+            const api_news_org = process.env.API_NEWS_ORG || '';
+            const res = await axios.get(`http://newsapi.org/v2/top-headlines?country=br&apiKey=${api_news_org.trim()}`);
+            const resposta = [];
+            for (const noticia of res.data.articles) {
+                resposta.push({
+                    titulo: noticia.author,
+                    descricao: noticia.title,
+                    url: noticia.url,
+                });
+            }
+            return resposta;
+        } catch (err) {
+            consoleErro(msgs_texto.api.newsapi, 'API obterNoticias');
+            throw new Error(msgs_texto.utilidades.noticia.indisponivel);
         }
     },
 };
