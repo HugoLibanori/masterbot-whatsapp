@@ -37,13 +37,8 @@ const criacaoEnv = async (): Promise<void> => {
         numero_dono +
         '\n' +
         '# NEWSAPI- Coloque abaixo sua chave API do site newsapi.org (NOTICIAIS ATUAIS)\n' +
-        'API_NEWS_ORG=??????\n' +
-        '# ACRCLOUD - Coloque abaixo suas chaves do ACRCloud (Reconhecimento de Músicas)\n' +
-        'acr_host=??????\n' +
-        'acr_access_key=??????\n' +
-        'acr_access_secret=??????\n' +
-        '# DEEPAI- Coloque abaixo sua chave do deepai.org (Detector de nudez/pornografia)\n' +
-        'API_DEEPAI=??????\n\n' +
+        'API_NEWS_ORG=??????\n\n' +
+        '# API REMOVEBG - coloque sua api removebg aqui\n' +
         'API_REMOVEBG=??????\n\n' +
         '############ PATH GOOGLE CHROME ##############\n' +
         `PATH_CHROME='C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'`;
