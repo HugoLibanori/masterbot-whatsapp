@@ -98,7 +98,7 @@ class Stickers {
         return apiKey?.trim();
     }
 
-    public static removerFundoImagem = async (buffer: Buffer, mimetype: string): Promise<string | undefined> => {
+    public static removerFundoImagem = async (buffer: Buffer, mimetype: string): Promise<string> => {
         try {
             const imagemEntradaCaminho: string = path.resolve('media/img/tmp/' + obterNomeAleatorio('.jpg'));
             fs.writeFileSync(imagemEntradaCaminho, buffer);
@@ -140,6 +140,7 @@ class Stickers {
                 'Houve um erro na API REMOVEBG, confira se o limite gratuito da chave excedeu ou se ela está configurada.',
                 'API REMOVEBG',
             );
+            throw new Error();
         }
     };
     public static autoSticker = async (message: any, client: Client): Promise<void> => {
