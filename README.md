@@ -91,7 +91,21 @@ Configure o caminho do PATH_CHROME_WIN para não haver erros, por padrão ele ve
 
 <br>
 
-#### Caso você queira usar o bot com PM2 rode o comando npx tsc para compilar os arquivos da pasta ./dist. lá será criado todos os arquivos em JS rode o comando pm2 start ./dist/app.js, assim o bot vai rodar normal.
+#### Caso você queira usar o bot com PM2 rode o comando: <br>
+
+```bash
+npx tsc
+```
+
+#### Isso compilará os arquivos da pasta ./dist. Lá, serão criados todos os arquivos em JS. Em seguida,
+
+#### rode o comando:<br>
+
+```bash
+pm2 start ./dist/app.js
+```
+
+#### Assim o bot vai rodar normal.
 
 <br>
 
