@@ -109,9 +109,14 @@ const criarArquivosNecessarios = async (): Promise<boolean> => {
     try {
         const existeBotJson = fs.existsSync(path.resolve('database/json/bot.json'));
         const existeEnv = fs.existsSync(path.resolve('.env'));
+        const pastaFigu = fs.existsSync(path.resolve('figurinhas'));
 
         if (existeBotJson && existeEnv) {
             return false;
+        }
+
+        if (!pastaFigu) {
+            fs.mkdirSync(path.resolve(__dirname, '..', 'figurinhas'), { recursive: true });
         }
 
         if (!existeBotJson) {
