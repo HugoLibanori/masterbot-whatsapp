@@ -89,7 +89,7 @@ Para que o comando **!figurinhas** funcione, adicione imagens dentro da pasta 'f
 
 Configure o caminho do PATH_CHROME_WIN para não haver erros, por padrão ele vem com path do windows. Se seu sistema for diferente mude-o.
 
-<br><br>
+<br>
 
 #### Caso você queira usar o bot com PM2 rode o comando npx tsc para compilar os arquivos da pasta ./dist. lá será criado todos os arquivos em JS rode o comando pm2 start ./dist/app.js, assim o bot vai rodar normal.
 
