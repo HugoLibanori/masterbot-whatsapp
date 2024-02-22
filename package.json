@@ -4,8 +4,8 @@
     "description": "Bot brasileiro para treinamento.",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "ts-node ./app.ts"
+        "start": "ts-node ./app.ts",
+        "teste": "node ./dist/app.js"
     },
     "keywords": [],
     "author": "Hugo Libanori",
