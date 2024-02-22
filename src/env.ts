@@ -40,7 +40,7 @@ const criacaoEnv = async (): Promise<void> => {
         '# API REMOVEBG - coloque sua api removebg aqui\n' +
         'API_REMOVEBG=??????\n\n' +
         '############ PATH GOOGLE CHROME ##############\n' +
-        `PATH_CHROME='C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'`;
+        `PATH_CHROME_WIN='C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'`;
 
     await fs.writeFile(path.resolve('.env'), envContent, 'utf8');
 };
