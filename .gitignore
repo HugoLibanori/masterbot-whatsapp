@@ -15,6 +15,5 @@ database/db/*.db
 database/json/*.json
 #Ignorar imagens pasta figurinhas
 figurinhas/*
-!figurinhas/.gitkeep
 # Ignorando pasta dist
 dist
