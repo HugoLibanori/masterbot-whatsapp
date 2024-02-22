@@ -90,12 +90,12 @@ class Stickers {
         }
     };
 
-    private static getApiKey(): string {
+    private static getApiKey(): string | undefined {
         const apiKey = process.env.API_REMOVEBG;
-        if (!apiKey) {
-            throw new Error('API_REMOVEBG not defined in environment variables.');
+        if (apiKey?.trim() === '??????') {
+            console.log('API_REMOVEBG não foi definida.');
         }
-        return apiKey.trim();
+        return apiKey?.trim();
     }
 
     public static removerFundoImagem = async (buffer: Buffer, mimetype: string): Promise<string> => {
