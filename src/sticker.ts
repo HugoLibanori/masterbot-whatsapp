@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import axios, { AxiosRequestConfig } from 'axios';
 import FormData from 'form-data';
 import * as path from 'path';
-import { obterNomeAleatorio } from './util';
+import { obterNomeAleatorio, consoleErro } from './util';
 import msgs_texto from './msgs';
 import sharp from 'sharp';
 const gifyImport = require('gify') as any;
@@ -136,7 +136,11 @@ class Stickers {
             return base64;
         } catch (err) {
             // Restante do seu código aqui...
-            throw new Error('Erro ao remover o fundo da imagem.');
+            consoleErro(
+                'Houve um erro na API REMOVEBG, confira se o limite gratuito da chave excedeu ou se ela está configurada.',
+                'API REMOVEBG',
+            );
+            throw new Error();
         }
     };
     public static autoSticker = async (message: any, client: Client): Promise<void> => {
