@@ -23,18 +23,18 @@ export default class AntiFake {
                     await db.alterarAntiFake(event.chatId, false);
                 } else {
                     for (const ddi of g_info.antifake.ddi_liberados) {
-                        if (event.recipientIds[0].startsWith(ddi)) return true;
+                        if (event.recipientIds.reduce(id => id).startsWith(ddi)) return true;
                     }
                     const array: string[] = [];
-                    await dadosGrupoCast.removeParticipants([event.recipientIds[0]]);
-                    array.push(event.recipientIds[0]);
+                    await dadosGrupoCast.removeParticipants([event.recipientIds.reduce(id => id)]);
+                    array.push(event.recipientIds.reduce(id => id));
                     const arrayCast = array as unknown;
                     const mentions = arrayCast as Contact[];
                     await client.sendMessage(
                         event.chatId,
                         criarTexto(
                             msgs_texto.geral.resposta_ban,
-                            event.recipientIds[0].replace('@c.us', ''),
+                            event.recipientIds.reduce(id => id).replace('@c.us', ''),
                             msgs_texto.grupo.antifake.motivo,
                             nomeBot,
                         ),

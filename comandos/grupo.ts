@@ -1,4 +1,4 @@
-import { Client, MessageMedia } from 'whatsapp-web.js';
+import { Client, Contact, MessageMedia } from 'whatsapp-web.js';
 import { removerNegritoComando, erroComandoMsg, criarTexto, isAdminGroup } from '../src/util';
 import msgs_texto from '../src/msgs';
 import db from '../src/dataBase';
@@ -339,6 +339,44 @@ class Grupo {
                 if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
                 const estadoNovo = !dadosGrupo.groupMetadata.announce;
                 await dadosGrupo.setMessagesAdminsOnly(estadoNovo);
+            } else if (command === `${process.env.PREFIX}blista`) {
+                if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
+                if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
+                if (args.length == 1) return message.reply(erroComandoMsg(command));
+                const blista_numero = body.slice(8).trim().replace(/\W+/g, '');
+                if (blista_numero.length === 0) return message.reply(msgs_texto.grupo.blista.numero_vazio);
+                const blista_grupo_lista = await db.obterListaNegra(from),
+                    blista_id_usuario = blista_numero + '@c.us';
+                if (blista_grupo_lista.includes(blista_id_usuario)) return message.reply(msgs_texto.grupo.blista.ja_listado);
+                await db.adicionarListaNegra(from, blista_id_usuario);
+                message.reply(msgs_texto.grupo.blista.sucesso);
+            } else if (command === `${process.env.PREFIX}dlista`) {
+                if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
+                if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
+                if (args.length == 1) return message.reply(erroComandoMsg(command));
+                const dlista_numero = body.slice(8).trim().replace(/\W+/g, '');
+                if (dlista_numero.length == 0) return message.reply(msgs_texto.grupo.dlista.numero_vazio);
+                const dlista_grupo_lista = await db.obterListaNegra(from),
+                    dlista_id_usuario = dlista_numero + '@c.us';
+                if (!dlista_grupo_lista.includes(dlista_id_usuario)) return message.reply(msgs_texto.grupo.dlista.nao_listado);
+                await db.removerListaNegra(from, dlista_id_usuario);
+                message.reply(msgs_texto.grupo.dlista.sucesso);
+            } else if (command === `${process.env.PREFIX}listanegra`) {
+                if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
+                if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
+                const lista_negra_grupo = await db.obterListaNegra(from);
+                let resposta_listanegra = msgs_texto.grupo.listanegra.resposta_titulo;
+                if (lista_negra_grupo.length == 0) return message.reply(msgs_texto.grupo.listanegra.lista_vazia);
+                const nomeBot = process.env.NOME_BOT || '';
+                const arrayMentions: string[] = [];
+                for (const usuario_lista of lista_negra_grupo) {
+                    resposta_listanegra += criarTexto(msgs_texto.grupo.listanegra.resposta_itens, usuario_lista.replace(/@c.us/g, ''));
+                    arrayMentions.push(usuario_lista);
+                }
+                const arrayMentionsCast = arrayMentions as unknown;
+                const mentions = arrayMentionsCast as Contact[];
+                resposta_listanegra += `╚═〘 ${nomeBot.trim()}®〙`;
+                await client.sendMessage(from, resposta_listanegra, { mentions });
             }
         } catch (err: any) {
             console.log(err);

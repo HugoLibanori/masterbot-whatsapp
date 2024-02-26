@@ -387,9 +387,9 @@ export default {
         await db.grupos.asyncUpdate({ id_grupo }, { $pull: { lista_negra: id_usuario } });
     },
 
-    obterListaNegra: async (id_grupo: string): Promise<string[] | false> => {
+    obterListaNegra: async (id_grupo: string): Promise<string[]> => {
         const grupo = await db.grupos.asyncFindOne({ id_grupo });
-        if (grupo == null) return false;
+        if (grupo === null) return [];
         return grupo.lista_negra;
     },
 

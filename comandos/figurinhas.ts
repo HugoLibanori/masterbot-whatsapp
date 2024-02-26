@@ -1,6 +1,6 @@
 import { Client, MessageMedia } from 'whatsapp-web.js';
 require('dotenv').config();
-import { removerNegritoComando, erroComandoMsg } from '../src/util';
+import { removerNegritoComando, erroComandoMsg, isAdminGroup, obterNomeAleatorio } from '../src/util';
 import Stickers from '../src/sticker';
 import msgs_texto from '../src/msgs';
 import fs from 'fs';
@@ -10,8 +10,12 @@ class Figurinhas {
     async criarFigurinhas(client: Client, message: any): Promise<void> {
         try {
             const { body, hasQuotedMsg, hasMedia, type, from } = message;
-            const { quotedMsg, mimetype } = message._data;
+            const { quotedMsg, mimetype, author } = message._data;
             let command: string = body.split(' ')[0];
+            const dadosGrupo = await message.getChat();
+            const isGroup = dadosGrupo.isGroup;
+            const dadosAdmin = isGroup ? await dadosGrupo.groupMetadata.participants : '';
+            const isGroupAdmins: boolean = isGroup ? isAdminGroup(author, dadosAdmin) : false;
             const args: string[] = body.split(' ');
             command = removerNegritoComando(command).toLowerCase();
 
@@ -173,7 +177,7 @@ class Figurinhas {
 
                 try {
                     const files = fs.readdirSync(imageFolder);
-                    const imageFiles = files.filter(file => /\.(jpg|jpeg|png|gif)$/i.test(file));
+                    const imageFiles = files.filter(file => /\.(jpg|jpeg|png|gif|webp)$/i.test(file));
                     if (imageFiles.length === 0)
                         return await message.reply('Sem imagens para enviar, adicione dentro da pasta figurinhas do seu projeto.');
                     await message.reply(`Ok, vou enviar um total de ${imageFiles.length} figurinhas, ⏳ aguarde!`);
@@ -189,6 +193,39 @@ class Figurinhas {
                     await message.reply('✅ Figurinhas enviadas com sucesso.');
                 } catch (error) {
                     console.error('Erro ao ler a pasta de imagens:', error);
+                }
+            } else if (command === `${process.env.PREFIX}salvar`) {
+                if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
+                if (!isGroup) return message.reply(msgs_texto.permissao.grupo);
+                if (hasQuotedMsg) {
+                    const media_quoted: any = await message.getQuotedMessage();
+                    const midiaData: MessageMedia = await media_quoted.downloadMedia();
+                    const nomeArquivo: string = obterNomeAleatorio(`.${quotedMsg.mimetype.split('/')[1]}`);
+                    const pathToFigurinhas = path.resolve(`figurinhas/salvoPeloBot${nomeArquivo}`);
+                    fs.writeFileSync(pathToFigurinhas, midiaData.data, { encoding: 'base64', mode: 0o666, flag: 'w' });
+                    await message.reply('✅ Figurinhas salva com sucesso.');
+                } else {
+                    await message.reply(erroComandoMsg(command));
+                }
+            } else if (command === `${process.env.PREFIX}atps`) {
+                if (args.length === 1 || type != 'chat') return await message.reply(erroComandoMsg(command));
+                const usuarioTexto: string = body.slice(5).trim();
+                if (usuarioTexto.length > 100) return message.reply(msgs_texto.figurinhas.atps.texto_longo);
+                try {
+                    const imagemBase64 = await Stickers.textoParaGif(usuarioTexto);
+                    const media = MessageMedia.fromFilePath(imagemBase64);
+                    dadosStickers.stickerName += ' Texto para Sticker';
+                    await client
+                        .sendMessage(from, media, dadosStickers)
+                        .then(() => {
+                            fs.unlinkSync(imagemBase64);
+                        })
+                        .catch(err => {
+                            message.reply(msgs_texto.figurinhas.sticker.erro_s);
+                            console.log(err);
+                        });
+                } catch (err: any) {
+                    await message.reply(err.message);
                 }
             }
         } catch (err: any) {

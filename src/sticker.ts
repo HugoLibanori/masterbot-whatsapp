@@ -1,5 +1,5 @@
 import { Client, MessageTypes, MessageMedia } from 'whatsapp-web.js';
-import { createCanvas, loadImage, registerFont, Canvas, Image } from 'canvas';
+import { createCanvas, loadImage, registerFont, Canvas, Image, CanvasRenderingContext2D } from 'canvas';
 import * as fs from 'fs';
 import axios, { AxiosRequestConfig } from 'axios';
 import FormData from 'form-data';
@@ -8,6 +8,7 @@ import { obterNomeAleatorio, consoleErro } from './util';
 import msgs_texto from './msgs';
 import sharp from 'sharp';
 const gifyImport = require('gify') as any;
+import GIFEncoder = require('gifencoder');
 
 class Stickers {
     public static textoParaFoto = async (texto: string): Promise<any> => {
@@ -87,6 +88,95 @@ class Stickers {
         } catch (err: any) {
             console.log(err.message, 'STICKER textoParaFoto');
             throw new Error('Erro na conversão de texto para imagem.');
+        }
+    };
+
+    public static textoParaGif = async (texto: string): Promise<string> => {
+        try {
+            const canvasWidth = 512;
+            const canvasHeight = 512;
+            const frameDelay = 500; // Atraso entre os quadros em milissegundos
+
+            // Inicializa o encoder do GIF
+            const encoder = new GIFEncoder(canvasWidth, canvasHeight);
+            encoder.start();
+            encoder.setRepeat(0); // 0 para repetir, -1 para não repetir
+            encoder.setDelay(frameDelay);
+            encoder.setQuality(10);
+            encoder.setTransparent(0x000000); // Define a cor transparente (preto)
+
+            // Crie um canvas
+            const canvas = createCanvas(canvasWidth, canvasHeight);
+            const ctx: any = canvas.getContext('2d');
+
+            // Carregue uma fonte (opcional)
+            registerFont('./fonts/impact.ttf', { family: 'impact' });
+
+            // Cores para animação
+            const colors = ['#ff0000', '#ffff00', '#00ff00', '#0000ff'];
+            let colorIndex = 0;
+
+            // Função para quebrar o texto em várias linhas
+            function wrapText(context: any, text: string, x: number, y: number, maxWidth: number, maxHeight: number) {
+                const words = text.split(' ');
+                let currentLine = '';
+                let currentY = y;
+
+                for (let n = 0; n < words.length; n++) {
+                    const testLine = currentLine + words[n] + ' ';
+                    const metrics = context.measureText(testLine);
+                    const testWidth = metrics.width;
+
+                    if (testWidth > maxWidth && n > 0) {
+                        if (currentY + metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent > maxHeight) {
+                            // Se exceder a altura máxima, pare de adicionar linhas
+                            break;
+                        }
+
+                        context.fillText(currentLine.trim(), x, currentY);
+                        currentLine = words[n] + ' ';
+                        currentY += metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+                    } else {
+                        currentLine = testLine;
+                    }
+                }
+
+                context.fillText(currentLine.trim(), x - context.measureText(currentLine.trim()).width / 2, currentY);
+            }
+
+            // Crie os quadros do GIF
+            for (let i = 0; i < 20; i++) {
+                ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+                ctx.fillStyle = 'rgba(0, 0, 0, 0)'; // Preencha com cor transparente
+                ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+                ctx.textAlign = 'center'; // Alinhamento centralizado horizontalmente
+                ctx.textBaseline = 'middle'; // Alinhamento centralizado verticalmente
+
+                ctx.fillStyle = colors[colorIndex];
+
+                const fontSize = Math.max(60, Math.min(100, canvasHeight / texto.split(' ').length));
+
+                ctx.font = `bold ${fontSize}px impact`;
+
+                wrapText(ctx, texto, canvasWidth / 2, canvasHeight / 2, canvasWidth, canvasHeight);
+
+                colorIndex = (colorIndex + 1) % colors.length;
+
+                encoder.addFrame(ctx);
+            }
+
+            encoder.finish();
+
+            const gifBuffer = encoder.out.getData();
+            const base64 = path.resolve('media/videos/output.gif');
+            fs.writeFileSync(base64, gifBuffer);
+            // const base64 = gifBuffer.toString('base64');
+
+            return base64;
+        } catch (err: any) {
+            console.error(err.message, 'STICKER textoParaGif');
+            throw new Error('Error converting to GIF');
         }
     };
 

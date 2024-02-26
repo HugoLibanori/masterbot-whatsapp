@@ -18,6 +18,8 @@ const comandos: Comandos = {
         `${process.env.PREFIX}tps`,
         `${process.env.PREFIX}simg`,
         `${process.env.PREFIX}figurinhas`,
+        `${process.env.PREFIX}salvar`,
+        `${process.env.PREFIX}atps`,
     ],
     grupo: [
         `${process.env.PREFIX}add`,
@@ -38,6 +40,9 @@ const comandos: Comandos = {
         `${process.env.PREFIX}afake`,
         `${process.env.PREFIX}mutar`,
         `${process.env.PREFIX}alink`,
+        `${process.env.PREFIX}blista`,
+        `${process.env.PREFIX}dlista`,
+        `${process.env.PREFIX}listanegra`,
     ],
     info: [`${process.env.PREFIX}menu`],
     download: [

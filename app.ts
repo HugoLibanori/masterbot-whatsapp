@@ -11,6 +11,7 @@ import BemVindo from './src/bemVindo';
 import AntiFake from './src/antifake';
 import AntiLink from './src/alink';
 import { verificarEnv } from './src/env';
+import { verificarUsuarioListaNegra } from './src/listaNegra';
 
 const client: Client = new Client({
     authStrategy: new LocalAuth({
@@ -67,11 +68,24 @@ client.on('group_join', async (add: GroupNotification) => {
     const g_info = await db.obterGrupo(add.chatId);
     if (add.type === 'add' || add.type === 'invite') {
         if (!(await new AntiFake().antiFake(client, add, g_info))) return;
+        if (!(await verificarUsuarioListaNegra(client, add))) return;
         new BemVindo().bemVindo(client, add, g_info);
-        if (await participanteExiste(add.chatId, add.recipientIds[0])) return;
-        await adicionarParticipante(add.chatId, add.recipientIds[0]);
+        if (
+            await participanteExiste(
+                add.chatId,
+                add.recipientIds.reduce(id => id),
+            )
+        )
+            return;
+        await adicionarParticipante(
+            add.chatId,
+            add.recipientIds.reduce(id => id),
+        );
     } else {
-        await removerParticipante(add.chatId, add.recipientIds[0]);
+        await removerParticipante(
+            add.chatId,
+            add.recipientIds.reduce(id => id),
+        );
     }
 });
 
