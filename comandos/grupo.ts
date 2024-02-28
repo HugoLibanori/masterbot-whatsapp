@@ -22,9 +22,10 @@ class Grupo {
                       .map((admin: { id: { _serialized: string } }) => admin.id._serialized)
                 : [];
             const isBotGroupAdmin = isGroup ? dadosGrupoBot.includes(botNumber) : false;
+            const PREFIX = process.env.PREFIX || '!';
             if (!isGroup) return message.reply(msgs_texto.permissao.grupo);
 
-            if (command === `${process.env.PREFIX}regras`) {
+            if (command === `${PREFIX}regras`) {
                 const grupoDescrition = dadosGrupo.description || msgs_texto.grupo.regras.sem_descrição;
                 const fotoGrupo = await client.getProfilePicUrl(from);
                 const foto = await MessageMedia.fromUrl(fotoGrupo);
@@ -33,7 +34,7 @@ class Grupo {
                 } else {
                     await client.sendMessage(from, grupoDescrition);
                 }
-            } else if (command === `${process.env.PREFIX}fotogrupo`) {
+            } else if (command === `${PREFIX}fotogrupo`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
 
@@ -59,7 +60,7 @@ class Grupo {
                 } else {
                     return message.reply(erroComandoMsg(command));
                 }
-            } else if (command === `${process.env.PREFIX}status`) {
+            } else if (command === `${PREFIX}status`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 const grupoInfo = await db.obterGrupo(from);
                 let resposta = msgs_texto.grupo.status.resposta_titulo;
@@ -101,7 +102,7 @@ class Grupo {
                 //Lista Negra
                 resposta += criarTexto(msgs_texto.grupo.status.resposta_variavel.listanegra, grupoInfo.lista_negra.length.toString());
                 await client.sendMessage(from, resposta);
-            } else if (command === `${process.env.PREFIX}bv`) {
+            } else if (command === `${PREFIX}bv`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 const grupoInfo = await db.obterGrupo(from);
                 const estadoNovo = !grupoInfo.bemvindo.status;
@@ -113,7 +114,7 @@ class Grupo {
                     await db.alterarBemVindo(from, false);
                     message.reply(msgs_texto.grupo.bemvindo.desligado);
                 }
-            } else if (command === `${process.env.PREFIX}alink`) {
+            } else if (command === `${PREFIX}alink`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
                 const grupoInfo = await db.obterGrupo(from);
@@ -133,7 +134,7 @@ class Grupo {
                     await db.alterarAntiLink(from, false);
                     message.reply(msgs_texto.grupo.antilink.desligado);
                 }
-            } else if (command === `${process.env.PREFIX}autosticker`) {
+            } else if (command === `${PREFIX}autosticker`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 const grupoInfo = await db.obterGrupo(from);
                 const estadoNovo = !grupoInfo.autosticker;
@@ -144,7 +145,7 @@ class Grupo {
                     await db.alterarAutoSticker(from, false);
                     await message.reply(msgs_texto.grupo.autosticker.desligado);
                 }
-            } else if (command === `${process.env.PREFIX}rlink`) {
+            } else if (command === `${PREFIX}rlink`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
                 const groupChat = await message.getChat();
@@ -156,7 +157,7 @@ class Grupo {
                     .catch(() => {
                         message.reply(msgs_texto.grupo.rlink.erro);
                     });
-            } else if (command === `${process.env.PREFIX}afake`) {
+            } else if (command === `${PREFIX}afake`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
                 const grupoInfo = await db.obterGrupo(from);
@@ -169,7 +170,7 @@ class Grupo {
                     await db.alterarAntiFake(from, false);
                     message.reply(msgs_texto.grupo.antifake.desligado);
                 }
-            } else if (command === `${process.env.PREFIX}mutar`) {
+            } else if (command === `${PREFIX}mutar`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 const grupoInfo = await db.obterGrupo(from);
                 const estadoNovo = !grupoInfo.mutar;
@@ -180,7 +181,7 @@ class Grupo {
                     await db.alterarMutar(from, false);
                     await message.reply(msgs_texto.grupo.mutar.desligado);
                 }
-            } else if (command === `${process.env.PREFIX}link`) {
+            } else if (command === `${PREFIX}link`) {
                 if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 const groupChat = await message.getChat();
@@ -189,7 +190,7 @@ class Grupo {
                 await client.sendMessage(from, criarTexto(msgs_texto.grupo.link.resposta, groupChat.name, link), {
                     linkPreview: true,
                 });
-            } else if (command === `${process.env.PREFIX}mm`) {
+            } else if (command === `${PREFIX}mm`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
 
                 let text = '';
@@ -209,7 +210,7 @@ class Grupo {
                 text += `╚═〘 ${nomeBot.trim()}®〙`;
                 if (mentions.length == 0) return message.reply(msgs_texto.grupo.mm.sem_membros);
                 await client.sendMessage(from, text, { mentions });
-            } else if (command === `${process.env.PREFIX}mt`) {
+            } else if (command === `${PREFIX}mt`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
 
                 let text = '';
@@ -226,7 +227,7 @@ class Grupo {
                 const nomeBot = process.env.NOME_BOT || 'NOME_BOT';
                 text += `╚═〘 ${nomeBot.trim()}®〙`;
                 await client.sendMessage(from, text, { mentions });
-            } else if (command === `${process.env.PREFIX}add`) {
+            } else if (command === `${PREFIX}add`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
                 if (args.length === 1) return message.reply(erroComandoMsg(command));
@@ -245,7 +246,7 @@ class Grupo {
                         await message.reply(criarTexto(msgs_texto.grupo.add.saiu_recente, numeroCompleto.replace('@c.us', '')));
                     }
                 }
-            } else if (command === `${process.env.PREFIX}ban`) {
+            } else if (command === `${PREFIX}ban`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
                 let mentions: any[] = [];
@@ -279,7 +280,7 @@ class Grupo {
                         if (mentions.length === 1) message.reply(msgs_texto.grupo.banir.banir_erro);
                     }
                 }
-            } else if (command === `${process.env.PREFIX}promover`) {
+            } else if (command === `${PREFIX}promover`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
                 let mentions = [],
@@ -301,7 +302,7 @@ class Grupo {
                 }
                 if (!mentions.length) return message.reply(msgs_texto.grupo.promover.erro_bot);
                 await client.sendMessage(from, criarTexto(msgs_texto.grupo.promover.resposta, respostaUsuarios), { mentions });
-            } else if (command === `${process.env.PREFIX}rebaixar`) {
+            } else if (command === `${PREFIX}rebaixar`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
                 let mentions = [],
@@ -323,7 +324,7 @@ class Grupo {
                 }
                 if (!mentions.length) return message.reply(msgs_texto.grupo.rebaixar.erro_bot);
                 await client.sendMessage(from, criarTexto(msgs_texto.grupo.rebaixar.resposta, respostaUsuarios), { mentions });
-            } else if (command === `${process.env.PREFIX}apg`) {
+            } else if (command === `${PREFIX}apg`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
                 if (!quotedMsg) return message.reply(erroComandoMsg(command));
@@ -334,12 +335,12 @@ class Grupo {
                     return;
                 }
                 message.reply(erroComandoMsg(command));
-            } else if (command === `${process.env.PREFIX}f`) {
+            } else if (command === `${PREFIX}f`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
                 const estadoNovo = !dadosGrupo.groupMetadata.announce;
                 await dadosGrupo.setMessagesAdminsOnly(estadoNovo);
-            } else if (command === `${process.env.PREFIX}blista`) {
+            } else if (command === `${PREFIX}blista`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
                 if (args.length == 1) return message.reply(erroComandoMsg(command));
@@ -350,7 +351,7 @@ class Grupo {
                 if (blista_grupo_lista.includes(blista_id_usuario)) return message.reply(msgs_texto.grupo.blista.ja_listado);
                 await db.adicionarListaNegra(from, blista_id_usuario);
                 message.reply(msgs_texto.grupo.blista.sucesso);
-            } else if (command === `${process.env.PREFIX}dlista`) {
+            } else if (command === `${PREFIX}dlista`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
                 if (args.length == 1) return message.reply(erroComandoMsg(command));
@@ -361,7 +362,7 @@ class Grupo {
                 if (!dlista_grupo_lista.includes(dlista_id_usuario)) return message.reply(msgs_texto.grupo.dlista.nao_listado);
                 await db.removerListaNegra(from, dlista_id_usuario);
                 message.reply(msgs_texto.grupo.dlista.sucesso);
-            } else if (command === `${process.env.PREFIX}listanegra`) {
+            } else if (command === `${PREFIX}listanegra`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
                 const lista_negra_grupo = await db.obterListaNegra(from);
@@ -377,6 +378,18 @@ class Grupo {
                 const mentions = arrayMentionsCast as Contact[];
                 resposta_listanegra += `╚═〘 ${nomeBot.trim()}®〙`;
                 await client.sendMessage(from, resposta_listanegra, { mentions });
+            } else if (command === `${PREFIX}aporno`) {
+                if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
+                if (!isBotGroupAdmin) return message.reply(msgs_texto.permissao.bot_admin);
+                const grupoInfo = await db.obterGrupo(from);
+                const estadoNovo = !grupoInfo.antiporno;
+                if (estadoNovo) {
+                    await db.alterarAntiPorno(from, true);
+                    await message.reply(msgs_texto.grupo.antiporno.ligado);
+                } else {
+                    await db.alterarAntiPorno(from, false);
+                    await message.reply(msgs_texto.grupo.antiporno.desligado);
+                }
             }
         } catch (err: any) {
             console.log(err);
