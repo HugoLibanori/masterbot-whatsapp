@@ -12,8 +12,9 @@ export default class Utilidade {
             const command: string = quotedMsg ? caption : body;
             const args: string[] = command.split(' ');
             const comando = args[0].toLowerCase().trim();
+            const PREFIX = process.env.PREFIX || '!';
 
-            if (comando === `${process.env.PREFIX}voz`) {
+            if (comando === `${PREFIX}voz`) {
                 let usuarioTexto = '';
                 if (args.length === 1) {
                     return message.reply(erroComandoMsg(command));
@@ -35,7 +36,7 @@ export default class Utilidade {
                 } catch (err: any) {
                     message.reply(err.message);
                 }
-            } else if (comando === `${process.env.PREFIX}pesquisa`) {
+            } else if (comando === `${PREFIX}pesquisa`) {
                 if (args.length === 1) return message.reply(erroComandoMsg(command));
                 try {
                     const usuarioTexto = body.slice(10).trim();
@@ -54,7 +55,7 @@ export default class Utilidade {
                 } catch (err: any) {
                     await message.reply(err.message);
                 }
-            } else if (comando === `${process.env.PREFIX}noticias`) {
+            } else if (comando === `${PREFIX}noticias`) {
                 try {
                     const listaNoticias = await api.obterNoticias();
                     let respostaNoticias = msgs_texto.utilidades.noticia.resposta_titulo;
