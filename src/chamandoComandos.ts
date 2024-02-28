@@ -34,7 +34,7 @@ export class ChamandoComandos {
             const msgGuia: boolean = args.length === 2 ? args[1].toLowerCase() === 'guia' : false;
             const ownerNumber = process.env.NUMERO_DONO?.trim();
             const isOwner = isGroup ? ownerNumber === author.replace(/@c.us/g, '') : ownerNumber === from.replace(/@c.us/g, '');
-
+            const PREFIX = process.env.PREFIX || '!';
             // COMANDOS
             let comandoExiste =
                 lista_comandos.figurinhas.includes(comando) ||
@@ -49,7 +49,7 @@ export class ChamandoComandos {
                 (comando.match(/comandos|comando|ajuda|menu|help|oi|oii|oiii/gim) && !isGroup && !comandoExiste && !message.fromMe) ||
                 false;
 
-            if (abrirMenu) (comando = `${process.env.PREFIX}menu`), (comandoExiste = true);
+            if (abrirMenu) (comando = `${PREFIX}menu`), (comandoExiste = true);
 
             // VERIFICANDO COMANDOS
             if (comandoExiste) {
