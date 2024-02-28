@@ -1,6 +1,5 @@
 import { Client } from 'whatsapp-web.js';
-import { consoleComando, isAdminGroup, consoleErro, criarTexto, erroComandoMsg } from '../src/util';
-import db from '../src/dataBase';
+import { consoleErro, criarTexto, erroComandoMsg } from '../src/util';
 import msgs_texto from '../src/msgs';
 
 export default class Diversao {
@@ -14,8 +13,9 @@ export default class Diversao {
             const args: string[] = command.split(' ');
             const comando = args[0].toLowerCase().trim();
             const ownerNumber = process.env.NUMERO_DONO?.trim();
+            const PREFIX = process.env.PREFIX || '!';
 
-            if (comando === `${process.env.PREFIX}viadometro`) {
+            if (comando === `${PREFIX}viadometro`) {
                 if (!isGroup) return await message.reply(msgs_texto.permissao.grupo);
                 if (!hasQuotedMsg && mentionedJidList.length === 0) return await message.reply(erroComandoMsg(command));
                 if (mentionedJidList.length > 1) return await message.reply(msgs_texto.diversao.viadometro.apenas_um);
@@ -27,7 +27,7 @@ export default class Diversao {
                 if (ownerNumber === alvo) indexAleatorio = 0;
                 const respostaTexto = criarTexto(msgs_texto.diversao.viadometro.resposta, respostas[indexAleatorio]);
                 await message.reply(respostaTexto);
-            } else if (comando === `${process.env.PREFIX}gadometro`) {
+            } else if (comando === `${PREFIX}gadometro`) {
                 if (!isGroup) return await message.reply(msgs_texto.permissao.grupo);
                 if (!hasQuotedMsg && mentionedJidList.length === 0) return await message.reply(erroComandoMsg(command));
                 if (mentionedJidList.length > 1) return await message.reply(msgs_texto.diversao.gadometro.apenas_um);
@@ -39,7 +39,7 @@ export default class Diversao {
                 if (ownerNumber === alvo) indexAleatorio = 0;
                 const respostaTexto = criarTexto(msgs_texto.diversao.gadometro.resposta, respostas[indexAleatorio]);
                 await message.reply(respostaTexto);
-            } else if (comando === `${process.env.PREFIX}bafometro`) {
+            } else if (comando === `${PREFIX}bafometro`) {
                 if (!isGroup) return await message.reply(msgs_texto.permissao.grupo);
                 if (!hasQuotedMsg && mentionedJidList.length === 0) return await message.reply(erroComandoMsg(command));
                 if (mentionedJidList.length > 1) return await message.reply(msgs_texto.diversao.bafometro.apenas_um);
