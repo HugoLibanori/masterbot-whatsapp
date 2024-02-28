@@ -19,9 +19,10 @@ class Info {
             const isGroupAdmins: boolean = dadosAdmin.map((isAdmin: { id: { isAdmin: boolean } }) => {
                 return isAdmin.id.isAdmin;
             });
-            if (abrirMenu) command = `${process.env.PREFIX}menu`;
+            const PREFIX = process.env.PREFIX || '!';
+            if (abrirMenu) command = `${PREFIX}menu`;
 
-            if (command === `${process.env.PREFIX}menu`) {
+            if (command === `${PREFIX}menu`) {
                 const dadosUsuario = isGroup ? await db.obterUsuario(author) : await db.obterUsuario(from);
                 const tipoUsuario = dadosUsuario.tipo;
                 const maxComandosDia = dadosUsuario.max_comandos_dia || 'Sem limite';
