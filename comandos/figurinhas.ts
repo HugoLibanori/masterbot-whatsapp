@@ -18,6 +18,7 @@ class Figurinhas {
             const isGroupAdmins: boolean = isGroup ? isAdminGroup(author, dadosAdmin) : false;
             const args: string[] = body.split(' ');
             command = removerNegritoComando(command).toLowerCase();
+            const PREFIX = process.env.PREFIX || '!';
 
             interface DadosStickers {
                 sendMediaAsSticker: boolean;
@@ -30,7 +31,7 @@ class Figurinhas {
                 stickerAuthor: `${process.env.NOME_AUTOR_FIGURINHAS}`,
                 stickerName: `${process.env.NOME_BOT}`,
             };
-            if (command === `${process.env.PREFIX}s`) {
+            if (command === `${PREFIX}s`) {
                 try {
                     if (hasMedia || hasQuotedMsg) {
                         interface DadosMsgImg {
@@ -72,7 +73,7 @@ class Figurinhas {
                 } catch (err: any) {
                     console.log(err);
                 }
-            } else if (command === `${process.env.PREFIX}sgif`) {
+            } else if (command === `${PREFIX}sgif`) {
                 try {
                     if (hasMedia || quotedMsg) {
                         interface DadosMsgGif {
@@ -93,15 +94,16 @@ class Figurinhas {
                             dadosStickers.stickerName += ' Sticker animado';
                             if (!mediaData) return await message.reply(msgs_texto.figurinhas.sticker.download);
 
-                            // if (args[1] === '1') {
-                            //     const videoCircle = await Stickers.videoCircular(mediaData);
-                            //     const videoCircular = new MessageMedia(mediaData.mimetype, videoCircle);
-                            //     await client.sendMessage(from, videoCircular, dadosStickers).catch((err: any) => {
-                            //         console.log(err);
-                            //         message.reply(msgs_texto.figurinhas.sticker.erro_s);
-                            //     });
-                            //     return;
-                            // }
+                            if (args[1] === '1') {
+                                const videoCircle = await Stickers.videoCircular(mediaData);
+                                const videoCircular = MessageMedia.fromFilePath(videoCircle);
+                                await client.sendMessage(from, videoCircular, dadosStickers).catch((err: any) => {
+                                    console.log(err);
+                                    message.reply(msgs_texto.figurinhas.sticker.erro_s);
+                                });
+                                fs.unlinkSync(videoCircle);
+                                return;
+                            }
 
                             await client.sendMessage(from, mediaData, dadosStickers).catch((err: any) => {
                                 console.log(err);
@@ -116,7 +118,7 @@ class Figurinhas {
                 } catch (err: any) {
                     console.log(err);
                 }
-            } else if (command === `${process.env.PREFIX}tps`) {
+            } else if (command === `${PREFIX}tps`) {
                 if (args.length === 1 || type != 'chat') return await message.reply(erroComandoMsg(command));
                 const usuarioTexto: string = body.slice(5).trim();
                 if (usuarioTexto.length > 100) return message.reply(msgs_texto.figurinhas.tps.texto_longo);
@@ -131,7 +133,7 @@ class Figurinhas {
                 } catch (err: any) {
                     await message.reply(err.message);
                 }
-            } else if (command === `${process.env.PREFIX}simg`) {
+            } else if (command === `${PREFIX}simg`) {
                 if (quotedMsg && quotedMsg.type === 'sticker') {
                     const quotedMessage: any = await message.getQuotedMessage();
                     const media: MessageMedia = await quotedMessage.downloadMedia();
@@ -139,7 +141,7 @@ class Figurinhas {
                 } else {
                     await message.reply(erroComandoMsg(command));
                 }
-            } else if (command === `${process.env.PREFIX}ssf`) {
+            } else if (command === `${PREFIX}ssf`) {
                 if (hasMedia || quotedMsg) {
                     interface DadosMsgSsf {
                         tipo: string;
@@ -172,7 +174,7 @@ class Figurinhas {
                 } else {
                     await message.reply(erroComandoMsg(command));
                 }
-            } else if (command === `${process.env.PREFIX}figurinhas`) {
+            } else if (command === `${PREFIX}figurinhas`) {
                 const imageFolder = path.resolve('figurinhas');
 
                 try {
@@ -194,7 +196,7 @@ class Figurinhas {
                 } catch (error) {
                     console.error('Erro ao ler a pasta de imagens:', error);
                 }
-            } else if (command === `${process.env.PREFIX}salvar`) {
+            } else if (command === `${PREFIX}salvar`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 if (!isGroup) return message.reply(msgs_texto.permissao.grupo);
                 if (hasQuotedMsg) {
@@ -207,7 +209,7 @@ class Figurinhas {
                 } else {
                     await message.reply(erroComandoMsg(command));
                 }
-            } else if (command === `${process.env.PREFIX}atps`) {
+            } else if (command === `${PREFIX}atps`) {
                 if (args.length === 1 || type != 'chat') return await message.reply(erroComandoMsg(command));
                 const usuarioTexto: string = body.slice(5).trim();
                 if (usuarioTexto.length > 100) return message.reply(msgs_texto.figurinhas.atps.texto_longo);
