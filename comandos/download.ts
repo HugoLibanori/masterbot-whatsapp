@@ -12,8 +12,9 @@ class Download {
             let command: string = body.split(' ')[0];
             const args: string[] = body.split(' ');
             command = removerNegritoComando(command).toLowerCase();
+            const PREFIX = process.env.PREFIX || '!';
 
-            if (command === `${process.env.PREFIX}play`) {
+            if (command === `${PREFIX}play`) {
                 if (args.length === 1) return await message.reply(erroComandoMsg(command));
                 try {
                     const usuarioTexto: string = body.slice(6).trim();
@@ -37,7 +38,7 @@ class Download {
                     console.log(err);
                     return await message.reply(err.message);
                 }
-            } else if (command === `${process.env.PREFIX}yt`) {
+            } else if (command === `${PREFIX}yt`) {
                 if (args.length === 1) return await message.reply(erroComandoMsg(command));
                 try {
                     const usuarioTexto = body.slice(4).trim();
@@ -55,7 +56,7 @@ class Download {
                     console.log(err);
                     return await message.reply(err.message);
                 }
-            } else if (command === `${process.env.PREFIX}fb`) {
+            } else if (command === `${PREFIX}fb`) {
                 if (args.length === 1) return await message.reply(erroComandoMsg(command));
                 try {
                     const usuarioURL: string = body.slice(4).trim();
@@ -77,7 +78,7 @@ class Download {
                 } catch (err: any) {
                     message.reply(err.message);
                 }
-            } else if (command === `${process.env.PREFIX}ig`) {
+            } else if (command === `${PREFIX}ig`) {
                 if (args.length === 1) return await message.reply(erroComandoMsg(command));
                 await message.reply(msgs_texto.downloads.ig.espera);
                 try {
@@ -107,7 +108,7 @@ class Download {
                     console.log(err);
                     await message.reply(err.message);
                 }
-            } else if (command === `${process.env.PREFIX}img`) {
+            } else if (command === `${PREFIX}img`) {
                 if (quotedMsg || type != 'chat') return await message.reply(erroComandoMsg(command));
                 const usuarioQuantidadeFotos: number = Number(args[1]);
                 let qtdFotos = 1;
