@@ -1,3 +1,4 @@
+const PREFIX = process.env.PREFIX || '!';
 export const msgs_texto = {
     inicio: {
         arquivos_criados: '✓ Seus arquivos necessários foram criados, inicie o bot novamente.',
@@ -10,9 +11,9 @@ export const msgs_texto = {
     geral: {
         espera: '[AGUARDE] Em andamento ⏳ espere por favor.',
         min_membros: 'O grupo precisa de no mínimo {p1} para o bot ser convidado.`',
-        entrada_grupo: `Saudações *{p1}* , se tiverem alguma dúvida só digitar *${process.env.PREFIX}menu*`,
+        entrada_grupo: `Saudações *{p1}* , se tiverem alguma dúvida só digitar *${PREFIX}menu*`,
         sem_ligacoes: '[❗] Não posso receber ligações.',
-        comando_invalido: `[❗] Parece que você não digitou corretamente o comando ou não sabe como usá-los, digite o comando *${process.env.PREFIX}menu* para mais informações.`,
+        comando_invalido: `[❗] Parece que você não digitou corretamente o comando ou não sabe como usá-los, digite o comando *${PREFIX}menu* para mais informações.`,
         cmd_erro:
             '[❗] Ops, parece que você usou o comando *{p1}* incorretamente. Quer aprender a usar?\n\n Digite :\n  - Ex: *{p2} guia* para ver o guia.',
         resposta_ban: '🤖✅ @{p1} banido com sucesso\n\n' + 'Motivo : {p2}\n' + 'Quem baniu : {p3}',
@@ -63,12 +64,12 @@ export const msgs_texto = {
             download: '[❗] Erro ao realizar o download tente novamente',
         },
         tps: {
-            erro_conversao: `[❗] Houve algum erro na conversao do *${process.env.PREFIX}tps*, verifique se não há emojis no seu texto.`,
+            erro_conversao: `[❗] Houve algum erro na conversao do *${PREFIX}tps*, verifique se não há emojis no seu texto.`,
             texto_longo: '[❗] Texto é muito longo, no máximo 100 caracteres. ',
             espera: '⏳ Em andamento , estou transformando seu texto em sticker.',
         },
         atps: {
-            erro_conversao: `[❗] Houve algum erro na conversao do *${process.env.PREFIX}atps*, verifique se não há emojis no seu texto.`,
+            erro_conversao: `[❗] Houve algum erro na conversao do *${PREFIX}atps*, verifique se não há emojis no seu texto.`,
             texto_longo: '[❗] Texto é muito longo, no máximo 40 caracteres. ',
             espera: '⏳ Em andamento , estou transformando seu texto em sticker animado.',
         },
@@ -249,11 +250,7 @@ export const msgs_texto = {
         bemvindo: {
             ligado: '✅ O recurso de boas vindas foi ativado com sucesso',
             desligado: '✅ O recurso de boas vindas foi desativado com sucesso',
-            mensagem:
-                `👋 Olá, @{p1}\n` +
-                `Seja bem vindo(a) ao grupo *{p2}*\n\n` +
-                `{p3}` +
-                `Digite *${process.env.PREFIX}menu* para ver os comandos.`,
+            mensagem: `👋 Olá, @{p1}\n` + `Seja bem vindo(a) ao grupo *{p2}*\n\n` + `{p3}` + `Digite *${PREFIX}menu* para ver os comandos.`,
         },
         status: {
             resposta_titulo: '[ 🤖 STATUS DO GRUPO 🤖 ]\n\n',
@@ -704,23 +701,23 @@ export const msgs_texto = {
             bc_sucesso: '🤖✅ Anúncio feito com sucesso.',
         },
         usuarios: {
-            nao_encontrado: `[❗] Não existem usuários com esse tipo ou você digitou um tipo inválido, confira os tipos disponíveis em *${process.env.PREFIX}tipos*`,
+            nao_encontrado: `[❗] Não existem usuários com esse tipo ou você digitou um tipo inválido, confira os tipos disponíveis em *${PREFIX}tipos*`,
             resposta_titulo: '🤖 USUÁRIOS - {p1} ({p2})\n\n' + '{p3}',
             resposta_item: '-> {p1}  @{p2} - {p3} cmds\n',
         },
         limpartipo: {
-            erro: `[❗] O tipo de usuário que você inseriu é inválido, verifique os tipos disponíveis em *${process.env.PREFIX}tipos*`,
+            erro: `[❗] O tipo de usuário que você inseriu é inválido, verifique os tipos disponíveis em *${PREFIX}tipos*`,
             sucesso: '✅Todos os usuários do tipo *{p1}* foram convertidos para *BRONZE*',
         },
         mudarlimite: {
             invalido: '[❗] O número para definir o limite de comandos é inválido',
-            tipo_invalido: `[❗] O tipo de usuário que você inseriu é inválido, verifique os tipos disponíveis em *${process.env.PREFIX}tipos*`,
+            tipo_invalido: `[❗] O tipo de usuário que você inseriu é inválido, verifique os tipos disponíveis em *${PREFIX}tipos*`,
             erro_limite_diario: '[❗] Este comando só pode ser usado com o *!limitediario* ativado.',
             sucesso: '✅ O limite diário dos usuários do tipo *{p1}* foi definido para *{p2}* comandos/dia ',
         },
         alterartipo: {
             tipo_dono: '[❗] Não é possivel alterar cargo do dono',
-            tipo_invalido: `[❗] O tipo de usuário que você inseriu é inválido, verifique os tipos disponíveis em *${process.env.PREFIX}tipos*`,
+            tipo_invalido: `[❗] O tipo de usuário que você inseriu é inválido, verifique os tipos disponíveis em *${PREFIX}tipos*`,
             nao_registrado: '[❗] Este usuário ainda não está registrado',
             sucesso: '✅ O tipo desse usuário foi definido para {p1}',
         },
