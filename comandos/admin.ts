@@ -28,10 +28,11 @@ export default class Admin {
             const botNumber = client.info.wid._serialized;
             const blockNumber = await client.getBlockedContacts();
             if (!isOwner) return message.reply(msgs_texto.permissao.apenas_dono_bot);
+            const PREFIX = process.env.PREFIX || '!';
 
-            if (comando === `${process.env.PREFIX}admin`) {
+            if (comando === `${PREFIX}admin`) {
                 await message.reply(menu.menuAdmin());
-            } else if (comando === `${process.env.PREFIX}pvliberado`) {
+            } else if (comando === `${PREFIX}pvliberado`) {
                 const novoEstado = !botInfo.botInfo().pvliberado;
                 if (novoEstado) {
                     botInfo.botAlterarPvLiberado(true);
@@ -40,7 +41,7 @@ export default class Admin {
                     botInfo.botAlterarPvLiberado(false);
                     await message.reply(msgs_texto.admin.pvliberado.desativado);
                 }
-            } else if (comando === `${process.env.PREFIX}infocompleta`) {
+            } else if (comando === `${PREFIX}infocompleta`) {
                 const fotoBot = await client.getProfilePicUrl(botNumber);
                 const filePath = path.resolve('database/json/bot.json');
                 const infoBot = JSON.parse(fs.readFileSync(filePath, { encoding: 'utf-8' }));
@@ -62,7 +63,7 @@ export default class Admin {
                 } else {
                     await client.sendMessage(from, resposta);
                 }
-            } else if (comando === `${process.env.PREFIX}autostickerpv`) {
+            } else if (comando === `${PREFIX}autostickerpv`) {
                 const novoEstado = !botInfo.botInfo().autosticker;
                 if (novoEstado) {
                     botInfo.botAlterarAutoSticker(true);
@@ -71,7 +72,7 @@ export default class Admin {
                     botInfo.botAlterarAutoSticker(false);
                     await message.reply(msgs_texto.admin.autostickerpv.desativado);
                 }
-            } else if (comando === `${process.env.PREFIX}fotobot`) {
+            } else if (comando === `${PREFIX}fotobot`) {
                 if (hasMedia || quotedMsg) {
                     const dadosMensagem = {
                         tipo: hasMedia ? type : quotedMsg.type,
@@ -91,7 +92,7 @@ export default class Admin {
                 } else {
                     return await message.reply(erroComandoMsg(command));
                 }
-            } else if (comando === `${process.env.PREFIX}bloquear`) {
+            } else if (comando === `${PREFIX}bloquear`) {
                 let usuariosBloqueados = [];
                 if (quotedMsg) {
                     usuariosBloqueados.push(quotedMsg.quotedParticipant);
@@ -133,7 +134,7 @@ export default class Admin {
                         await message.reply(criarTexto(msgs_texto.admin.bloquear.erro, usuario.replace('@c.us', '')));
                     }
                 }
-            } else if (comando === `${process.env.PREFIX}desbloquear`) {
+            } else if (comando === `${PREFIX}desbloquear`) {
                 let usuariosBloqueados = [];
                 if (quotedMsg) {
                     usuariosBloqueados.push(quotedMsg.quotedParticipant);
