@@ -21,7 +21,8 @@ class Download {
                     const videoInfo = await api.obterInfoVideoYT(usuarioTexto);
                     if (videoInfo === null) return await message.reply(msgs_texto.downloads.play.nao_encontrado);
                     if (videoInfo.duration > 900000) return await message.reply(msgs_texto.downloads.play.limite);
-                    const mensagemEspera = criarTexto(msgs_texto.downloads.play.espera, videoInfo.title, videoInfo.durationFormatted);
+                    const title = videoInfo.title ? videoInfo.title : '';
+                    const mensagemEspera = criarTexto(msgs_texto.downloads.play.espera, title, videoInfo.durationFormatted);
                     await message.reply(mensagemEspera);
                     const saidaAudio = await api.obterYtMp3(videoInfo);
                     const audio = MessageMedia.fromFilePath(saidaAudio);
@@ -45,7 +46,8 @@ class Download {
                     const videoInfo = await api.obterInfoVideoYT(usuarioTexto);
                     if (videoInfo == null) return await message.reply(msgs_texto.downloads.yt.nao_encontrado);
                     if (videoInfo.duration > 900000) return await message.reply(msgs_texto.downloads.yt.limite);
-                    const mensagemEspera = criarTexto(msgs_texto.downloads.yt.espera, videoInfo.title, videoInfo.durationFormatted);
+                    const title = videoInfo.title ? videoInfo.title : '';
+                    const mensagemEspera = criarTexto(msgs_texto.downloads.yt.espera, title, videoInfo.durationFormatted);
                     await message.reply(mensagemEspera);
                     const saidaVideoInfo = await api.obterYTMp4URL(videoInfo);
                     const media = await MessageMedia.fromUrl(saidaVideoInfo.download, { unsafeMime: true });

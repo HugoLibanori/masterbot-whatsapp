@@ -1,6 +1,6 @@
 import axios from 'axios';
 import msgs_texto from '../src/msgs';
-import Youtube from 'youtube-sr';
+import Youtube, { Video } from 'youtube-sr';
 import ytdl from 'ytdl-core';
 import path from 'path';
 import { obterNomeAleatorio, consoleErro } from '../src/util';
@@ -16,7 +16,7 @@ const asyncExec = promisify(exec);
 import googleIt from 'google-it';
 
 export = {
-    obterInfoVideoYT: async (query: string): Promise<any> => {
+    obterInfoVideoYT: async (query: string): Promise<Video> => {
         try {
             const res = await Youtube.searchOne(query);
             const video = res;
@@ -60,7 +60,8 @@ export = {
         }
     },
 
-    obterYtMp3: async (videoInfo: any): Promise<any> => {
+    obterYtMp3: async (videoInfo: Video): Promise<any> => {
+        if (!videoInfo.id) return;
         const res = await ytdl.getInfo(videoInfo.id);
         const audioFormats = ytdl.filterFormats(res.formats, 'audioonly');
         const format = ytdl.chooseFormat(audioFormats, { filter: format => format.container === 'mp4' });

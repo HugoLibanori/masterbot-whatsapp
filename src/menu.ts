@@ -55,6 +55,10 @@ const menu: {
 |- *${PREFIX}simg* - Transforme um STICKER em foto.
 |- *${PREFIX}tps* - Transforme um TEXTO em sticker.
 |- *${PREFIX}ssf* - Transforme uma IMAGEM em sticker sem fundo.
+|- *${PREFIX}figurinhas* - Envia varias figurinhas para o grupo. obs: funciona só em grupos.
+|- *${PREFIX}salvar* - Salva uma figurinha para ser enviada pelo comando *${PREFIX}figurinhas.
+
+
 |
 ╰╼❥ ${nomeBot.trim()}® by *${nomeAdm.trim()}*`;
     },
