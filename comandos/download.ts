@@ -68,7 +68,7 @@ class Download {
                     await new Promise(resolve => setTimeout(resolve, 2000));
                     const video: MessageMedia = MessageMedia.fromFilePath(caminhoVideo);
                     await client
-                        .sendMessage(from, video, { caption: 'Aqui seu video/image.' })
+                        .sendMessage(from, video, { caption: 'Aqui seu video.' })
                         .then(() => {
                             fs.unlinkSync(caminhoVideo);
                         })
@@ -92,7 +92,7 @@ class Download {
                     const media: MessageMedia = MessageMedia.fromFilePath(caminhoVideo);
                     if (resultadosMidia) {
                         await client
-                            .sendMessage(from, media, { caption: 'Aqui seu video/image.' })
+                            .sendMessage(from, media, { caption: 'Aqui seu video.' })
                             .then(() => {
                                 fs.unlinkSync(caminhoVideo);
                             })

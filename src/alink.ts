@@ -36,7 +36,6 @@ export default class AntiLink {
                         );
                         const links_gerais = mensagem.match(isUrl) ? mensagem.match(isUrl)!.length : 0;
                         if (links_gerais === 0) return true;
-                        console.log(links_gerais);
                         // FILTROS
                         let links_permitidos_qtd = 0;
 
@@ -57,7 +56,6 @@ export default class AntiLink {
                         if (al_info.antilink.filtros.instagram) {
                             const isInstagram = new RegExp(/(?:^|)(https?:\/\/www\.instagram\.com\/\w+\/[^\s]+)(?=\s|$)/gi);
                             const links_instagram_qtd = mensagem.match(isInstagram) ? mensagem.match(isInstagram)!.length : 0;
-                            console.log(links_instagram_qtd);
                             links_permitidos_qtd += links_instagram_qtd;
                         }
 
