@@ -46,6 +46,12 @@ export class ChecandoMensagens {
             //SE NÃO FOR MENSAGEM DE GRUPO E FOR  BLOQUEADO RETORNE
             if (!isGroup && isBlocked) return false;
 
+            //SE O CONTADOR TIVER ATIVADO E FOR UMA MENSAGEM DE GRUPO, VERIFICA SE O USUARIO EXISTE NO CONTADOR , REGISTRA ELE E ADICIONA A CONTAGEM
+            if (isGroup && (await db.obterGrupo(from)).contador.status) {
+                await db.existeUsuarioContador(from, author);
+                await db.addContagem(from, author, type);
+            }
+
             //SE O USUARIO NÃO FOR REGISTRADO, FAÇA O REGISTRO
             const registrado = await db.verificarRegistro(autor);
             if (!registrado) {

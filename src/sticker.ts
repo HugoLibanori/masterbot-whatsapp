@@ -9,6 +9,8 @@ import msgs_texto from './msgs';
 import sharp from 'sharp';
 const gifyImport = require('gify') as any;
 import GIFEncoder = require('gifencoder');
+import ffmpeg from 'fluent-ffmpeg';
+import { exec } from 'child_process';
 
 class Stickers {
     public static textoParaFoto = async (texto: string): Promise<any> => {
@@ -284,23 +286,46 @@ class Stickers {
     };
 
     public static videoCircular = async (base64: MessageMedia): Promise<string> => {
-        let videoBuffer;
+        return new Promise((resolve, reject) => {
+            // Decodificar o link base64 para dados binários
+            const buffer = Buffer.from(base64.data, 'base64');
 
-        if (base64.mimetype === 'image/gif') {
-            videoBuffer = await gifyImport(Buffer.from(base64.data, 'base64'));
-        } else {
-            videoBuffer = Buffer.from(base64.data, 'base64');
-        }
-        const circularVideoBuffer = await sharp({
-            create: { width: 512, height: 512, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
-        })
-            .composite([{ input: videoBuffer, blend: 'dest-in' }])
-            .webp() // ou o formato desejado (webp, png, etc.)
-            .toBuffer();
+            // Criar um nome de arquivo único
+            const fileName = obterNomeAleatorio('.mp4');
 
-        // Converte o vídeo circular para base64
-        const circularVideoBase64 = circularVideoBuffer.toString('base64');
-        return circularVideoBase64;
+            const outputFolder = path.resolve(`media/videos/`);
+
+            // Caminho do arquivo de vídeo original
+            const originalVideoPath = path.join(outputFolder, fileName);
+
+            // Caminho do arquivo de vídeo circular
+            const circularVideoPath = path.join(outputFolder, `circular_${fileName}`);
+
+            // Salvar o vídeo original
+            fs.writeFile(originalVideoPath, buffer, err => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                const ffmpegCommand = ffmpeg(originalVideoPath)
+                    .outputOptions(`ffmpeg -i ${originalVideoPath} -vf "crop=512:512" ${circularVideoPath}`)
+                    .audioCodec('copy')
+                    .on('end', () => {
+                        fs.unlink(originalVideoPath, unlinkError => {
+                            if (unlinkError) {
+                                reject(unlinkError);
+                                return;
+                            }
+                            resolve(circularVideoPath);
+                        });
+                    })
+                    .on('error', ffmpegError => {
+                        reject(ffmpegError);
+                    })
+                    .save(circularVideoPath);
+            });
+        });
     };
 }
 

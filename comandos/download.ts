@@ -128,7 +128,7 @@ class Download {
                 try {
                     const resultadosImagens = await api.obterImagens(textoPesquisa, qtdFotos);
                     for (const imagem of resultadosImagens) {
-                        const foto = await MessageMedia.fromUrl(imagem);
+                        const foto = await MessageMedia.fromUrl(imagem, { unsafeMime: true });
                         message.reply(foto).catch(async () => {
                             await message.reply(msgs_texto.downloads.img.erro_imagem);
                         });

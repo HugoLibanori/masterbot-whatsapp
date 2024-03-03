@@ -25,11 +25,9 @@ export default class AntiFake {
                     for (const ddi of g_info.antifake.ddi_liberados) {
                         if (event.recipientIds.reduce(id => id).startsWith(ddi)) return true;
                     }
-                    const array: string[] = [];
+                    const mentions: string[] = [];
                     await dadosGrupoCast.removeParticipants([event.recipientIds.reduce(id => id)]);
-                    array.push(event.recipientIds.reduce(id => id));
-                    const arrayCast = array as unknown;
-                    const mentions = arrayCast as Contact[];
+                    mentions.push(event.recipientIds.reduce(id => id));
                     await client.sendMessage(
                         event.chatId,
                         criarTexto(

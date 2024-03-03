@@ -12,8 +12,8 @@ import { version } from '../package.json';
 export default class Admin {
     async admin(client: Client, message: any) {
         try {
-            const { body, from, type, hasMedia, mentionedIds } = message;
-            const { mimetype, author, quotedMsg } = message._data;
+            const { body, from, type, hasMedia, mentionedIds, hasQuotedMsg } = message;
+            const { mimetype, author, quotedMsg, quotedParticipant } = message._data;
             const command: string = body;
             const dadosGrupo = await message.getChat();
             const isGroup = dadosGrupo.isGroup;
@@ -73,7 +73,7 @@ export default class Admin {
                     await message.reply(msgs_texto.admin.autostickerpv.desativado);
                 }
             } else if (comando === `${PREFIX}fotobot`) {
-                if (hasMedia || quotedMsg) {
+                if (hasMedia || hasQuotedMsg) {
                     const dadosMensagem = {
                         tipo: hasMedia ? type : quotedMsg.type,
                         mimetype: hasMedia ? mimetype : quotedMsg.mimetype,
@@ -94,8 +94,8 @@ export default class Admin {
                 }
             } else if (comando === `${PREFIX}bloquear`) {
                 let usuariosBloqueados = [];
-                if (quotedMsg) {
-                    usuariosBloqueados.push(quotedMsg.quotedParticipant);
+                if (hasQuotedMsg) {
+                    usuariosBloqueados.push(quotedParticipant);
                 } else if (mentionedIds.length > 1) {
                     usuariosBloqueados = mentionedIds;
                 } else {
@@ -136,8 +136,8 @@ export default class Admin {
                 }
             } else if (comando === `${PREFIX}desbloquear`) {
                 let usuariosBloqueados = [];
-                if (quotedMsg) {
-                    usuariosBloqueados.push(quotedMsg.quotedParticipant);
+                if (hasQuotedMsg) {
+                    usuariosBloqueados.push(quotedParticipant);
                 } else if (mentionedIds.length > 1) {
                     usuariosBloqueados = mentionedIds;
                 } else {
@@ -165,6 +165,38 @@ export default class Admin {
                         });
                     }
                 }
+            } else if (comando === `${PREFIX}alterartipo`) {
+                if (args.length === 1) return await message.reply(erroComandoMsg(comando));
+                let usuario_tipo: string = '';
+                if (hasQuotedMsg) usuario_tipo = quotedParticipant;
+                else if (mentionedIds.length === 1) usuario_tipo = mentionedIds[0];
+                else if (args.length > 2) usuario_tipo = args.slice(2).join('').replace(/\W+/g, '') + '@c.us';
+                else return await message.reply(erroComandoMsg(comando));
+                const user_tipo = usuario_tipo.replace('@c.us', '');
+                if (ownerNumber === user_tipo) return await message.reply(msgs_texto.admin.alterartipo.tipo_dono);
+                const c_registrado = await db.verificarRegistro(usuario_tipo);
+                if (c_registrado) {
+                    const alterou = await db.alterarTipoUsuario(usuario_tipo, args[1]);
+                    if (!alterou) return await message.reply(msgs_texto.admin.alterartipo.tipo_invalido);
+                    await message.reply(criarTexto(msgs_texto.admin.alterartipo.sucesso, args[1].toUpperCase()));
+                } else {
+                    await message.reply(msgs_texto.admin.alterartipo.nao_registrado);
+                }
+            } else if (comando === `${PREFIX}tipos`) {
+                const tipos = botInfo.botInfo().limite_diario.limite_tipos;
+                let respostaTipos = '';
+                for (const tipo in tipos) {
+                    if (tipo === 'bronze') {
+                        respostaTipos += criarTexto(msgs_texto.admin.tipos.item_tipo, msgs_texto.tipos.bronze, tipos.bronze.toString());
+                    } else if (tipo === 'prata') {
+                        respostaTipos += criarTexto(msgs_texto.admin.tipos.item_tipo, msgs_texto.tipos.prata, tipos.prata.toString());
+                    } else if (tipo === 'ouro') {
+                        respostaTipos += criarTexto(msgs_texto.admin.tipos.item_tipo, msgs_texto.tipos.ouro, tipos.ouro.toString());
+                    } else if (tipo === 'vip') {
+                        respostaTipos += criarTexto(msgs_texto.admin.tipos.item_tipo, msgs_texto.tipos.vip, '∞');
+                    }
+                }
+                await message.reply(criarTexto(msgs_texto.admin.tipos.resposta, respostaTipos));
             }
         } catch (err: any) {
             consoleErro(err, 'ADMINISTRAÇÂO');

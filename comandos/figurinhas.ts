@@ -175,18 +175,21 @@ class Figurinhas {
                     await message.reply(erroComandoMsg(command));
                 }
             } else if (command === `${PREFIX}figurinhas`) {
-                const imageFolder = path.resolve('figurinhas');
+                if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
+                const arquivoFile = path.resolve(`figurinhas/figurinhas.txt`);
 
                 try {
-                    const files = fs.readdirSync(imageFolder);
-                    const imageFiles = files.filter(file => /\.(jpg|jpeg|png|gif|webp)$/i.test(file));
-                    if (imageFiles.length === 0)
-                        return await message.reply('Sem imagens para enviar, adicione dentro da pasta figurinhas do seu projeto.');
-                    await message.reply(`Ok, vou enviar um total de ${imageFiles.length} figurinhas, ⏳ aguarde!`);
+                    const content = fs.readFileSync(arquivoFile, 'utf-8');
+
+                    const files = JSON.parse(content);
+
+                    const quantidadeObjetos = files.length;
+
+                    await message.reply(`✅ ok, vou enviar um total de ${quantidadeObjetos} figurinhas`);
 
                     dadosStickers.stickerName += ' Sticker';
                     for (const file of files) {
-                        const media = MessageMedia.fromFilePath(`${imageFolder}/${file}`);
+                        const media = new MessageMedia(file.mimetype, file.data, file.filename, file.filesize);
                         await client.sendMessage(from, media, dadosStickers);
 
                         // Atraso de 1 segundo antes de enviar a próxima figurinha
@@ -194,7 +197,7 @@ class Figurinhas {
                     }
                     await message.reply('✅ Figurinhas enviadas com sucesso.');
                 } catch (error) {
-                    console.error('Erro ao ler a pasta de imagens:', error);
+                    console.error('Erro ao ler o arquivo de figurinhas:', error);
                 }
             } else if (command === `${PREFIX}salvar`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
@@ -202,10 +205,29 @@ class Figurinhas {
                 if (hasQuotedMsg) {
                     const media_quoted: any = await message.getQuotedMessage();
                     const midiaData: MessageMedia = await media_quoted.downloadMedia();
-                    const nomeArquivo: string = obterNomeAleatorio(`.${quotedMsg.mimetype.split('/')[1]}`);
-                    const pathToFigurinhas = path.resolve(`figurinhas/salvoPeloBot${nomeArquivo}`);
-                    fs.writeFileSync(pathToFigurinhas, midiaData.data, { encoding: 'base64', mode: 0o666, flag: 'w' });
-                    await message.reply('✅ Figurinhas salva com sucesso.');
+
+                    const pathToFigurinhas = path.resolve(`figurinhas/figurinhas.txt`);
+
+                    try {
+                        const content = fs.existsSync(pathToFigurinhas) ? fs.readFileSync(pathToFigurinhas, 'utf-8') : '[]';
+
+                        const existingData = JSON.parse(content);
+
+                        existingData.push({
+                            mimetype: midiaData.mimetype,
+                            data: midiaData.data,
+                            filename: midiaData.filename,
+                            filesize: midiaData.filesize,
+                        });
+
+                        const jsonString = JSON.stringify(existingData, null, 2);
+                        fs.writeFileSync(pathToFigurinhas, jsonString);
+
+                        await message.reply('✅ Figurinhas salvas com sucesso.');
+                    } catch (error) {
+                        console.error('Erro ao salvar figurinhas:', error);
+                        await message.reply('❌ Ocorreu um erro ao salvar figurinhas.');
+                    }
                 } else {
                     await message.reply(erroComandoMsg(command));
                 }

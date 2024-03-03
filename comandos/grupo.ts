@@ -1,4 +1,4 @@
-import { Client, Contact, MessageMedia } from 'whatsapp-web.js';
+import { Client, MessageMedia } from 'whatsapp-web.js';
 import { removerNegritoComando, erroComandoMsg, criarTexto, isAdminGroup } from '../src/util';
 import msgs_texto from '../src/msgs';
 import db from '../src/dataBase';
@@ -369,13 +369,11 @@ class Grupo {
                 let resposta_listanegra = msgs_texto.grupo.listanegra.resposta_titulo;
                 if (lista_negra_grupo.length == 0) return message.reply(msgs_texto.grupo.listanegra.lista_vazia);
                 const nomeBot = process.env.NOME_BOT || '';
-                const arrayMentions: string[] = [];
+                const mentions: string[] = [];
                 for (const usuario_lista of lista_negra_grupo) {
                     resposta_listanegra += criarTexto(msgs_texto.grupo.listanegra.resposta_itens, usuario_lista.replace(/@c.us/g, ''));
-                    arrayMentions.push(usuario_lista);
+                    mentions.push(usuario_lista);
                 }
-                const arrayMentionsCast = arrayMentions as unknown;
-                const mentions = arrayMentionsCast as Contact[];
                 resposta_listanegra += `╚═〘 ${nomeBot.trim()}®〙`;
                 await client.sendMessage(from, resposta_listanegra, { mentions });
             } else if (command === `${PREFIX}aporno`) {
@@ -390,6 +388,59 @@ class Grupo {
                     await db.alterarAntiPorno(from, false);
                     await message.reply(msgs_texto.grupo.antiporno.desligado);
                 }
+            } else if (command === `${PREFIX}contador`) {
+                if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
+                const grupoInfo = await db.obterGrupo(from);
+                const estadoNovo = !grupoInfo.contador.status;
+                const membrosAtuais = dadosGrupo.groupMetadata.participants;
+                if (estadoNovo) {
+                    await db.alterarContador(from);
+                    await db.registrarContagemTodos(from, membrosAtuais);
+                    message.reply(msgs_texto.grupo.contador.ligado);
+                } else {
+                    await db.alterarContador(from, false);
+                    await db.removerContagemGrupo(from);
+                    message.reply(msgs_texto.grupo.contador.desligado);
+                }
+            } else if (command === `${PREFIX}topativos`) {
+                if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
+                if (args.length == 1) return message.reply(erroComandoMsg(command));
+                const qtdUsuarios = Number(args[1]);
+                if (isNaN(qtdUsuarios)) return message.reply(msgs_texto.grupo.topativos.erro_qtd);
+                if (qtdUsuarios < 1 || qtdUsuarios > 50) return message.reply(msgs_texto.grupo.topativos.limite_qtd);
+                const grupoInfo = await db.obterGrupo(from);
+                if (!grupoInfo.contador.status) return message.reply(msgs_texto.grupo.topativos.erro_contador);
+                const usuariosAtivos = await db.obterUsuariosAtivos(from, qtdUsuarios);
+                let respostaTop = criarTexto(msgs_texto.grupo.topativos.resposta_titulo, qtdUsuarios.toString());
+                const mentions = [];
+                for (let i = 0; i < usuariosAtivos.length; i++) {
+                    mentions.push(usuariosAtivos[i].id_usuario);
+                    let medalha = '';
+                    switch (i + 1) {
+                        case 1:
+                            medalha = '🥇';
+                            break;
+                        case 2:
+                            medalha = '🥈';
+                            break;
+                        case 3:
+                            medalha = '🥉';
+                            break;
+                        default:
+                            medalha = '';
+                    }
+                    const number = i + 1;
+                    respostaTop += criarTexto(
+                        msgs_texto.grupo.topativos.resposta_itens,
+                        medalha,
+                        number.toString(),
+                        usuariosAtivos[i].id_usuario.replace(/@c.us/g, ''),
+                        usuariosAtivos[i].msg.toString(),
+                    );
+                }
+                const nomeBot = process.env.NOME_BOT || 'BOT';
+                respostaTop += `╠\n╚═〘 ${nomeBot.trim()}® 〙`;
+                await client.sendMessage(from, respostaTop, { mentions });
             }
         } catch (err: any) {
             console.log(err);

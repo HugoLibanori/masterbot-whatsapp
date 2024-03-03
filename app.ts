@@ -10,6 +10,7 @@ import db from './src/dataBase';
 import BemVindo from './src/bemVindo';
 import AntiFake from './src/antifake';
 import AntiLink from './src/alink';
+import antiPorno from './src/antiporno';
 import { verificarEnv } from './src/env';
 import { verificarUsuarioListaNegra } from './src/listaNegra';
 
@@ -50,6 +51,7 @@ client.on('ready', async () => {
 // Ouvindo mensagens!
 client.on('message', async (message: any) => {
     if (!(await new AntiLink().antiLink(client, message))) return;
+    if (!(await antiPorno(client, message))) return;
     if (!(await new ChecandoMensagens().start(client, message))) return;
     await new ChamandoComandos().start(client, message);
 });

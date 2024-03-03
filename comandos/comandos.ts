@@ -46,6 +46,8 @@ const comandos: Comandos = {
         `${PREFIX}dlista`,
         `${PREFIX}listanegra`,
         `${PREFIX}aporno`,
+        `${PREFIX}contador`,
+        `${PREFIX}topativos`,
     ],
     info: [`${PREFIX}menu`],
     download: [`${PREFIX}play`, `${PREFIX}ig`, `${PREFIX}fb`, `${PREFIX}img`, `${PREFIX}yt`],

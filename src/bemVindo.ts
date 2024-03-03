@@ -8,7 +8,7 @@ export default class BemVindo {
             const mentions = [];
             const id = event.recipientIds.reduce(id => id);
             const contato = await client.getContactById(id);
-            mentions.push(contato);
+            mentions.push(contato.toString());
             const grupo = await client.getChatById(event.chatId);
             const dadosGrupoCast = grupo as unknown;
             const dadosGrupo = dadosGrupoCast as GroupChat;

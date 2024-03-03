@@ -29,12 +29,10 @@ export const verificacaoListaNegraGeral = async (client: Client): Promise<string
                     if (lista_negra.includes(participanteCast)) usuarios_listados.push(participante.id._serialized);
                 }
                 const nomeBot = process.env.NOME_BOT || '';
-                const arrayMentions = [];
+                const mentions = [];
 
                 for (const usuario of usuarios_listados) {
-                    arrayMentions.push(usuario);
-                    const arrayCast = arrayMentions as unknown;
-                    const mentions = arrayCast as Contact[];
+                    mentions.push(usuario);
                     await dadosGrupo.removeParticipants([usuario]);
                     await client.sendMessage(
                         groupId,
@@ -67,14 +65,12 @@ export const verificarUsuarioListaNegra = async (client: Client, event: GroupNot
               .map((admin: { id: { _serialized: string } }) => admin.id._serialized)
         : [];
     const isBotGroupAdmin = isGroup ? dadosGrupoBot.includes(botNumber) : false;
-    const arrayMentions = [];
+    const mentions = [];
     if (isBotGroupAdmin) {
         const lista_negra = await db.obterListaNegra(event.chatId);
         if (lista_negra.includes(event.recipientIds.reduce(id => id))) {
             const nomeBot = process.env.NOME_BOT || '';
-            arrayMentions.push(event.recipientIds.reduce(id => id));
-            const arrayCast = arrayMentions as unknown;
-            const mentions = arrayCast as Contact[];
+            mentions.push(event.recipientIds.reduce(id => id));
             await dadosGrupo.removeParticipants([event.recipientIds.reduce(id => id)]);
             await client.sendMessage(
                 event.chatId,

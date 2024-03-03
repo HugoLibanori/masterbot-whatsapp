@@ -3,6 +3,11 @@ import { MessageTypes } from 'whatsapp-web.js';
 import path from 'path';
 import fs from 'fs-extra';
 import moment from 'moment-timezone';
+import { format } from 'date-fns';
+
+const agora = new Date();
+const formatoDesejado = 'dd/MM HH:mm:ss';
+const dataFormatada = format(agora, formatoDesejado);
 
 const db: any = {};
 db.usuarios = new AsyncNedb({ filename: './database/db/usuarios.db', autoload: true });
@@ -330,7 +335,7 @@ export default {
         );
     },
 
-    alterarContador: async (id_grupo: string, status: boolean = true, inicio: string = ''): Promise<void> => {
+    alterarContador: async (id_grupo: string, status: boolean = true, inicio: string = dataFormatada): Promise<void> => {
         await db.grupos.asyncUpdate({ id_grupo }, { $set: { 'contador.status': status, 'contador.inicio': inicio } });
     },
 
@@ -444,5 +449,86 @@ export default {
 
     obterDataAtual: (): string => {
         return moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss');
+    },
+
+    registrarContagemTodos: async (id_grupo: string, usuarios: any[]) => {
+        for (const usuario of usuarios) {
+            const id_unico: string = `${id_grupo}-${usuario.id}`;
+            await db.contador.asyncInsert({
+                id_grupo,
+                id_usuario: usuario.id,
+                id_unico,
+                msg: 0,
+                imagem: 0,
+                gravacao: 0,
+                audio: 0,
+                sticker: 0,
+                video: 0,
+                outro: 0,
+                texto: 0,
+            });
+        }
+    },
+
+    removerContagemGrupo: async (id_grupo: string) => {
+        await db.contador.asyncRemove({ id_grupo }, { multi: true });
+    },
+
+    obterUsuariosAtivos: async (id_grupo: string, limite: number): Promise<Contador[]> => {
+        const usuarios_ativos: Contador[] = await db.contador.asyncFind({ id_grupo }, [
+            ['sort', { msg: -1 }],
+            ['limit', limite],
+        ]);
+        return usuarios_ativos;
+    },
+
+    existeUsuarioContador: async (id_grupo: string, id_usuario: string): Promise<void> => {
+        const id_unico: string = `${id_grupo}-${id_usuario}`;
+        const contador: Contador | null = await db.contador.asyncFindOne({ id_unico });
+
+        if (contador === null) {
+            await db.contador.asyncInsert({
+                id_grupo,
+                id_usuario,
+                id_unico,
+                msg: 0,
+                imagem: 0,
+                gravacao: 0,
+                audio: 0,
+                sticker: 0,
+                video: 0,
+                outro: 0,
+                texto: 0,
+            } as Contador);
+        }
+    },
+
+    addContagem: async (id_grupo: string, id_usuario: string, tipo_msg: MessageTypes): Promise<void> => {
+        let updateQuery: Record<string, number> = {};
+        switch (tipo_msg) {
+            case MessageTypes.TEXT:
+                updateQuery = { msg: 1, texto: 1 };
+                break;
+            case MessageTypes.IMAGE:
+                updateQuery = { msg: 1, imagem: 1 };
+                break;
+            case MessageTypes.VIDEO:
+                updateQuery = { msg: 1, video: 1 };
+                break;
+            case MessageTypes.STICKER:
+                updateQuery = { msg: 1, sticker: 1 };
+                break;
+            case MessageTypes.VOICE:
+                updateQuery = { msg: 1, gravacao: 1 };
+                break;
+            case MessageTypes.AUDIO:
+                updateQuery = { msg: 1, audio: 1 };
+                break;
+            case MessageTypes.DOCUMENT:
+                updateQuery = { msg: 1, outro: 1 };
+                break;
+        }
+
+        await db.contador.asyncUpdate({ id_grupo, id_usuario }, { $inc: updateQuery });
     },
 };

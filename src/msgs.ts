@@ -1,4 +1,5 @@
 const PREFIX = process.env.PREFIX || '!';
+
 export const msgs_texto = {
     inicio: {
         arquivos_criados: '✓ Seus arquivos necessários foram criados, inicie o bot novamente.',
