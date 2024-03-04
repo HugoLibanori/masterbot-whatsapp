@@ -849,6 +849,7 @@ export const msgs_texto = {
         apenas_admin: '[❗] Apenas administradores podem usar este comando.',
         apenas_dono_bot: '[❗] Apenas o dono do BOT pode usar este comando.',
         apenas_dono_grupo: '[❗] Apenas o dono do GRUPO pode usar este comando.',
+        pv: '[❗] Este comando só pode ser usado no privado do bot.',
     },
     tipos: {
         dono: '💻 Dono',

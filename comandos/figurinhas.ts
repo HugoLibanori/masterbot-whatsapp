@@ -18,6 +18,8 @@ class Figurinhas {
             const isGroupAdmins: boolean = isGroup ? isAdminGroup(author, dadosAdmin) : false;
             const args: string[] = body.split(' ');
             command = removerNegritoComando(command).toLowerCase();
+            const ownerNumber = process.env.NUMERO_DONO?.trim();
+            const isOwner = isGroup ? ownerNumber === author.replace(/@c.us/g, '') : ownerNumber === from.replace(/@c.us/g, '');
             const PREFIX = process.env.PREFIX || '!';
 
             interface DadosStickers {
@@ -175,29 +177,59 @@ class Figurinhas {
                     await message.reply(erroComandoMsg(command));
                 }
             } else if (command === `${PREFIX}figurinhas`) {
-                if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
-                const arquivoFile = path.resolve(`figurinhas/figurinhas.txt`);
+                if (isGroup) {
+                    if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
+                    const arquivoFile = path.resolve(`figurinhas/figurinhas.txt`);
 
-                try {
-                    const content = fs.readFileSync(arquivoFile, 'utf-8');
+                    try {
+                        const content = fs.readFileSync(arquivoFile, 'utf-8');
 
-                    const files = JSON.parse(content);
+                        const files = JSON.parse(content);
 
-                    const quantidadeObjetos = files.length;
+                        const quantidadeObjetos = files.length;
 
-                    await message.reply(`✅ ok, vou enviar um total de ${quantidadeObjetos} figurinhas`);
+                        if (quantidadeObjetos === 0) return await message.reply('Sem figurinhas salva para enviar');
 
-                    dadosStickers.stickerName += ' Sticker';
-                    for (const file of files) {
-                        const media = new MessageMedia(file.mimetype, file.data, file.filename, file.filesize);
-                        await client.sendMessage(from, media, dadosStickers);
+                        await message.reply(`✅ ok, vou enviar um total de ${quantidadeObjetos} figurinhas`);
 
-                        // Atraso de 1 segundo antes de enviar a próxima figurinha
-                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        dadosStickers.stickerName += ' Sticker';
+                        for (const file of files) {
+                            const media = new MessageMedia(file.mimetype, file.data, file.filename, file.filesize);
+                            await client.sendMessage(from, media, dadosStickers);
+
+                            // Atraso de 1 segundo antes de enviar a próxima figurinha
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+                        }
+                        await message.reply('✅ Figurinhas enviadas com sucesso.');
+                    } catch (error) {
+                        console.error('Erro ao ler o arquivo de figurinhas:', error);
                     }
-                    await message.reply('✅ Figurinhas enviadas com sucesso.');
-                } catch (error) {
-                    console.error('Erro ao ler o arquivo de figurinhas:', error);
+                } else {
+                    const arquivoFile = path.resolve(`figurinhas/figurinhas.txt`);
+
+                    try {
+                        const content = fs.readFileSync(arquivoFile, 'utf-8');
+
+                        const files = JSON.parse(content);
+
+                        const quantidadeObjetos = files.length;
+
+                        if (quantidadeObjetos === 0) return await message.reply('Sem figurinhas salva para enviar');
+
+                        await message.reply(`✅ ok, vou enviar um total de ${quantidadeObjetos} figurinhas`);
+
+                        dadosStickers.stickerName += ' Sticker';
+                        for (const file of files) {
+                            const media = new MessageMedia(file.mimetype, file.data, file.filename, file.filesize);
+                            await client.sendMessage(from, media, dadosStickers);
+
+                            // Atraso de 1 segundo antes de enviar a próxima figurinha
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+                        }
+                        await message.reply('✅ Figurinhas enviadas com sucesso.');
+                    } catch (error) {
+                        console.error('Erro ao ler o arquivo de figurinhas:', error);
+                    }
                 }
             } else if (command === `${PREFIX}salvar`) {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
@@ -223,7 +255,7 @@ class Figurinhas {
                         const jsonString = JSON.stringify(existingData, null, 2);
                         fs.writeFileSync(pathToFigurinhas, jsonString);
 
-                        await message.reply('✅ Figurinhas salvas com sucesso.');
+                        await message.reply('✅ Figurinha salva com sucesso.');
                     } catch (error) {
                         console.error('Erro ao salvar figurinhas:', error);
                         await message.reply('❌ Ocorreu um erro ao salvar figurinhas.');
@@ -250,6 +282,64 @@ class Figurinhas {
                         });
                 } catch (err: any) {
                     await message.reply(err.message);
+                }
+            } else if (command === `${PREFIX}figurinhas+18`) {
+                if (isGroup) return message.reply(msgs_texto.permissao.pv);
+                const arquivoFile = path.resolve(`figurinhas/figurinhas+18.txt`);
+
+                try {
+                    const content = fs.readFileSync(arquivoFile, 'utf-8');
+
+                    const files = JSON.parse(content);
+
+                    const quantidadeObjetos = files.length;
+
+                    if (quantidadeObjetos === 0) return await message.reply('Sem figurinhas+18 salva para enviar');
+
+                    await message.reply(`✅ ok, vou enviar um total de ${quantidadeObjetos} figurinhas`);
+
+                    dadosStickers.stickerName += ' Sticker';
+                    for (const file of files) {
+                        const media = new MessageMedia(file.mimetype, file.data, file.filename, file.filesize);
+                        await client.sendMessage(from, media, dadosStickers);
+
+                        // Atraso de 1 segundo antes de enviar a próxima figurinha
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
+                    await message.reply('✅ Figurinhas+18 enviadas com sucesso.');
+                } catch (error) {
+                    console.error('Erro ao ler o arquivo de figurinhas:', error);
+                }
+            } else if (command === `${PREFIX}salvar+18`) {
+                if (!isOwner) return message.reply(msgs_texto.permissao.apenas_dono_bot);
+                if (hasQuotedMsg) {
+                    const media_quoted: any = await message.getQuotedMessage();
+                    const midiaData: MessageMedia = await media_quoted.downloadMedia();
+
+                    const pathToFigurinhas = path.resolve(`figurinhas/figurinhas+18.txt`);
+
+                    try {
+                        const content = fs.existsSync(pathToFigurinhas) ? fs.readFileSync(pathToFigurinhas, 'utf-8') : '[]';
+
+                        const existingData = JSON.parse(content);
+
+                        existingData.push({
+                            mimetype: midiaData.mimetype,
+                            data: midiaData.data,
+                            filename: midiaData.filename,
+                            filesize: midiaData.filesize,
+                        });
+
+                        const jsonString = JSON.stringify(existingData, null, 2);
+                        fs.writeFileSync(pathToFigurinhas, jsonString);
+
+                        await message.reply('✅ Figurinha+18 salva com sucesso.');
+                    } catch (error) {
+                        console.error('Erro ao salvar figurinhas:', error);
+                        await message.reply('❌ Ocorreu um erro ao salvar figurinhas.');
+                    }
+                } else {
+                    await message.reply(erroComandoMsg(command));
                 }
             }
         } catch (err: any) {

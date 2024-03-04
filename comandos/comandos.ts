@@ -22,6 +22,8 @@ const comandos: Comandos = {
         `${PREFIX}figurinhas`,
         `${PREFIX}salvar`,
         `${PREFIX}atps`,
+        `${PREFIX}figurinhas+18`,
+        `${PREFIX}salvar+18`,
     ],
     grupo: [
         `${PREFIX}add`,

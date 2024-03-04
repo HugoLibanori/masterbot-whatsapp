@@ -41,6 +41,8 @@ const guias: Comandos = {
             `*Obs*: Este comando funciona apenas com *STICKERS*.`,
         figurinhas: cabecalho + `Ex: Envia varias figuinhas para o usuário.`,
         salvar: cabecalho + `responda uma figurinha para ser salva.`,
+        'figurinhas+18': cabecalho + `Ex: Envia varias figuinhas+18 para o usuário no seu privado.`,
+        'salvar+18': cabecalho + `responda uma figurinha+18 para ser salva, apenas o dono do bot pode usar.`,
     },
     downloads: {
         play: cabecalho + `Ex: *${PREFIX}play* musica - Faz download de uma música do Youtube e envia como audio.`,

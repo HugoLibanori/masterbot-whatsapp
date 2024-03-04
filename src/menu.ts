@@ -57,6 +57,8 @@ const menu: {
 |- *${PREFIX}ssf* - Transforme uma IMAGEM em sticker sem fundo.
 |- *${PREFIX}figurinhas* - Envia varias figurinhas para o grupo. obs: funciona só em grupos.
 |- *${PREFIX}salvar* - Salva uma figurinha para ser enviada pelo comando *${PREFIX}figurinhas*.
+|- *${PREFIX}figurinhas+18* - Envia varias figurinhas+18 para o usuário. obs: funciona só no privado.
+|- *${PREFIX}salvar+18* - Salva uma figurinha+18 para ser enviada pelo comando *${PREFIX}figurinhas+18*.
 
 
 |
