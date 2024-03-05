@@ -4,6 +4,7 @@ import { consoleErro, obterNomeAleatorio, criarTexto, isAdminGroup } from './uti
 import msgs_texto from './msgs';
 import fs from 'fs';
 import path from 'path';
+import api from './api';
 
 const antiPorno = async (client: Client, message: any) => {
     try {
@@ -31,8 +32,8 @@ const antiPorno = async (client: Client, message: any) => {
                         const localArquivo = path.resolve(`media/img/tmp/${obterNomeAleatorio('.png')}`);
                         fs.writeFileSync(localArquivo, mediaData.data, { encoding: 'base64' });
                         fs.unlinkSync(localArquivo);
-                        const resp = '';
-                        if (parseFloat(resp) >= 0.85) {
+                        const resp = api.obterNsfw();
+                        if ((await resp).nudity.sexual_display >= 0.85) {
                             await dadosGrupo.removeParticipants(from, from);
                             await client.sendMessage(
                                 from,

@@ -14,6 +14,53 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 const asyncExec = promisify(exec);
 import googleIt from 'google-it';
+import fs from 'fs';
+
+interface Nsfw {
+    status: string;
+    request: {
+        id: string;
+        timestamp: number;
+        operations: number;
+    };
+    nudity: {
+        sexual_activity: number;
+        sexual_display: number;
+        erotica: number;
+        sextoy: number;
+        suggestive: number;
+        suggestive_classes: {
+            bikini: number;
+            cleavage: number;
+            cleavage_categories: {
+                very_revealing: number;
+                revealing: number;
+                none: number;
+            };
+            lingerie: number;
+            male_chest: number;
+            male_chest_categories: {
+                very_revealing: number;
+                revealing: number;
+                slightly_revealing: number;
+                none: number;
+            };
+            male_underwear: number;
+            miniskirt: number;
+            other: number;
+        };
+        none: number;
+        context: {
+            sea_lake_pool: number;
+            outdoor_other: number;
+            indoor_other: number;
+        };
+    };
+    media: {
+        id: string;
+        uri: string;
+    };
+}
 
 export = {
     obterInfoVideoYT: async (query: string): Promise<Video> => {
@@ -221,6 +268,27 @@ export = {
         } catch (err) {
             consoleErro(msgs_texto.api.newsapi, 'API obterNoticias');
             throw new Error(msgs_texto.utilidades.noticia.indisponivel);
+        }
+    },
+
+    obterNsfw: async (): Promise<Nsfw> => {
+        const params = {
+            models: 'nudity-2.0',
+            api_user: '407747126',
+            api_secret: 'Rer5jezY5yz63BiWaKVa',
+        };
+
+        const formData = new FormData();
+        const pathImage = fs.createReadStream(path.resolve('media/img/tmp/download.jpg'));
+        formData.append('media', pathImage.toString());
+
+        try {
+            const response = await axios.post('https://api.sightengine.com/1.0/check.json', formData, { params });
+            const output: Nsfw = response.data;
+            return output;
+        } catch (error) {
+            console.error(error);
+            throw error;
         }
     },
 };
