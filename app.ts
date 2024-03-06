@@ -19,7 +19,7 @@ const client: Client = new Client({
         dataPath: 'session',
     }),
     puppeteer: {
-        executablePath: process.env.PATH_CHROME_WIN || process.env.PATH_CHROME_UBUNTU || undefined,
+        executablePath: process.env.PATH_CHROME || undefined,
         args: ['--no-sandbox'],
     },
     webVersionCache: {

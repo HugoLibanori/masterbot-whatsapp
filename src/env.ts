@@ -42,8 +42,7 @@ const criacaoEnv = async (): Promise<void> => {
         '# API REMOVEBG - coloque sua api removebg aqui\n' +
         'API_REMOVEBG=??????\n\n' +
         '############ PATH GOOGLE CHROME ##############\n' +
-        `PATH_CHROME_WIN='C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'\n` +
-        `PATH_CHROME_UBUNTU='/usr/bin/google-chrome-stable'\n\n` +
+        `PATH_CHROME=??????\n\n` +
         '############ API SITE https://sightengine.com/ PARA ANTIPORNO ##############\n' +
         'API_USER=??????\n' +
         'API_SECRET=??????';
