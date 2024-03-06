@@ -110,6 +110,7 @@ const criarArquivosNecessarios = async (): Promise<boolean> => {
         const existeBotJson = fs.existsSync(path.resolve('database/json/bot.json'));
         const existeEnv = fs.existsSync(path.resolve('.env'));
         const pastaFigu = fs.existsSync(path.resolve('figurinhas'));
+        const pastaTmp = fs.existsSync(path.resolve('media/img/tmp'));
 
         if (existeBotJson && existeEnv) {
             return false;
@@ -117,6 +118,10 @@ const criarArquivosNecessarios = async (): Promise<boolean> => {
 
         if (!pastaFigu) {
             fs.mkdirSync(path.resolve(__dirname, '..', 'figurinhas'), { recursive: true });
+        }
+
+        if (!pastaTmp) {
+            fs.mkdirSync(path.resolve(__dirname, '..', 'media', 'img', 'tmp'), { recursive: true });
         }
 
         if (!existeBotJson) {
