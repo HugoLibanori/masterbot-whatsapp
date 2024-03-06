@@ -41,7 +41,10 @@ const criacaoEnv = async (): Promise<void> => {
         'API_REMOVEBG=??????\n\n' +
         '############ PATH GOOGLE CHROME ##############\n' +
         `PATH_CHROME_WIN='C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'\n` +
-        `PATH_CHROME_UBUNTU='/usr/bin/google-chrome-stable'`;
+        `PATH_CHROME_UBUNTU='/usr/bin/google-chrome-stable'\n\n` +
+        '############ API SITE https://sightengine.com/ PARA ANTIPORNO ##############\n' +
+        'API_USER=407747126\n' +
+        'API_SECRET=Rer5jezY5yz63BiWaKVa';
 
     await fs.writeFile(path.resolve('.env'), envContent, 'utf8');
 };

@@ -13,8 +13,8 @@ const antiPorno = async (client: Client, message: any) => {
         const { author } = message._data;
         const hasGroup = dadosGrupo.isGroup;
         if (hasGroup && (type === MessageTypes.IMAGE || type === MessageTypes.STICKER)) {
-            const { antiporno } = await db.obterGrupo(from);
-            if (antiporno) {
+            const grupoInfo = await db.obterGrupo(from);
+            if (grupoInfo.antiporno) {
                 const botNumber = client.info.wid._serialized;
                 const isGroup = dadosGrupo.isGroup;
                 const dadosAdmin = isGroup ? await dadosGrupo.groupMetadata.participants : '';
@@ -31,19 +31,25 @@ const antiPorno = async (client: Client, message: any) => {
                         const mediaData: MessageMedia = await message.downloadMedia();
                         const localArquivo = path.resolve(`media/img/tmp/${obterNomeAleatorio('.png')}`);
                         fs.writeFileSync(localArquivo, mediaData.data, { encoding: 'base64' });
-                        fs.unlinkSync(localArquivo);
-                        const resp = api.obterNsfw();
-                        if ((await resp).nudity.sexual_display >= 0.85) {
-                            await dadosGrupo.removeParticipants(from, from);
+                        const resp = await api.obterNsfw(localArquivo);
+                        if (
+                            resp.data['nudity']['sexual_display'] >= 0.6 ||
+                            resp.data['nudity']['sexual_activity'] >= 0.6 ||
+                            resp.data['nudity']['erotica'] >= 0.6
+                        ) {
+                            await dadosGrupo.removeParticipants([author]);
                             await client.sendMessage(
                                 from,
                                 criarTexto(
                                     msgs_texto.geral.resposta_ban,
-                                    from.replace('@c.us', ''),
+                                    author.replace('@c.us', ''),
                                     msgs_texto.grupo.antiporno.motivo,
                                     nomeBot,
                                 ),
+                                { mentions: author },
                             );
+                            await message.delete(true);
+                            fs.unlinkSync(localArquivo);
                             return false;
                         }
                     }

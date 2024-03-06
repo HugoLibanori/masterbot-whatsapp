@@ -32,8 +32,6 @@ export class ChamandoComandos {
             const formattedTitle: string = (await client.getChatById(from)).name;
             const isGroupAdmins: boolean = isGroup ? isAdminGroup(author, dadosAdmin) : false;
             const msgGuia: boolean = args.length === 2 ? args[1].toLowerCase() === 'guia' : false;
-            const ownerNumber = process.env.NUMERO_DONO?.trim();
-            const isOwner = isGroup ? ownerNumber === author.replace(/@c.us/g, '') : ownerNumber === from.replace(/@c.us/g, '');
             const PREFIX = process.env.PREFIX || '!';
             // COMANDOS
             let comandoExiste =

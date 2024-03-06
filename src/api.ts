@@ -15,6 +15,7 @@ import { promisify } from 'util';
 const asyncExec = promisify(exec);
 import googleIt from 'google-it';
 import fs from 'fs';
+import FormData = require('form-data');
 
 interface Nsfw {
     status: string;
@@ -271,24 +272,27 @@ export = {
         }
     },
 
-    obterNsfw: async (): Promise<Nsfw> => {
-        const params = {
-            models: 'nudity-2.0',
-            api_user: '407747126',
-            api_secret: 'Rer5jezY5yz63BiWaKVa',
-        };
-
-        const formData = new FormData();
-        const pathImage = fs.createReadStream(path.resolve('media/img/tmp/download.jpg'));
-        formData.append('media', pathImage.toString());
+    obterNsfw: async (url: string): Promise<any> => {
+        const data = new FormData();
+        data.append('media', fs.createReadStream(url));
+        data.append('models', 'nudity-2.0');
+        data.append('api_user', process.env.API_USER);
+        data.append('api_secret', process.env.API_SECRET);
 
         try {
-            const response = await axios.post('https://api.sightengine.com/1.0/check.json', formData, { params });
-            const output: Nsfw = response.data;
-            return output;
-        } catch (error) {
-            console.error(error);
-            throw error;
+            const response: Nsfw = await axios.post('https://api.sightengine.com/1.0/check.json', data, {
+                headers: data.getHeaders(),
+            });
+            return response;
+        } catch (error: any) {
+            // Handle error
+            if (error.response) {
+                console.log(error.response.data);
+                throw new Error(error.response.data);
+            } else {
+                console.log(error.message);
+                throw new Error(error.message);
+            }
         }
     },
 };
