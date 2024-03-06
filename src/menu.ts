@@ -151,6 +151,7 @@ const menu: {
 |
 |- *${PREFIX}mutar* - Ativa/desativa o uso de comandos.
 |- *${PREFIX}autosticker* - Ativa/desativa a criação automática de stickers.
+|- *${PREFIX}aporno* - Ativa/desativa o anti-pornô em imagens.
 |- *${PREFIX}alink* - Ativa/desativa o anti-link.
 |- *${PREFIX}bv* - Ativa/desativa o bem-vindo.
 |- *${PREFIX}afake* - Ativa/desativa o anti-fake.

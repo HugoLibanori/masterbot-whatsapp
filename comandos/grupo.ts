@@ -76,6 +76,10 @@ class Grupo {
                 resposta += grupoInfo.autosticker
                     ? msgs_texto.grupo.status.resposta_variavel.autosticker.on
                     : msgs_texto.grupo.status.resposta_variavel.autosticker.off;
+                //Anti-Pornô
+                resposta += grupoInfo.antiporno
+                    ? msgs_texto.grupo.status.resposta_variavel.antiporno.on
+                    : msgs_texto.grupo.status.resposta_variavel.antiporno.off;
                 //Anti-Link
                 let al_filtros = '';
                 if (grupoInfo.antilink.filtros.youtube) al_filtros += msgs_texto.grupo.status.resposta_variavel.antilink.filtros.youtube;
