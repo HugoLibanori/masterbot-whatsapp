@@ -50,7 +50,6 @@ client.on('ready', async () => {
 
 // Ouvindo mensagens!
 client.on('message', async (message: any) => {
-    console.log(message);
     if (!(await new AntiLink().antiLink(client, message))) return;
     if (!(await new AntiPorno().antiPorno(client, message))) return;
     if (!(await new ChecandoMensagens().start(client, message))) return;
