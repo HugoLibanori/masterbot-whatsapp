@@ -1,4 +1,4 @@
-import { Client, MessageMedia } from 'whatsapp-web.js';
+import { Client, MessageMedia, MessageTypes } from 'whatsapp-web.js';
 import { removerNegritoComando, erroComandoMsg, criarTexto, isAdminGroup } from '../src/util';
 import msgs_texto from '../src/msgs';
 import db from '../src/dataBase';
@@ -449,7 +449,7 @@ class Grupo {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 const chat = await message.getChat();
                 const mediaGrupo = await message.getQuotedMessage();
-                if (chat.isGroup && message.hasQuotedMsg) {
+                if ((chat.isGroup && message.hasQuotedMsg && type !== MessageTypes.IMAGE) || type !== MessageTypes.STICKER) {
                     await message.reply(msgs_texto.geral.espera);
                     const serialized = chat.participants.map((admin: { id: { _serialized: string } }) => admin.id._serialized);
                     const media: MessageMedia = await mediaGrupo.downloadMedia();
