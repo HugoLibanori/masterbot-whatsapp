@@ -449,7 +449,10 @@ class Grupo {
                 if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 const chat = await message.getChat();
                 const mediaGrupo = await message.getQuotedMessage();
-                if ((chat.isGroup && message.hasQuotedMsg && type !== MessageTypes.IMAGE) || type !== MessageTypes.STICKER) {
+                if (
+                    (chat.isGroup && message.hasQuotedMsg && quotedMsg.type === MessageTypes.IMAGE) ||
+                    quotedMsg.type === MessageTypes.STICKER
+                ) {
                     await message.reply(msgs_texto.geral.espera);
                     const serialized = chat.participants.map((admin: { id: { _serialized: string } }) => admin.id._serialized);
                     const media: MessageMedia = await mediaGrupo.downloadMedia();
