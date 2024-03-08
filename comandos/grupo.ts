@@ -445,6 +445,18 @@ class Grupo {
                 const nomeBot = process.env.NOME_BOT || 'BOT';
                 respostaTop += `╠\n╚═〘 ${nomeBot.trim()}® 〙`;
                 await client.sendMessage(from, respostaTop, { mentions });
+            } else if (command === `${process.env.PREFIX}hidetag`) {
+                if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
+                const chat = await message.getChat();
+                const mediaGrupo = await message.getQuotedMessage();
+                if (chat.isGroup && message.hasQuotedMsg) {
+                    await message.reply(msgs_texto.geral.espera);
+                    const serialized = chat.participants.map((admin: { id: { _serialized: string } }) => admin.id._serialized);
+                    const media: MessageMedia = await mediaGrupo.downloadMedia();
+                    await client.sendMessage(message.from, media, { mentions: serialized, sendMediaAsSticker: true });
+                } else {
+                    return message.reply(erroComandoMsg(command));
+                }
             }
         } catch (err: any) {
             console.log(err);

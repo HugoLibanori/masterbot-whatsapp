@@ -1,4 +1,4 @@
-import { Client, LocalAuth, Call, GroupNotification, Contact } from 'whatsapp-web.js';
+import { Client, LocalAuth, Call, GroupNotification, Contact, MessageMedia } from 'whatsapp-web.js';
 import qrcode from 'qrcode-terminal';
 import { ChamandoComandos } from './src/chamandoComandos';
 import { ChecandoMensagens } from './src/checandoMensagens';

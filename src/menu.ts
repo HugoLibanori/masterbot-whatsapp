@@ -125,6 +125,7 @@ const menu: {
 |- *${PREFIX}fotogrupo* - Altera foto do grupo
 |- *${PREFIX}mt* [mensagem] - Marca todos MEMBROS/ADMINS com uma mensagem.
 |- *${PREFIX}mm* [mensagem] - Marca os MEMBROS com uma mensagem.
+|- *${PREFIX}hidetag* - Marca todos os MEMBROS/ADMINS com uma figurinha.
 |- *${PREFIX}dono* - Mostra dono do grupo.
 |
 |-- ☾ CONTROLE DE ATIVIDADE ☽

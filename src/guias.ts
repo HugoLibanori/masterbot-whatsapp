@@ -249,6 +249,7 @@ const guias: Comandos = {
             `Ex: Responder com *${PREFIX}apg* - Apaga a mensagem que foi respondida com esse comando.\n\n` +
             `*Obs* : Esse comando só pode ser usado por administradores.`,
         f: cabecalho + `Ex: *${PREFIX}f* - Abre/Fecha o grupo.`,
+        hidetag: cabecalho + `Responda uma imgem ou figurinha que marca todos os membros do grupo.`,
     },
     diversao: {
         detector: cabecalho + `Ex: Responder com *${PREFIX}detector* - Exibe o resultado da máquina da verdade.`,

@@ -50,6 +50,7 @@ const comandos: Comandos = {
         `${PREFIX}aporno`,
         `${PREFIX}contador`,
         `${PREFIX}topativos`,
+        `${PREFIX}hidetag`,
     ],
     info: [`${PREFIX}menu`],
     download: [`${PREFIX}play`, `${PREFIX}ig`, `${PREFIX}fb`, `${PREFIX}img`, `${PREFIX}yt`],
