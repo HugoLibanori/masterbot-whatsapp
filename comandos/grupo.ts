@@ -458,7 +458,12 @@ class Grupo {
                     await message.reply(msgs_texto.geral.espera);
                     const serialized = chat.participants.map((admin: { id: { _serialized: string } }) => admin.id._serialized);
                     const media: MessageMedia = await mediaGrupo.downloadMedia();
-                    await client.sendMessage(message.from, media, { mentions: serialized, sendMediaAsSticker: true });
+                    await client.sendMessage(message.from, media, {
+                        mentions: serialized,
+                        sendMediaAsSticker: true,
+                        stickerAuthor: `${process.env.NOME_AUTOR_FIGURINHAS}`,
+                        stickerName: `${process.env.NOME_BOT}`,
+                    });
                 } else {
                     return message.reply(erroComandoMsg(command));
                 }
