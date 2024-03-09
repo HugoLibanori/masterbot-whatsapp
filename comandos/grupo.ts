@@ -451,8 +451,9 @@ class Grupo {
                 const chat = await message.getChat();
                 const mediaGrupo = await message.getQuotedMessage();
                 if (
-                    (chat.isGroup && message.hasQuotedMsg && quotedMsg.type === MessageTypes.IMAGE) ||
-                    quotedMsg.type === MessageTypes.STICKER
+                    chat.isGroup &&
+                    message.hasQuotedMsg &&
+                    (quotedMsg.type === MessageTypes.IMAGE || quotedMsg.type === MessageTypes.STICKER)
                 ) {
                     await message.reply(msgs_texto.geral.espera);
                     const serialized = chat.participants.map((admin: { id: { _serialized: string } }) => admin.id._serialized);
