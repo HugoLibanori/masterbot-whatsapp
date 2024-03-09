@@ -8,6 +8,7 @@ import fs from 'fs';
 import path from 'path';
 import { criarTexto, erroComandoMsg } from '../src/util';
 import { version } from '../package.json';
+import block from '../src/bloquioComandos';
 
 export default class Admin {
     async admin(client: Client, message: any) {
@@ -197,6 +198,16 @@ export default class Admin {
                     }
                 }
                 await message.reply(criarTexto(msgs_texto.admin.tipos.resposta, respostaTipos));
+            } else if (comando === `${PREFIX}dcmdglobal`) {
+                if (args.length === 1) return await message.reply(from, erroComandoMsg(command));
+                const usuarioComandos = body.slice(12).split(' '),
+                    respostaDesbloqueio = await block.desbloquearComandosGlobal(usuarioComandos);
+                await message.reply(respostaDesbloqueio);
+            } else if (comando === `${PREFIX}bcmdglobal`) {
+                if (args.length === 1) return await message.reply(erroComandoMsg(command));
+                const usuarioComandos = body.slice(12).split(' '),
+                    respostaBloqueio = await block.bloquearComandosGlobal(usuarioComandos);
+                await message.reply(respostaBloqueio);
             }
         } catch (err: any) {
             consoleErro(err, 'ADMINISTRAÇÂO');

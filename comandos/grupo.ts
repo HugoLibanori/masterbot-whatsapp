@@ -2,6 +2,7 @@ import { Client, MessageMedia, MessageTypes } from 'whatsapp-web.js';
 import { removerNegritoComando, erroComandoMsg, criarTexto, isAdminGroup } from '../src/util';
 import msgs_texto from '../src/msgs';
 import db from '../src/dataBase';
+import botInfo from '../src/bot';
 
 class Grupo {
     async grupo(client: Client, message: any) {
@@ -100,8 +101,8 @@ class Grupo {
                     : msgs_texto.grupo.status.resposta_variavel.contador.off;
                 //Bloqueio de CMDS
                 resposta +=
-                    grupoInfo.block_cmds.length != 0
-                        ? criarTexto(msgs_texto.grupo.status.resposta_variavel.bloqueiocmds.on, grupoInfo.block_cmds.toString())
+                    botInfo.botInfo().bloqueio_cmds.length != 0
+                        ? criarTexto(msgs_texto.grupo.status.resposta_variavel.bloqueiocmds.on, botInfo.botInfo().bloqueio_cmds.toString())
                         : msgs_texto.grupo.status.resposta_variavel.bloqueiocmds.off;
                 //Lista Negra
                 resposta += criarTexto(msgs_texto.grupo.status.resposta_variavel.listanegra, grupoInfo.lista_negra.length.toString());

@@ -1,9 +1,11 @@
 import { Client } from 'whatsapp-web.js';
 import db from './dataBase';
-import { isAdminGroup, consoleErro } from './util';
+import { isAdminGroup, consoleErro, criarTexto } from './util';
 import comandos from '../comandos/comandos';
 import botInfo from './bot';
 import { cadastrarGrupo } from './cadastrarGrupo';
+import msgs_texto from './msgs';
+import block from './bloquioComandos';
 
 const lista_comandos = comandos;
 
@@ -74,6 +76,12 @@ export class ChecandoMensagens {
 
                 //SE O GRUPO ESTIVER COM O RECURSO 'MUTADO' LIGADO E USUARIO NÃO FOR ADMINISTRADOR
                 if (isGroup && !isGroupAdmins && grupoInfo?.mutar) return false;
+
+                //BLOQUEIO GLOBAL DE COMANDOS
+                if ((await block.verificarBloqueioGlobal(comando)) && !isOwner) {
+                    await message.reply(criarTexto(msgs_texto.admin.bcmdglobal.resposta_cmd_bloqueado, comando));
+                    return false;
+                }
             }
             return true;
         } catch (err: any) {
