@@ -1,6 +1,6 @@
 import { Client, MessageTypes, MessageMedia } from 'whatsapp-web.js';
 import { createCanvas, loadImage, registerFont, Canvas, Image, CanvasRenderingContext2D } from 'canvas';
-import * as fs from 'fs';
+import fs, { createWriteStream } from 'fs';
 import axios, { AxiosRequestConfig } from 'axios';
 import FormData from 'form-data';
 import * as path from 'path';
@@ -10,7 +10,6 @@ import sharp from 'sharp';
 const gifyImport = require('gify') as any;
 import GIFEncoder = require('gifencoder');
 import ffmpeg from 'fluent-ffmpeg';
-import { exec } from 'child_process';
 
 class Stickers {
     public static textoParaFoto = async (texto: string): Promise<any> => {
@@ -95,90 +94,45 @@ class Stickers {
 
     public static textoParaGif = async (texto: string): Promise<string> => {
         try {
-            const canvasWidth = 512;
-            const canvasHeight = 512;
-            const frameDelay = 500; // Atraso entre os quadros em milissegundos
-
-            // Inicializa o encoder do GIF
-            const encoder = new GIFEncoder(canvasWidth, canvasHeight);
-            encoder.start();
-            encoder.setRepeat(0); // 0 para repetir, -1 para não repetir
-            encoder.setDelay(frameDelay);
-            encoder.setQuality(10);
-            encoder.setTransparent(0x000000); // Define a cor transparente (preto)
-
-            // Crie um canvas
-            const canvas = createCanvas(canvasWidth, canvasHeight);
-            const ctx: any = canvas.getContext('2d');
-
-            // Carregue uma fonte (opcional)
+            const output = path.resolve('media/videos/animated.gif');
             registerFont('./fonts/impact.ttf', { family: 'impact' });
+            const canvas = createCanvas(512, 512);
+            const ctx: any = canvas.getContext('2d');
+            const encoder = new GIFEncoder(512, 512);
 
-            // Cores para animação
-            const colors = ['#ff0000', '#ffff00', '#00ff00', '#0000ff'];
-            let colorIndex = 0;
+            const stream = encoder.createReadStream();
+            stream.pipe(createWriteStream(output));
 
-            // Função para quebrar o texto em várias linhas
-            function wrapText(context: any, text: string, x: number, y: number, maxWidth: number, maxHeight: number) {
-                const words = text.split(' ');
-                let currentLine = '';
-                let currentY = y;
+            encoder.start();
+            encoder.setRepeat(0); // 0 for repeat, -1 for no-repeat
+            encoder.setDelay(500); // frame delay in ms
+            encoder.setQuality(10); // image quality. 10 is default.
 
-                for (let n = 0; n < words.length; n++) {
-                    const testLine = currentLine + words[n] + ' ';
-                    const metrics = context.measureText(testLine);
-                    const testWidth = metrics.width;
+            const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
 
-                    if (testWidth > maxWidth && n > 0) {
-                        if (currentY + metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent > maxHeight) {
-                            // Se exceder a altura máxima, pare de adicionar linhas
-                            break;
-                        }
-
-                        context.fillText(currentLine.trim(), x, currentY);
-                        currentLine = words[n] + ' ';
-                        currentY += metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-                    } else {
-                        currentLine = testLine;
-                    }
-                }
-
-                context.fillText(currentLine.trim(), x - context.measureText(currentLine.trim()).width / 2, currentY);
-            }
-
-            // Crie os quadros do GIF
-            for (let i = 0; i < 20; i++) {
-                ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-                ctx.fillStyle = 'rgba(0, 0, 0, 0)'; // Preencha com cor transparente
-                ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-                ctx.textAlign = 'center'; // Alinhamento centralizado horizontalmente
-                ctx.textBaseline = 'middle'; // Alinhamento centralizado verticalmente
-
-                ctx.fillStyle = colors[colorIndex];
-
-                const fontSize = Math.max(60, Math.min(100, canvasHeight / texto.split(' ').length));
-
-                ctx.font = `bold ${fontSize}px impact`;
-
-                wrapText(ctx, texto, canvasWidth / 2, canvasHeight / 2, canvasWidth, canvasHeight);
-
-                colorIndex = (colorIndex + 1) % colors.length;
+            colors.forEach(color => {
+                ctx.fillStyle = color;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = 'white';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = '50px impact';
+                ctx.fillText(texto, canvas.width / 2, canvas.height / 2);
 
                 encoder.addFrame(ctx);
-            }
+            });
 
             encoder.finish();
 
-            const gifBuffer = encoder.out.getData();
-            const base64 = path.resolve('media/videos/output.gif');
-            fs.writeFileSync(base64, gifBuffer);
-            // const base64 = gifBuffer.toString('base64');
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            const image = await loadImage(path.resolve('media/videos/animated.gif'));
+            await ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+            const imageBase64 = canvas.toDataURL().replace(/^data:image\/png;base64,/, '');
 
-            return base64;
+            return imageBase64;
         } catch (err: any) {
-            console.error(err.message, 'STICKER textoParaGif');
-            throw new Error('Error converting to GIF');
+            console.log(err, 'Erro na conversão de texto para GIF.');
+            throw new Error('Erro na conversão de texto para GIF.');
         }
     };
 
@@ -285,45 +239,122 @@ class Stickers {
         return circularImageBase64;
     };
 
-    public static videoCircular = async (base64: MessageMedia): Promise<string> => {
+    public static videoCircular = async (caminho: string): Promise<string> => {
+        const outputWebp = path.resolve(`media/videos/circular_${obterNomeAleatorio('.webp')}`);
+        const outputGif = path.resolve(`media/videos/circular_${obterNomeAleatorio('.gif')}`);
         return new Promise((resolve, reject) => {
-            // Decodificar o link base64 para dados binários
-            const buffer = Buffer.from(base64.data, 'base64');
-
-            // Criar um nome de arquivo único
-            const fileName = obterNomeAleatorio('.mp4');
-
-            const outputFolder = path.resolve(`media/videos/`);
-
-            // Caminho do arquivo de vídeo original
-            const originalVideoPath = path.join(outputFolder, fileName);
-
-            // Caminho do arquivo de vídeo circular
-            const circularVideoPath = path.join(outputFolder, `circular_${fileName}`);
-
-            // Salvar o vídeo original
-            fs.writeFile(originalVideoPath, buffer, err => {
+            ffmpeg.ffprobe(caminho, (err, metadata) => {
                 if (err) {
                     reject(err);
-                    return;
-                }
+                } else {
+                    const stream = metadata.streams[0];
+                    if (stream && stream.width && stream.height) {
+                        const menorLado = Math.min(stream.width, stream.height);
+                        const x = (stream.width - menorLado) / 2;
+                        const y = (stream.height - menorLado) / 2;
 
-                const ffmpegCommand = ffmpeg(originalVideoPath)
-                    .outputOptions(`ffmpeg -i ${originalVideoPath} -vf "crop=512:512" ${circularVideoPath}`)
-                    .audioCodec('copy')
-                    .on('end', () => {
-                        fs.unlink(originalVideoPath, unlinkError => {
-                            if (unlinkError) {
-                                reject(unlinkError);
-                                return;
-                            }
-                            resolve(circularVideoPath);
-                        });
-                    })
-                    .on('error', ffmpegError => {
-                        reject(ffmpegError);
-                    })
-                    .save(circularVideoPath);
+                        const saidaGif = outputGif;
+                        const saidaWebp = outputWebp;
+
+                        const encoder = new GIFEncoder(menorLado, menorLado);
+                        const streamGif = encoder.createReadStream();
+                        streamGif.pipe(fs.createWriteStream(saidaGif));
+
+                        encoder.start();
+                        encoder.setRepeat(0);
+                        encoder.setDelay(500);
+                        encoder.setQuality(10);
+
+                        const canvas = createCanvas(menorLado, menorLado);
+                        const ctx: any = canvas.getContext('2d');
+
+                        ffmpeg(caminho)
+                            .outputOptions([
+                                `-vf crop=${menorLado}:${menorLado}:${x}:${y},scale=${menorLado}:${menorLado}`,
+                                `-pix_fmt rgb24`,
+                            ])
+                            .format('image2pipe')
+                            .pipe()
+                            .on('data', data => {
+                                sharp(data)
+                                    .resize(menorLado, menorLado)
+                                    .toBuffer()
+                                    .then(buffer => {
+                                        const img = new Image();
+                                        img.onload = () => {
+                                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                            ctx.save();
+                                            ctx.beginPath();
+                                            ctx.arc(canvas.width / 2, canvas.height / 2, menorLado / 2, 0, Math.PI * 2, true);
+                                            ctx.closePath();
+                                            ctx.clip();
+                                            ctx.drawImage(img, 0, 0, menorLado, menorLado);
+                                            ctx.restore();
+                                            encoder.addFrame(ctx);
+                                        };
+                                        img.src = buffer;
+                                    })
+                                    .catch(reject);
+                            })
+                            .on('end', () => {
+                                encoder.finish();
+                                ffmpeg(saidaGif)
+                                    .outputOptions([`-vcodec libwebp`, `-vf fps=30`, `-loop 0`])
+                                    .save(saidaWebp)
+                                    .on('end', () => {
+                                        resolve(saidaWebp);
+                                    })
+                                    .on('error', reject);
+                            })
+                            .on('error', reject);
+                    } else {
+                        reject(new Error('Não foi possível obter a largura e a altura do vídeo.'));
+                    }
+                }
+            });
+        });
+    };
+
+    public static salvarArquivoBase64 = (caminho: string, dadosBase64: string): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const buffer = Buffer.from(dadosBase64, 'base64');
+
+            fs.promises
+                .writeFile(caminho, buffer)
+                .then(() => {
+                    resolve(caminho);
+                })
+                .catch(err => {
+                    console.error('Erro ao salvar o arquivo:', err);
+                    reject(err);
+                });
+        });
+    };
+
+    public static recortarVideo = (caminho: string): Promise<string> => {
+        const output = path.resolve(`media/videos/output_${obterNomeAleatorio('.mp4')}`);
+        return new Promise((resolve, reject) => {
+            ffmpeg.ffprobe(caminho, (err, metadata) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    const stream = metadata.streams[0];
+                    if (stream && stream.width && stream.height) {
+                        const menorLado = Math.min(stream.width, stream.height);
+                        const x = (stream.width - menorLado) / 2;
+                        const y = (stream.height - menorLado) / 2;
+
+                        ffmpeg(caminho)
+                            .outputOptions([`-vf crop=${menorLado}:${menorLado}:${x}:${y}`])
+                            .save(output)
+                            .on('end', () => {
+                                resolve(output);
+                            })
+                            .on('error', reject);
+                    } else {
+                        reject(new Error('Não foi possível obter a largura e a altura do vídeo.'));
+                    }
+                }
             });
         });
     };

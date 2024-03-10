@@ -97,13 +97,33 @@ class Figurinhas {
                             if (!mediaData) return await message.reply(msgs_texto.figurinhas.sticker.download);
 
                             if (args[1] === '1') {
-                                const videoCircle = await Stickers.videoCircular(mediaData);
-                                const videoCircular = MessageMedia.fromFilePath(videoCircle);
-                                await client.sendMessage(from, videoCircular, dadosStickers).catch((err: any) => {
+                                const pathVideo = path.resolve('media/videos/video_recortado.mp4');
+                                const videoSave = await Stickers.salvarArquivoBase64(pathVideo, mediaData.data);
+                                // Atraso de 1 segundo
+                                await new Promise(resolve => setTimeout(resolve, 3000));
+                                const videoCrop = await Stickers.recortarVideo(videoSave);
+                                console.log(videoCrop);
+                                const videoRecortado = MessageMedia.fromFilePath(videoCrop);
+                                await client.sendMessage(from, videoRecortado, dadosStickers).catch((err: any) => {
                                     console.log(err);
                                     message.reply(msgs_texto.figurinhas.sticker.erro_s);
                                 });
-                                fs.unlinkSync(videoCircle);
+                                fs.unlinkSync(videoCrop);
+                                fs.unlinkSync(videoSave);
+                                return;
+                            } else if (args[1] === '2') {
+                                const pathVideo = path.resolve('media/videos/video_recortado_circular.mp4');
+                                const videoSave = await Stickers.salvarArquivoBase64(pathVideo, mediaData.data);
+                                // Atraso de 1 segundo
+                                await new Promise(resolve => setTimeout(resolve, 3000));
+                                const videoCrop = await Stickers.videoCircular(videoSave);
+                                const videoRecortado = MessageMedia.fromFilePath(videoCrop);
+                                await client.sendMessage(from, videoRecortado, dadosStickers).catch((err: any) => {
+                                    console.log(err);
+                                    message.reply(msgs_texto.figurinhas.sticker.erro_s);
+                                });
+                                fs.unlinkSync(videoCrop);
+                                fs.unlinkSync(videoSave);
                                 return;
                             }
 
@@ -269,6 +289,7 @@ class Figurinhas {
                 if (usuarioTexto.length > 100) return message.reply(msgs_texto.figurinhas.atps.texto_longo);
                 try {
                     const imagemBase64 = await Stickers.textoParaGif(usuarioTexto);
+                    await new Promise(resolve => setTimeout(resolve, 3000));
                     const media = MessageMedia.fromFilePath(imagemBase64);
                     dadosStickers.stickerName += ' Texto para Sticker';
                     await client
@@ -279,6 +300,7 @@ class Figurinhas {
                         .catch(err => {
                             message.reply(msgs_texto.figurinhas.sticker.erro_s);
                             console.log(err);
+                            fs.unlinkSync(imagemBase64);
                         });
                 } catch (err: any) {
                     await message.reply(err.message);
