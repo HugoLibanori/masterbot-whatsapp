@@ -114,15 +114,15 @@ class Figurinhas {
                             } else if (args[1] === '2') {
                                 const pathVideo = path.resolve('media/videos/video_recortado_circular.mp4');
                                 const videoSave = await Stickers.salvarArquivoBase64(pathVideo, mediaData.data);
-                                // Atraso de 1 segundo
-                                await new Promise(resolve => setTimeout(resolve, 3000));
+                                // Atraso de 2 segundo
+                                await new Promise(resolve => setTimeout(resolve, 2000));
                                 const videoCrop = await Stickers.videoCircular(videoSave);
-                                const videoRecortado = MessageMedia.fromFilePath(videoCrop);
+                                const videoRecortado = new MessageMedia('video/gif', videoCrop);
                                 await client.sendMessage(from, videoRecortado, dadosStickers).catch((err: any) => {
                                     console.log(err);
                                     message.reply(msgs_texto.figurinhas.sticker.erro_s);
                                 });
-                                fs.unlinkSync(videoCrop);
+                                // fs.unlinkSync(videoCrop);
                                 fs.unlinkSync(videoSave);
                                 return;
                             }

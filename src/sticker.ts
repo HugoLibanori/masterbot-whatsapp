@@ -145,24 +145,24 @@ class Stickers {
     }
 
     public static removerFundoImagem = async (buffer: Buffer, mimetype: string): Promise<string> => {
+        const imagemEntradaCaminho: string = path.resolve('media/img/tmp/' + obterNomeAleatorio('.jpg'));
         try {
-            const imagemEntradaCaminho: string = path.resolve('media/img/tmp/' + obterNomeAleatorio('.jpg'));
             fs.writeFileSync(imagemEntradaCaminho, buffer);
 
             const data: FormData = new FormData();
             data.append('size', 'auto');
             data.append('image_file', fs.createReadStream(imagemEntradaCaminho));
 
-            interface Config {
-                method: string;
-                url: string;
-                data: FormData;
-                responseType: string;
-                headers: {
-                    'X-Api-Key': string;
-                };
-                encoding: null;
-            }
+            // interface Config {
+            //     method: string;
+            //     url: string;
+            //     data: FormData;
+            //     responseType: string;
+            //     headers: {
+            //         'X-Api-Key': string;
+            //     };
+            //     encoding: null;
+            // }
 
             const config: AxiosRequestConfig = {
                 method: 'post',
@@ -181,7 +181,9 @@ class Stickers {
             fs.unlinkSync(imagemEntradaCaminho);
             return base64;
         } catch (err) {
-            // Restante do seu código aqui...
+            if (imagemEntradaCaminho) {
+                fs.unlinkSync(imagemEntradaCaminho);
+            }
             consoleErro(
                 'Houve um erro na API REMOVEBG, confira se o limite gratuito da chave excedeu ou se ela está configurada.',
                 'API REMOVEBG',
@@ -240,79 +242,86 @@ class Stickers {
     };
 
     public static videoCircular = async (caminho: string): Promise<string> => {
-        const outputWebp = path.resolve(`media/videos/circular_${obterNomeAleatorio('.webp')}`);
-        const outputGif = path.resolve(`media/videos/circular_${obterNomeAleatorio('.gif')}`);
-        return new Promise((resolve, reject) => {
-            ffmpeg.ffprobe(caminho, (err, metadata) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    const stream = metadata.streams[0];
-                    if (stream && stream.width && stream.height) {
-                        const menorLado = Math.min(stream.width, stream.height);
-                        const x = (stream.width - menorLado) / 2;
-                        const y = (stream.height - menorLado) / 2;
+        try {
+            const outputGif = path.resolve(`media/videos/circular_${obterNomeAleatorio('.gif')}`);
+            const outputWebp = path.resolve(`media/videos/circular_${obterNomeAleatorio('.webp')}`);
 
-                        const saidaGif = outputGif;
-                        const saidaWebp = outputWebp;
-
-                        const encoder = new GIFEncoder(menorLado, menorLado);
-                        const streamGif = encoder.createReadStream();
-                        streamGif.pipe(fs.createWriteStream(saidaGif));
-
-                        encoder.start();
-                        encoder.setRepeat(0);
-                        encoder.setDelay(500);
-                        encoder.setQuality(10);
-
-                        const canvas = createCanvas(menorLado, menorLado);
-                        const ctx: any = canvas.getContext('2d');
-
-                        ffmpeg(caminho)
-                            .outputOptions([
-                                `-vf crop=${menorLado}:${menorLado}:${x}:${y},scale=${menorLado}:${menorLado}`,
-                                `-pix_fmt rgb24`,
-                            ])
-                            .format('image2pipe')
-                            .pipe()
-                            .on('data', data => {
-                                sharp(data)
-                                    .resize(menorLado, menorLado)
-                                    .toBuffer()
-                                    .then(buffer => {
-                                        const img = new Image();
-                                        img.onload = () => {
-                                            ctx.clearRect(0, 0, canvas.width, canvas.height);
-                                            ctx.save();
-                                            ctx.beginPath();
-                                            ctx.arc(canvas.width / 2, canvas.height / 2, menorLado / 2, 0, Math.PI * 2, true);
-                                            ctx.closePath();
-                                            ctx.clip();
-                                            ctx.drawImage(img, 0, 0, menorLado, menorLado);
-                                            ctx.restore();
-                                            encoder.addFrame(ctx);
-                                        };
-                                        img.src = buffer;
-                                    })
-                                    .catch(reject);
-                            })
-                            .on('end', () => {
-                                encoder.finish();
-                                ffmpeg(saidaGif)
-                                    .outputOptions([`-vcodec libwebp`, `-vf fps=30`, `-loop 0`])
-                                    .save(saidaWebp)
-                                    .on('end', () => {
-                                        resolve(saidaWebp);
-                                    })
-                                    .on('error', reject);
-                            })
-                            .on('error', reject);
+            return new Promise((resolve, reject) => {
+                ffmpeg.ffprobe(caminho, (err, metadata) => {
+                    if (err) {
+                        reject(err);
                     } else {
-                        reject(new Error('Não foi possível obter a largura e a altura do vídeo.'));
+                        const stream = metadata.streams[0];
+                        if (stream && stream.width && stream.height) {
+                            const menorLado = Math.min(stream.width, stream.height);
+                            const x = (stream.width - menorLado) / 2;
+                            const y = (stream.height - menorLado) / 2;
+
+                            const encoder = new GIFEncoder(menorLado, menorLado);
+                            const streamGif = encoder.createReadStream();
+                            streamGif.pipe(createWriteStream(outputGif));
+
+                            encoder.start();
+                            encoder.setRepeat(0);
+                            encoder.setDelay(500);
+                            encoder.setQuality(10);
+
+                            const canvas = createCanvas(menorLado, menorLado);
+                            const ctx: any = canvas.getContext('2d');
+
+                            ffmpeg(caminho)
+                                .outputOptions([
+                                    `-vf crop=${menorLado}:${menorLado}:${x}:${y},scale=${menorLado}:${menorLado}`,
+                                    `-pix_fmt rgb24`,
+                                ])
+                                .format('image2pipe')
+                                .pipe()
+                                .on('data', data => {
+                                    sharp(data)
+                                        .resize(menorLado, menorLado)
+                                        .toBuffer()
+                                        .then(buffer => {
+                                            const img = new Image();
+                                            img.onload = () => {
+                                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                                ctx.save();
+                                                ctx.beginPath();
+                                                ctx.arc(canvas.width / 2, canvas.height / 2, menorLado / 2, 0, Math.PI * 2, true);
+                                                ctx.closePath();
+                                                ctx.clip();
+                                                ctx.drawImage(img, 0, 0, menorLado, menorLado);
+                                                ctx.restore();
+                                                encoder.addFrame(ctx);
+                                            };
+                                            img.src = buffer;
+                                        })
+                                        .catch(reject);
+                                })
+                                .on('end', () => {
+                                    encoder.finish();
+                                    ffmpeg(outputGif)
+                                        .outputOptions([`-vcodec libwebp`, `-vf fps=30`, `-loop 0`])
+                                        .save(outputWebp)
+                                        .on('end', () => {
+                                            const gifBuffer = fs.readFileSync(outputWebp);
+                                            const base64Gif = gifBuffer.toString('base64');
+                                            resolve(base64Gif);
+                                            fs.unlinkSync(outputGif);
+                                            fs.unlinkSync(outputWebp);
+                                        })
+                                        .on('error', reject);
+                                })
+                                .on('error', reject);
+                        } else {
+                            reject(new Error('Não foi possível obter a largura e a altura do vídeo.'));
+                        }
                     }
-                }
+                });
             });
-        });
+        } catch (err: any) {
+            console.log(err.message, 'Erro na conversão de vídeo para GIF.');
+            throw new Error('Erro na conversão de vídeo para GIF.');
+        }
     };
 
     public static salvarArquivoBase64 = (caminho: string, dadosBase64: string): Promise<string> => {

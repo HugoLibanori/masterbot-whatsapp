@@ -52,6 +52,8 @@ export default class AntiPorno {
                                 await message.delete(true);
                                 fs.unlinkSync(localArquivo);
                                 return false;
+                            } else {
+                                fs.unlinkSync(localArquivo);
                             }
                         }
                     } else {
