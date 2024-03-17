@@ -24,6 +24,12 @@ Abra o prompt de comando (CMD/Terminal) na pasta do projeto que você extraiu e 
 npm i
 ```
 
+depois instale o ts-node globalmente.
+
+```bash
+npm install -g ts-node
+```
+
 #### Obs: Se houver algum erro verifique as dependências estão todas instaladas.
 
 <br>
@@ -85,11 +91,15 @@ Para que o comando **!figurinhas** funcione, adicione imagens dentro da pasta 'f
         API_REMOVEBG=??????
 
         ############ PATH GOOGLE CHROME ##############
-        PATH_CHROME_WIN='C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+        PATH_CHROME='C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+
+        ############ API SITE https://sightengine.com/ PARA ANTIPORNO ##############
+        API_USER=??????
+        API_SECRET=??????
 
 **Obs**: Se o seu sistema for MAC, habilite a exibição de arquivos ocultos para exibir o .env na raiz do projeto.<br>
 
-Configure o caminho do PATH_CHROME_WIN para não haver erros, por padrão ele vem com path do windows. Se seu sistema for diferente mude-o.
+Configure o caminho do PATH_CHROME para não haver erros, por padrão ele vem com path do windows. Se seu sistema for diferente mude-o.
 
 <br>
 
