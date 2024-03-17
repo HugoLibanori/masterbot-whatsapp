@@ -13,7 +13,5 @@ logs/session/*
 database/db/*.db
 #Ignorar arquivos json
 database/json/*.json
-#Ignorar imagens pasta figurinhas
-figurinhas/*
 # Ignorando pasta dist
 dist
