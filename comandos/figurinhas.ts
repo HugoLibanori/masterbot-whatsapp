@@ -188,6 +188,7 @@ class Figurinhas {
                                 message.reply(msgs_texto.figurinhas.sticker.erro_s);
                             });
                         } catch (err: any) {
+                            await message.reply('[❗] Sistem de remover fundo das imagens esta temporariamente fora!');
                             console.log(err);
                         }
                     } else {
