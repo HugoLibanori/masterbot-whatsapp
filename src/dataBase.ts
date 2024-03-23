@@ -470,6 +470,10 @@ export default {
         }
     },
 
+    removerContagem: async (id_grupo: string, id_usuario: string) => {
+        await db.contador.asyncRemove({ id_grupo, id_usuario });
+    },
+
     removerContagemGrupo: async (id_grupo: string) => {
         await db.contador.asyncRemove({ id_grupo }, { multi: true });
     },

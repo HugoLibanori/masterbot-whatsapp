@@ -27,7 +27,8 @@ export default class Admin {
             const ownerNumber = process.env.NUMERO_DONO?.trim();
             const isOwner = isGroup ? ownerNumber === author.replace(/@c.us/g, '') : ownerNumber === from.replace(/@c.us/g, '');
             const botNumber = client.info.wid._serialized;
-            const blockNumber = await client.getBlockedContacts();
+            const blockNumberArray = await client.getBlockedContacts();
+            const blockNumber = blockNumberArray.filter((user: { id: { _serialized: string } }) => user.id._serialized);
             if (!isOwner) return message.reply(msgs_texto.permissao.apenas_dono_bot);
             const PREFIX = process.env.PREFIX || '!';
 
@@ -208,6 +209,12 @@ export default class Admin {
                 const usuarioComandos = body.slice(12).split(' '),
                     respostaBloqueio = await block.bloquearComandosGlobal(usuarioComandos);
                 await message.reply(respostaBloqueio);
+            } else if (comando === `${PREFIX}listarbloqueados`) {
+                let resposta = '';
+                for (const user in blockNumber) {
+                    resposta += criarTexto('Contatos bloqueados', user);
+                }
+                await message.reply(resposta);
             }
         } catch (err: any) {
             consoleErro(err, 'ADMINISTRAÇÂO');

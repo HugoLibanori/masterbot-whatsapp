@@ -79,15 +79,25 @@ client.on('group_join', async (add: GroupNotification) => {
             )
         )
             return;
+        if (g_info.contador.status)
+            await db.removerContagem(
+                add.chatId,
+                add.recipientIds.reduce(id => id),
+            );
         await adicionarParticipante(
             add.chatId,
             add.recipientIds.reduce(id => id),
         );
-    } else {
+    } else if (add.type === 'remove') {
         await removerParticipante(
             add.chatId,
             add.recipientIds.reduce(id => id),
         );
+        if (g_info.contador.status)
+            await db.removerContagem(
+                add.chatId,
+                add.recipientIds.reduce(id => id),
+            );
     }
 });
 

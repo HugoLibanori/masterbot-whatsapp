@@ -90,6 +90,7 @@ const comandos: Comandos = {
         `${PREFIX}r`,
         `${PREFIX}verdados`,
         `${PREFIX}desligar`,
+        `${PREFIX}listarbloqueados`,
     ],
     diversao: [`${PREFIX}viadometro`, `${PREFIX}bafometro`, `${PREFIX}gadometro`],
     utilidades: [`${PREFIX}voz`, `${PREFIX}pesquisa`, `${PREFIX}noticias`],
