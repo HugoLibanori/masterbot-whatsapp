@@ -28,7 +28,7 @@ export default class Admin {
             const isOwner = isGroup ? ownerNumber === author.replace(/@c.us/g, '') : ownerNumber === from.replace(/@c.us/g, '');
             const botNumber = client.info.wid._serialized;
             const blockNumberArray = await client.getBlockedContacts();
-            const blockNumber = blockNumberArray.filter((user: { id: { _serialized: string } }) => user.id._serialized);
+            const blockNumber = blockNumberArray.map((user: { id: { _serialized: string } }) => user.id._serialized);
             if (!isOwner) return message.reply(msgs_texto.permissao.apenas_dono_bot);
             const PREFIX = process.env.PREFIX || '!';
 
@@ -210,11 +210,14 @@ export default class Admin {
                     respostaBloqueio = await block.bloquearComandosGlobal(usuarioComandos);
                 await message.reply(respostaBloqueio);
             } else if (comando === `${PREFIX}listarbloqueados`) {
-                let resposta = '';
-                for (const user in blockNumber) {
-                    resposta += criarTexto('Contatos bloqueados', user);
+                if (blockNumber.length === 0) return await message.reply('Nenhum usuário bloqueado.');
+                let resposta = criarTexto(msgs_texto.grupo.mm.resposta_titulo_variavel, 'Contatos bloqueados');
+                const mentions: string[] = [];
+                for (const user of blockNumber) {
+                    resposta += criarTexto(msgs_texto.grupo.mm.resposta_itens, user.replace('@c.us', ''));
+                    mentions.push(user);
                 }
-                await message.reply(resposta);
+                await client.sendMessage(from, resposta, { mentions });
             }
         } catch (err: any) {
             consoleErro(err, 'ADMINISTRAÇÂO');
