@@ -27,7 +27,8 @@ export class ChecandoMensagens {
             const ownerNumber = process.env.NUMERO_DONO?.trim();
             const isOwner = isGroup ? ownerNumber === author.replace(/@c.us/g, '') : ownerNumber === from.replace(/@c.us/g, '');
             const autor = isGroup ? author : from;
-            const blockNumber = await client.getBlockedContacts();
+            const blockNumberArray = await client.getBlockedContacts();
+            const blockNumber = blockNumberArray.map((user: { id: { _serialized: string } }) => user.id._serialized);
             const isBlocked = blockNumber.includes(autor);
             // COMANDOS
             const comandoExiste =
