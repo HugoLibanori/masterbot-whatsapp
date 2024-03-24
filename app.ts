@@ -18,13 +18,37 @@ const client: Client = new Client({
     authStrategy: new LocalAuth({
         dataPath: 'session',
     }),
-    puppeteer: {
-        executablePath: process.env.PATH_CHROME || undefined,
-        args: ['--no-sandbox'],
-    },
     webVersionCache: {
         type: 'local',
         path: 'session',
+    },
+    puppeteer: {
+        executablePath: process.env.PATH_CHROME || undefined,
+        args: [
+            '--no-sandbox',
+            '--disable-client-side-phishing-detection',
+            '--disable-setuid-sandbox',
+            '--disable-component-update',
+            '--disable-default-apps',
+            '--disable-popup-blocking',
+            '--disable-offer-store-unmasked-wallet-cards',
+            '--disable-speech-api',
+            '--hide-scrollbars',
+            '--mute-audio',
+            '--disable-extensions',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-default-browser-check',
+            '--no-pings',
+            '--password-store=basic',
+            '--use-mock-keychain',
+            '--no-zygote',
+            // '--single-process',
+            '--disable-gpu', // disable this if headless is false
+            '--disable-sync',
+            '--disable-ipc-flooding-protection',
+        ],
     },
     qrMaxRetries: 10,
 });
@@ -33,8 +57,24 @@ client.on('qr', (qr: string) => {
     qrcode.generate(qr, { small: true });
 });
 
+client.on('loading_screen', (percent, message) => {
+    console.log('LOADING SCREEN:', percent, message);
+});
+
+client.on('authenticated', () => {
+    console.log('©  Autenticado');
+});
+
+client.on('auth_failure', function () {
+    console.error('©  Falha na autenticação');
+});
+
+client.on('change_state', state => {
+    console.log('©  Status de conexão: ', state);
+});
+
 client.on('ready', async () => {
-    console.log('Cliente conectado!');
+    console.log('© Cliente conectado!');
     const necessitaCriar = await criarArquivosNecessarios();
     if (necessitaCriar) {
         console.log(corTexto(msgs_texto.inicio.arquivos_criados));
@@ -46,6 +86,11 @@ client.on('ready', async () => {
         console.log(corTexto(await cadastrarGrupo(client, 'inicio')));
         verificarEnv();
     }
+});
+
+client.on('disconnected', reason => {
+    console.log('©  Cliente desconectado', reason);
+    client.initialize();
 });
 
 // Ouvindo mensagens!
