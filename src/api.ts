@@ -85,6 +85,7 @@ export = {
                     resolve(saidaAudio);
                 })
                 .on('error', (err: any) => {
+                    fs.unlinkSync(saidaAudio);
                     reject(err.message);
                 })
                 .audioBitrate('128k')
