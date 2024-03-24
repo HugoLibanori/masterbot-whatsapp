@@ -312,7 +312,7 @@ export default class Admin {
                             });
                     }
                 }
-                await message.reply(msgs_texto.admin.bccontatos.bc_sucesso);
+                await message.reply(msgs_texto.admin.bcgrupos.bc_sucesso);
             }
         } catch (err: any) {
             consoleErro(err, 'ADMINISTRAÇÂO');
