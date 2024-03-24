@@ -369,9 +369,9 @@ const guias: Comandos = {
             `Ex: *${PREFIX}verdados* @usuario - Mostra os dados gerais do usuário mencionado.\n\n` +
             `Ex: Responder com *${PREFIX}verdados* - Mostra os dados gerais do usuário respondido.\n\n` +
             `Ex: *${PREFIX}verdados* 55219xxxxxxxx - Mostra os dados gerais do usuário com esse número.`,
-        bctodos: cabecalho + `Ex: *${PREFIX}bctodos* mensagem - Envia uma mensagem para todos os *GRUPOS E CONTATOS*.`,
-        bcgrupos: cabecalho + `Ex: *${PREFIX}bcgrupos* mensagem - Envia uma mensagem para todos os *GRUPOS*.`,
-        bccontatos: cabecalho + `Ex: *${PREFIX}bccontatos* mensagem - Envia uma mensagem para todos os *CONTATOS*.`,
+        mtodos: cabecalho + `Ex: *${PREFIX}mtodos* mensagem - Envia uma mensagem para todos os *GRUPOS E CONTATOS*.`,
+        mgrupos: cabecalho + `Ex: *${PREFIX}mgrupos* mensagem - Envia uma mensagem para todos os *GRUPOS*.`,
+        mcontatos: cabecalho + `Ex: *${PREFIX}mcontatos* mensagem - Envia uma mensagem para todos os *CONTATOS*.`,
         print: cabecalho + `Ex: *${PREFIX}print* - Tira uma print do WhatsApp Web do BOT e envia.`,
         estado:
             cabecalho +

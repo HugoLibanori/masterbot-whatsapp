@@ -240,9 +240,9 @@ const menu: {
 |- *${PREFIX}desbloquear* @usuario  - Desbloqueia o usuário mencionado.
 |- *${PREFIX}listablock*  - Lista todos os usuários bloqueados.
 |- *${PREFIX}fotobot* - Altera foto do BOT
-|- *${PREFIX}bctodos* [mensagem] - Faz um anúncio com uma mensagem para todos os CHATS.
-|- *${PREFIX}bcgrupos* [mensagem] - Faz um anúncio com uma mensagem somente para os GRUPOS.
-|- *${PREFIX}bccontatos* [mensagem] - Faz um anúncio com uma mensagem somente para os CONTATOS.
+|- *${PREFIX}mtodos* [mensagem] - Faz um anúncio com uma mensagem para todos os CHATS.
+|- *${PREFIX}mgrupos* [mensagem] - Faz um anúncio com uma mensagem somente para os GRUPOS.
+|- *${PREFIX}mcontatos* [mensagem] - Faz um anúncio com uma mensagem somente para os CONTATOS.
 |
 |-- ☾ BLOQUEIO DE COMANDOS ☽ 
 |

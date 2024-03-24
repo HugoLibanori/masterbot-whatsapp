@@ -1,4 +1,4 @@
-import { Client, MessageMedia } from 'whatsapp-web.js';
+import { Client, GroupChat, MessageMedia, GroupNotificationTypes } from 'whatsapp-web.js';
 import { isAdminGroup, consoleErro } from '../src/util';
 import db from '../src/dataBase';
 import msgs_texto from '../src/msgs';
@@ -209,15 +209,110 @@ export default class Admin {
                 const usuarioComandos = body.slice(12).split(' '),
                     respostaBloqueio = await block.bloquearComandosGlobal(usuarioComandos);
                 await message.reply(respostaBloqueio);
-            } else if (comando === `${PREFIX}listarbloqueados`) {
+            } else if (comando === `${PREFIX}listablock`) {
                 if (blockNumber.length === 0) return await message.reply('Nenhum usuário bloqueado.');
-                let resposta = criarTexto(msgs_texto.grupo.mm.resposta_titulo_variavel, 'Contatos bloqueados');
+                let resposta = criarTexto(msgs_texto.admin.listablock.resposta_titulo, blockNumber.length.toString());
                 const mentions: string[] = [];
                 for (const user of blockNumber) {
-                    resposta += criarTexto(msgs_texto.grupo.mm.resposta_itens, user.replace('@c.us', ''));
+                    resposta += criarTexto(msgs_texto.admin.listablock.resposta_itens, user.replace('@c.us', ''));
                     mentions.push(user);
                 }
                 await client.sendMessage(from, resposta, { mentions });
+            } else if (comando === `${PREFIX}mtodos`) {
+                if (args.length === 1) return await message.reply(erroComandoMsg(command));
+                const mensagem = body.slice(8).trim();
+                const chats = await client.getChats();
+                await message.reply(criarTexto(msgs_texto.admin.bctodos.espera, chats.length.toString(), chats.length.toString()));
+                for (const chat of chats) {
+                    if (chat.isGroup) {
+                        const anunciar = await client.getChatById(chat.id._serialized);
+                        const castAnuciar = anunciar as any;
+                        if (!chat.isReadOnly && !castAnuciar.groupMetadata.announce)
+                            await new Promise(resolve => {
+                                setTimeout(async () => {
+                                    resolve(
+                                        await client.sendMessage(
+                                            chat.id._serialized,
+                                            criarTexto(msgs_texto.admin.bctodos.anuncio, mensagem),
+                                        ),
+                                    );
+                                }, 1000);
+                            });
+                    } else {
+                        if (!blockNumber.includes(chat.id._serialized)) {
+                            await new Promise(resolve => {
+                                setTimeout(async () => {
+                                    resolve(
+                                        await client.sendMessage(
+                                            chat.id._serialized,
+                                            criarTexto(msgs_texto.admin.bctodos.anuncio, mensagem),
+                                        ),
+                                    );
+                                }, 1000);
+                            });
+                        }
+                    }
+                }
+                await message.reply(msgs_texto.admin.bctodos.bc_sucesso);
+            } else if (comando === `${PREFIX}mcontatos`) {
+                if (args.length === 1) return message.reply(erroComandoMsg(command));
+                const mensagem = body.slice(11).trim();
+                const chats = await client.getChats();
+                const qtdChatContatos = chats.filter((chat: { isGroup: boolean }) => !chat.isGroup);
+                await message.reply(
+                    criarTexto(msgs_texto.admin.bccontatos.espera, qtdChatContatos.length.toString(), qtdChatContatos.length.toString()),
+                );
+                for (const chat of chats) {
+                    if (!chat.isGroup && !blockNumber.includes(chat.id._serialized)) {
+                        await new Promise(resolve => {
+                            setTimeout(async () => {
+                                resolve(
+                                    await client.sendMessage(
+                                        chat.id._serialized,
+                                        criarTexto(msgs_texto.admin.bccontatos.anuncio, mensagem),
+                                    ),
+                                );
+                            }, 1000);
+                        });
+                    }
+                }
+                await message.reply(msgs_texto.admin.bccontatos.bc_sucesso);
+            } else if (comando === `${PREFIX}mgrupos`) {
+                if (args.length === 1) return message.reply(erroComandoMsg(command));
+                const mensagem = body.slice(9).trim();
+                const chats = await client.getChats();
+                const qtdChatContatos = chats.filter((chat: { isGroup: boolean }) => chat.isGroup);
+                const resposta =
+                    qtdChatContatos.length === 1
+                        ? criarTexto(
+                              msgs_texto.admin.bcgrupos.espera_um,
+                              qtdChatContatos.length.toString(),
+                              qtdChatContatos.length.toString(),
+                          )
+                        : criarTexto(
+                              msgs_texto.admin.bcgrupos.espera,
+                              qtdChatContatos.length.toString(),
+                              qtdChatContatos.length.toString(),
+                          );
+                await message.reply(resposta);
+                for (const chat of chats) {
+                    if (chat.isGroup) {
+                        const anunciar = await client.getChatById(chat.id._serialized);
+                        const castAnuciar = anunciar as any;
+                        if (!chat.isReadOnly && !castAnuciar.groupMetadata.announce)
+                            await new Promise(resolve => {
+                                setTimeout(async () => {
+                                    resolve(
+                                        await client.sendMessage(
+                                            chat.id._serialized,
+                                            criarTexto(msgs_texto.admin.bcgrupos.anuncio, mensagem),
+                                        ),
+                                    );
+                                }, 1000);
+                            });
+                    }
+                }
+                await message.reply(msgs_texto.admin.bccontatos.bc_sucesso);
             }
         } catch (err: any) {
             consoleErro(err, 'ADMINISTRAÇÂO');

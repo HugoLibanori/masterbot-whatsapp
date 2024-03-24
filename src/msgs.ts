@@ -800,6 +800,7 @@ export const msgs_texto = {
         bcgrupos: {
             anuncio: `[🤖${process.env.NOME_BOT}® - Mensagem para os grupos]\n\n` + '{p1}',
             espera: '⏳ Em andamento , estou enviando sua mensagem para {p1} grupos.\n\n' + 'Tempo estimado : *{p2}* segundos',
+            espera_um: '⏳ Em andamento , estou enviando sua mensagem para {p1} grupo.\n\n' + 'Tempo estimado : *{p2}* segundo',
             bc_sucesso: '🤖✅ Anúncio feito com sucesso.',
         },
         bccontatos: {

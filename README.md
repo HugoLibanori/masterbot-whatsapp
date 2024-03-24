@@ -168,10 +168,10 @@ pm2 start ./dist/app.js
 |      ✅      |          Auto Sticker          |
 |      ✅      |           Anti Fake            |
 |      ✅      |           Anti Link            |
-|      ❌      |     Contagem de mensagens      |
+|      ✅      |     Contagem de mensagens      |
 |      ❌      |        Marcar inativos         |
 |      ❌      |         Banir inativos         |
-|      ❌      | Bloquear/Desbloquear Comandos  |
+|      ✅      | Bloquear/Desbloquear Comandos  |
 |      ❌      |          Banir Todos           |
 |      ✅      |        Apagar mensagens        |
 
@@ -181,9 +181,9 @@ pm2 start ./dist/app.js
 | :----------------: | :--------------------------: |
 |         ❌         |      Entrar em um grupo      |
 |         ❌         |   Sair de todos os grupos    |
-|         ❌         |  Broadcast - Anuncio Geral   |
-|         ❌         | Bloquear/Desbloquear usuário |
-|         ❌         | Sistema de Tipos de Usuários |
+|         ✅         |  Broadcast - Anuncio Geral   |
+|         ✅         | Bloquear/Desbloquear usuário |
+|         ✅         | Sistema de Tipos de Usuários |
 |         ✅         |     Auto Sticker Privado     |
 |         ✅         |        Sair do grupo         |
 
