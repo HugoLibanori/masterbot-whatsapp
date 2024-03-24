@@ -85,7 +85,7 @@ export = {
                     resolve(saidaAudio);
                 })
                 .on('error', (err: any) => {
-                    fs.unlinkSync(saidaAudio);
+                    // fs.unlinkSync(saidaAudio);
                     reject(err.message);
                 })
                 .audioBitrate('128k')
@@ -113,13 +113,14 @@ export = {
         if (!videoInfo.id) return;
         const res = await ytdl.getInfo(videoInfo.id);
         const audioFormats = ytdl.filterFormats(res.formats, 'audioonly');
-        const format = ytdl.chooseFormat(audioFormats, { filter: format => format.container === 'mp4' });
-        const response = await axios({
-            url: format.url,
-            method: 'GET',
-            responseType: 'stream',
-        });
-        const saidaAudio = await module.exports.converterM4aParaMp3(response.data);
+        // const format = ytdl.chooseFormat(audioFormats, { filter: format => format.container === 'mp4' });
+        // const response = await axios({
+        //     url: format.url,
+        //     method: 'GET',
+        //     responseType: 'stream',
+        // });
+        const response = ytdl.downloadFromInfo(res, { filter: 'audioonly' });
+        const saidaAudio = await module.exports.converterM4aParaMp3(response);
         return saidaAudio;
     },
 
