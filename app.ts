@@ -19,7 +19,7 @@ const client: Client = new Client({
     authStrategy: new LocalAuth({
         dataPath: 'session',
     }),
-    webVersion: '2.2409.2',
+    webVersion: '2.2412.51',
     webVersionCache: {
         type: 'local',
         path: 'session',
