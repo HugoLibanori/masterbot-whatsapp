@@ -178,7 +178,7 @@ export default class Admin {
                 if (ownerNumber === user_tipo) return await message.reply(msgs_texto.admin.alterartipo.tipo_dono);
                 const c_registrado = await db.verificarRegistro(usuario_tipo);
                 if (c_registrado) {
-                    const alterou = await db.alterarTipoUsuario(usuario_tipo, args[1]);
+                    const alterou = await db.alterarTipoUsuario(usuario_tipo, args[1].toLocaleLowerCase());
                     if (!alterou) return await message.reply(msgs_texto.admin.alterartipo.tipo_invalido);
                     await message.reply(criarTexto(msgs_texto.admin.alterartipo.sucesso, args[1].toUpperCase()));
                 } else {
