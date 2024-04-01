@@ -97,54 +97,66 @@ client.on('disconnected', reason => {
 
 // Ouvindo mensagens!
 client.on('message', async (message: any) => {
-    if (!(await new AntiLink().antiLink(client, message))) return;
-    if (!(await new AntiPorno().antiPorno(client, message))) return;
-    if (!(await new ChecandoMensagens().start(client, message))) return;
-    await new ChamandoComandos().start(client, message);
+    try {
+        if (!(await new AntiLink().antiLink(client, message))) return;
+        if (!(await new AntiPorno().antiPorno(client, message))) return;
+        if (!(await new ChecandoMensagens().start(client, message))) return;
+        await new ChamandoComandos().start(client, message);
+    } catch (erro: any) {
+        console.error('Erro ao ouvir mensagens:', erro);
+    }
 });
 
 // OUVINDO LIGAÇÕES
 client.on('call', async (call: Call) => {
-    if (call.from === undefined) return;
-    await client.sendMessage(call.from, msgs_texto.geral.sem_ligacoes);
-    await call.reject();
-    const block = call as unknown;
-    const castBlock = block as Contact;
-    await castBlock.block();
+    try {
+        if (call.from === undefined) return;
+        await client.sendMessage(call.from, msgs_texto.geral.sem_ligacoes);
+        await call.reject();
+        const block = call as unknown;
+        const castBlock = block as Contact;
+        await castBlock.block();
+    } catch (erro) {
+        console.error('Erro com ligações:', erro);
+    }
 });
 
 client.on('group_join', async (add: GroupNotification) => {
-    const g_info = await db.obterGrupo(add.chatId);
-    if (add.type === 'add' || add.type === 'invite') {
-        if (!(await new AntiFake().antiFake(client, add, g_info))) return;
-        if (!(await verificarUsuarioListaNegra(client, add))) return;
-        new BemVindo().bemVindo(client, add, g_info);
-        if (
-            await participanteExiste(
-                add.chatId,
-                add.recipientIds.reduce(id => id),
+    try {
+        const g_info = await db.obterGrupo(add.chatId);
+        if (add.type === 'add' || add.type === 'invite') {
+            if (!(await new AntiFake().antiFake(client, add, g_info))) return;
+            if (!(await verificarUsuarioListaNegra(client, add))) return;
+            new BemVindo().bemVindo(client, add, g_info);
+            if (
+                await participanteExiste(
+                    add.chatId,
+                    add.recipientIds.reduce(id => id),
+                )
             )
-        )
-            return;
-        if (g_info.contador.status)
-            await db.removerContagem(
+                return;
+            if (g_info.contador.status)
+                await db.removerContagem(
+                    add.chatId,
+                    add.recipientIds.reduce(id => id),
+                );
+            await adicionarParticipante(
                 add.chatId,
                 add.recipientIds.reduce(id => id),
             );
-        await adicionarParticipante(
-            add.chatId,
-            add.recipientIds.reduce(id => id),
-        );
-    } else if (add.type === 'remove') {
-        await removerParticipante(
-            add.chatId,
-            add.recipientIds.reduce(id => id),
-        );
-        if (g_info.contador.status)
-            await db.removerContagem(
+        } else if (add.type === 'remove') {
+            await removerParticipante(
                 add.chatId,
                 add.recipientIds.reduce(id => id),
             );
+            if (g_info.contador.status)
+                await db.removerContagem(
+                    add.chatId,
+                    add.recipientIds.reduce(id => id),
+                );
+        }
+    } catch (erro: any) {
+        console.error('Erro entrada/saída de grupos:', erro);
     }
 });
 
