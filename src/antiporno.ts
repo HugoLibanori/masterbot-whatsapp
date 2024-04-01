@@ -8,6 +8,7 @@ import api from './api';
 
 export default class AntiPorno {
     async antiPorno(client: Client, message: any) {
+        const localArquivo = path.resolve(`media/img/tmp/${obterNomeAleatorio('.png')}`);
         try {
             const dadosGrupo = await message.getChat();
             const { from, type } = message;
@@ -30,13 +31,12 @@ export default class AntiPorno {
                     if (isBotGroupAdmin) {
                         if (!isGroupAdmins && (type === MessageTypes.IMAGE || type === MessageTypes.STICKER)) {
                             const mediaData: MessageMedia = await message.downloadMedia();
-                            const localArquivo = path.resolve(`media/img/tmp/${obterNomeAleatorio('.png')}`);
                             fs.writeFileSync(localArquivo, mediaData.data, { encoding: 'base64' });
                             const resp = await api.obterNsfw(localArquivo);
                             if (
                                 resp.data['nudity']['sexual_display'] >= 0.6 ||
                                 resp.data['nudity']['sexual_activity'] >= 0.6 ||
-                                resp.data['nudity']['erotica'] >= 0.6
+                                resp.data['nudity']['erotica'] >= 0.8
                             ) {
                                 await dadosGrupo.removeParticipants([author]);
                                 await client.sendMessage(
@@ -63,6 +63,7 @@ export default class AntiPorno {
             }
             return true;
         } catch (err) {
+            fs.unlinkSync(localArquivo);
             consoleErro(msgs_texto.grupo.antiporno.erro_api, 'ANTI-PORNO');
             return false;
         }
