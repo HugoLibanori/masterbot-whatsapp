@@ -13,13 +13,11 @@ import AntiLink from './src/alink';
 import AntiPorno from './src/antiporno';
 import { verificarEnv } from './src/env';
 import { verificarUsuarioListaNegra } from './src/listaNegra';
-import { from } from 'form-data';
 
 const client: Client = new Client({
     authStrategy: new LocalAuth({
         dataPath: 'session',
     }),
-    webVersion: '2.2412.51',
     webVersionCache: {
         type: 'local',
         path: 'session',
