@@ -65,9 +65,23 @@ interface Nsfw {
 
 export = {
     obterInfoVideoYT: async (query: string): Promise<Video> => {
+        function extractVideoIdFromUrl(url: string): string | null {
+            const match = url.match(
+                /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+            );
+            return match ? match[1] : null;
+        }
         try {
-            const res = await Youtube.searchOne(query);
-            const video = res;
+            let video: Video;
+            const isYoutube = new RegExp(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/[^\/\n\s]+\/|(?:youtu\.be\/))([^\s]+)/gi);
+
+            if (isYoutube.test(query)) {
+                video = await Youtube.getVideo(query);
+            } else {
+                // Se não for um link, realizar uma pesquisa no YouTube
+                const res = await Youtube.searchOne(query);
+                video = res;
+            }
             return video;
         } catch (err: any) {
             consoleErro(err.message, 'API obterInfoVideoYT');
