@@ -123,6 +123,21 @@ export = {
         }
     },
 
+    verificarTipoDeMidia: (url: string | undefined): string => {
+        if (!url) {
+            return 'URL não fornecido';
+        }
+        // Verificar se o URL contém uma extensão de imagem comum usando regex
+        const regexImagem = /\.(jpg|jpeg|png|gif|bmp|webp|heic)/i;
+
+        if (url.match(regexImagem)) {
+            return 'imagem';
+        }
+
+        // Se não for uma imagem, assumimos que é um vídeo
+        return 'vídeo';
+    },
+
     obterYtMp3: async (videoInfo: Video): Promise<any> => {
         if (!videoInfo.id) return;
         const res = await ytdl.getInfo(videoInfo.id);

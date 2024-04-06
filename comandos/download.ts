@@ -86,25 +86,40 @@ class Download {
                 try {
                     const usuarioTexto = body.slice(4).trim();
                     const resultadosMidia = await api.obterMidiaInstagram(usuarioTexto);
-                    const caminhoVideo = await api.realizarDownload(resultadosMidia);
                     if (!resultadosMidia) return await message.reply(msgs_texto.downloads.ig.nao_encontrado);
-                    await new Promise(resolve => setTimeout(resolve, 2000));
-                    const media: MessageMedia = MessageMedia.fromFilePath(caminhoVideo);
-                    if (resultadosMidia) {
-                        await client
-                            .sendMessage(from, media, { caption: 'Aqui seu video.' })
-                            .then(() => {
-                                fs.unlinkSync(caminhoVideo);
-                            })
-                            .catch((err: any) => {
-                                fs.unlinkSync(caminhoVideo);
+                    const tipoMidia = api.verificarTipoDeMidia(resultadosMidia);
+                    if (tipoMidia === 'vídeo') {
+                        const caminhoVideo = await api.realizarDownload(resultadosMidia);
+                        await new Promise(resolve => setTimeout(resolve, 2000));
+                        const media: MessageMedia = MessageMedia.fromFilePath(caminhoVideo);
+                        if (resultadosMidia) {
+                            await client
+                                .sendMessage(from, media, { caption: 'Aqui seu vídeo.' })
+                                .then(() => {
+                                    fs.unlinkSync(caminhoVideo);
+                                })
+                                .catch((err: any) => {
+                                    fs.unlinkSync(caminhoVideo);
+                                    console.log(err);
+                                    message.reply(msgs_texto.downloads.ig.erro_download);
+                                });
+                        } else {
+                            let temErro = false;
+                            for (const url of resultadosMidia) await message.reply(url).catch(() => (temErro = true));
+                            if (temErro) await message.reply(msgs_texto.downloads.ig.erro_download);
+                        }
+                    } else {
+                        const media: MessageMedia = await MessageMedia.fromUrl(resultadosMidia);
+                        if (resultadosMidia) {
+                            await client.sendMessage(from, media, { caption: 'Aqui sua imagem.' }).catch((err: any) => {
                                 console.log(err);
                                 message.reply(msgs_texto.downloads.ig.erro_download);
                             });
-                    } else {
-                        let temErro = false;
-                        for (const url of resultadosMidia) await message.reply(url).catch(() => (temErro = true));
-                        if (temErro) await message.reply(msgs_texto.downloads.ig.erro_download);
+                        } else {
+                            let temErro = false;
+                            for (const url of resultadosMidia) await message.reply(url).catch(() => (temErro = true));
+                            if (temErro) await message.reply(msgs_texto.downloads.ig.erro_download);
+                        }
                     }
                 } catch (err: any) {
                     console.log(err);
