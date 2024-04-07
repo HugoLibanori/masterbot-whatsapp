@@ -625,7 +625,7 @@ export const msgs_texto = {
             entrar_sucesso: '🤖✅ Entendido, entrarei em breve no grupo.',
         },
         infocompleta: {
-            resposta_superior: '*Criador do Bot* : {p1}\n' + '*Nome do bot* : {p2}\n' + '-------------------\n',
+            resposta_superior: '*Criador do Bot* : {p1}\n' + '*Nome do bot* : {p2}\n' + '*Online desde* : {p3}\n' + '-------------------\n',
             resposta_variavel: {
                 limite_diario: {
                     on: '*Limite diário* : ✅\n' + '- Reseta em : *{p1}*\n' + '-------------------\n',
