@@ -12,7 +12,8 @@ import AntiFake from './src/antifake';
 import AntiLink from './src/alink';
 import AntiPorno from './src/antiporno';
 import { verificarEnv } from './src/env';
-import { verificarUsuarioListaNegra } from './src/listaNegra';
+import { verificarUsuarioListaNegra, verificacaoListaNegraGeral } from './src/listaNegra';
+import bot from './src/bot';
 
 const client: Client = new Client({
     authStrategy: new LocalAuth({
@@ -82,8 +83,15 @@ client.on('ready', async () => {
             return client.destroy();
         }, 5000);
     } else {
-        console.log(corTexto(await atualizarParticipantes(client)));
+        //Cadastro de grupos
         console.log(corTexto(await cadastrarGrupo(client, 'inicio')));
+        //Verificar lista negra dos grupos
+        console.log(corTexto(await verificacaoListaNegraGeral(client)));
+        //Atualização dos participantes dos grupos
+        console.log(corTexto(await atualizarParticipantes(client)));
+        //Pegando hora de inicialização do BOT
+        console.log(corTexto(await bot.botStart()));
+        //Verificando se os campos do .env foram modificados e envia para o console
         verificarEnv();
     }
 });
@@ -119,38 +127,38 @@ client.on('call', async (call: Call) => {
     }
 });
 
-client.on('group_join', async (add: GroupNotification) => {
+client.on('group_join', async (ev: GroupNotification) => {
     try {
-        const g_info = await db.obterGrupo(add.chatId);
-        if (add.type === 'add' || add.type === 'invite') {
-            if (!(await new AntiFake().antiFake(client, add, g_info))) return;
-            if (!(await verificarUsuarioListaNegra(client, add))) return;
-            new BemVindo().bemVindo(client, add, g_info);
+        const g_info = await db.obterGrupo(ev.chatId);
+        if (ev.type === 'add' || ev.type === 'invite') {
+            if (!(await new AntiFake().antiFake(client, ev, g_info))) return;
+            if (!(await verificarUsuarioListaNegra(client, ev))) return;
+            new BemVindo().bemVindo(client, ev, g_info);
             if (
                 await participanteExiste(
-                    add.chatId,
-                    add.recipientIds.reduce(id => id),
+                    ev.chatId,
+                    ev.recipientIds.reduce(id => id),
                 )
             )
                 return;
             if (g_info.contador.status)
                 await db.removerContagem(
-                    add.chatId,
-                    add.recipientIds.reduce(id => id),
+                    ev.chatId,
+                    ev.recipientIds.reduce(id => id),
                 );
             await adicionarParticipante(
-                add.chatId,
-                add.recipientIds.reduce(id => id),
+                ev.chatId,
+                ev.recipientIds.reduce(id => id),
             );
-        } else if (add.type === 'remove') {
+        } else if (ev.type === 'remove') {
             await removerParticipante(
-                add.chatId,
-                add.recipientIds.reduce(id => id),
+                ev.chatId,
+                ev.recipientIds.reduce(id => id),
             );
             if (g_info.contador.status)
                 await db.removerContagem(
-                    add.chatId,
-                    add.recipientIds.reduce(id => id),
+                    ev.chatId,
+                    ev.recipientIds.reduce(id => id),
                 );
         }
     } catch (erro: any) {
