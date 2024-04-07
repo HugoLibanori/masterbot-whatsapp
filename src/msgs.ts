@@ -30,9 +30,7 @@ export const msgs_texto = {
                 '*Nome do bot* : {p2}\n' +
                 '*Online desde* : {p3}\n' +
                 '*Comandos executados* : {p4}\n' +
-                '*Contato do criador* : wa.me/{p5}\n' +
-                '*Versão atual* : {p6}\n' +
-                '*GitHub* : https://github.com/HugoLibanori/lbot-whatsapp.git\n',
+                '*Contato do criador* : wa.me/{p5}\n',
         },
         meusdados: {
             resposta_geral:
@@ -627,12 +625,7 @@ export const msgs_texto = {
             entrar_sucesso: '🤖✅ Entendido, entrarei em breve no grupo.',
         },
         infocompleta: {
-            resposta_superior:
-                '*Criador do Bot* : {p1}\n' +
-                '*Nome do bot* : {p2}\n' +
-                '*Versão* : {p3}\n' +
-                '*GitHub* : https://github.com/HugoLibanori/masterbot-whatsapp\n' +
-                '-------------------\n',
+            resposta_superior: '*Criador do Bot* : {p1}\n' + '*Nome do bot* : {p2}\n' + '-------------------\n',
             resposta_variavel: {
                 limite_diario: {
                     on: '*Limite diário* : ✅\n' + '- Reseta em : *{p1}*\n' + '-------------------\n',

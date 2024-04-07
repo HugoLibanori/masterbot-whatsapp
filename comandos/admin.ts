@@ -1,5 +1,5 @@
 import { Client, GroupChat, MessageMedia, GroupNotificationTypes } from 'whatsapp-web.js';
-import { isAdminGroup, consoleErro } from '../src/util';
+import { isAdminGroup, consoleErro, timestampParaData } from '../src/util';
 import db from '../src/dataBase';
 import msgs_texto from '../src/msgs';
 import menu from '../src/menu';
@@ -7,7 +7,6 @@ import botInfo from '../src/bot';
 import fs from 'fs';
 import path from 'path';
 import { criarTexto, erroComandoMsg } from '../src/util';
-import { version } from '../package.json';
 import block from '../src/bloquioComandos';
 
 export default class Admin {
@@ -47,9 +46,10 @@ export default class Admin {
                 const fotoBot = await client.getProfilePicUrl(botNumber);
                 const filePath = path.resolve('database/json/bot.json');
                 const infoBot = JSON.parse(fs.readFileSync(filePath, { encoding: 'utf-8' }));
+                const expiracaoLimiteDiario = timestampParaData(infoBot.limite_diario.expiracao * 1000);
                 const nomeCriador = process.env.NOME_ADMINISTRADOR || 'BOT';
                 const nomeBot = process.env.NOME_BOT || 'BOT';
-                let resposta = criarTexto(msgs_texto.admin.infocompleta.resposta_superior, nomeCriador, nomeBot, version);
+                let resposta = criarTexto(msgs_texto.admin.infocompleta.resposta_superior, nomeCriador, nomeBot);
                 // AUTO-STICKER
                 resposta += infoBot.autosticker
                     ? msgs_texto.admin.infocompleta.resposta_variavel.autosticker.on
@@ -58,6 +58,34 @@ export default class Admin {
                 resposta += infoBot.pvliberado
                     ? msgs_texto.admin.infocompleta.resposta_variavel.pvliberado.on
                     : msgs_texto.admin.infocompleta.resposta_variavel.pvliberado.off;
+                // LIMITE COMANDOS DIARIO
+                resposta += infoBot.limite_diario.status
+                    ? criarTexto(msgs_texto.admin.infocompleta.resposta_variavel.limite_diario.on, expiracaoLimiteDiario)
+                    : msgs_texto.admin.infocompleta.resposta_variavel.limite_diario.off;
+                // LIMITE COMANDOS POR MINUTO
+                resposta += infoBot.limitecomandos.status
+                    ? criarTexto(
+                          msgs_texto.admin.infocompleta.resposta_variavel.taxa_comandos.on,
+                          infoBot.limitecomandos.cmds_minuto_max,
+                          infoBot.limitecomandos.tempo_bloqueio,
+                      )
+                    : msgs_texto.admin.infocompleta.resposta_variavel.taxa_comandos.off;
+                // LIMITE MENSAGENS PV
+                resposta += infoBot.limitarmensagens.status
+                    ? criarTexto(
+                          msgs_texto.admin.infocompleta.resposta_variavel.limitarmsgs.on,
+                          infoBot.limitarmensagens.max,
+                          infoBot.limitarmensagens.intervalo,
+                      )
+                    : msgs_texto.admin.infocompleta.resposta_variavel.limitarmsgs.off;
+                // LIMITE MENSAGENS PV
+                resposta += infoBot.limitarmensagens.status
+                    ? criarTexto(
+                          msgs_texto.admin.infocompleta.resposta_variavel.limitarmsgs.on,
+                          infoBot.limitarmensagens.max,
+                          infoBot.limitarmensagens.intervalo,
+                      )
+                    : msgs_texto.admin.infocompleta.resposta_variavel.limitarmsgs.off;
 
                 if (fotoBot) {
                     const mediaFotoBot = await MessageMedia.fromUrl(fotoBot);
@@ -66,7 +94,7 @@ export default class Admin {
                     await client.sendMessage(from, resposta);
                 }
             } else if (comando === `${PREFIX}autostickerpv`) {
-                const novoEstado = !botInfo.botInfo().autosticker;
+                const novoEstado: boolean = !botInfo.botInfo().autosticker;
                 if (novoEstado) {
                     botInfo.botAlterarAutoSticker(true);
                     await message.reply(msgs_texto.admin.autostickerpv.ativado);
