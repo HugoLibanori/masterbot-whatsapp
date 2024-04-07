@@ -47,9 +47,10 @@ export default class Admin {
                 const filePath = path.resolve('database/json/bot.json');
                 const infoBot = JSON.parse(fs.readFileSync(filePath, { encoding: 'utf-8' }));
                 const expiracaoLimiteDiario = timestampParaData(infoBot.limite_diario.expiracao * 1000);
+                const botInicializacaoData = timestampParaData(infoBot.iniciado);
                 const nomeCriador = process.env.NOME_ADMINISTRADOR || 'BOT';
                 const nomeBot = process.env.NOME_BOT || 'BOT';
-                let resposta = criarTexto(msgs_texto.admin.infocompleta.resposta_superior, nomeCriador, nomeBot);
+                let resposta = criarTexto(msgs_texto.admin.infocompleta.resposta_superior, nomeCriador, nomeBot, botInicializacaoData);
                 // AUTO-STICKER
                 resposta += infoBot.autosticker
                     ? msgs_texto.admin.infocompleta.resposta_variavel.autosticker.on
