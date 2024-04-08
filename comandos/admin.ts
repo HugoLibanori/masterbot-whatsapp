@@ -7,7 +7,7 @@ import botInfo from '../src/bot';
 import fs from 'fs';
 import path from 'path';
 import { criarTexto, erroComandoMsg } from '../src/util';
-import block from './bloqueioComandos';
+import block from '../src/bloqueioComandos';
 import { cadastrarGrupo } from '../src/cadastrarGrupo';
 
 interface Usuario {
