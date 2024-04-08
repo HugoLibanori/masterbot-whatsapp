@@ -18,7 +18,7 @@ interface Usuario {
     id_usuario: string;
     nome: string;
     comandos_total: number;
-    comandos_dia: number | string;
+    comandos_dia: number;
     max_comandos_dia: number | null;
     tipo: string;
 }
@@ -152,9 +152,9 @@ export default {
     },
 
     ultrapassouLimite: async (id_usuario: string): Promise<boolean> => {
-        const usuario = await db.usuarios.asyncFindOne({ id_usuario });
+        const usuario: Usuario = await db.usuarios.asyncFindOne({ id_usuario });
 
-        if (usuario.max_comandos_dia == null) return false;
+        if (usuario.max_comandos_dia === null) return false;
 
         return usuario.comandos_dia >= usuario.max_comandos_dia;
     },

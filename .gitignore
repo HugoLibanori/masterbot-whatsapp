@@ -15,3 +15,5 @@ database/db/*.db
 database/json/*.json
 # Ignorando pasta dist
 dist
+#Arquivo para testes
+teste.ts

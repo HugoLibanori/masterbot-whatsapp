@@ -1,13 +1,14 @@
 require(`dotenv`).config();
 
 interface Comandos {
-    figurinhas: string[];
-    grupo: string[];
-    info: string[];
-    download: string[];
-    admin: string[];
-    diversao: string[];
-    utilidades: string[];
+    figurinhas: Array<string>;
+    grupo: Array<string>;
+    info: Array<string>;
+    download: Array<string>;
+    admin: Array<string>;
+    diversao: Array<string>;
+    utilidades: Array<string>;
+    excecoes_contagem: Array<string>;
 }
 
 const PREFIX = process.env.PREFIX || '!';
@@ -92,6 +93,16 @@ const comandos: Comandos = {
     ],
     diversao: [`${PREFIX}viadometro`, `${PREFIX}bafometro`, `${PREFIX}gadometro`],
     utilidades: [`${PREFIX}voz`, `${PREFIX}pesquisa`, `${PREFIX}noticias`],
+    excecoes_contagem: [
+        `${PREFIX}meusdados`,
+        `${PREFIX}ajuda`,
+        `${PREFIX}help`,
+        `${PREFIX}menu`,
+        `${PREFIX}help`,
+        `${PREFIX}menu`,
+        `${PREFIX}info`,
+        `${PREFIX}reportar`,
+    ],
 };
 
 export default comandos;

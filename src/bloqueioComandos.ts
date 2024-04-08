@@ -1,10 +1,9 @@
 import path from 'path';
-import fs from 'fs-extra';
 import { criarTexto } from './util';
 import db from './dataBase';
 import botInfo from './bot';
-import comandos from '../comandos/comandos';
-import msgs_texto from '../src/msgs';
+import comandos from './comandos';
+import msgs_texto from './msgs';
 
 const listaComandos = comandos;
 

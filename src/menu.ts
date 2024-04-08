@@ -251,6 +251,7 @@ const menu: {
 |
 |-- ☾ BOT USUÁRIOS ☽
 |
+|- *${PREFIX}verdados* @usuario - Mostra os dados do usuario cadastrado no bot.
 |- *${PREFIX}tipos* - Mostra todos os tipos de usuário disponíveis.
 |- *${PREFIX}alterartipo* [tipo] @usuario - Muda o tipo de conta do usuário.
 |- *${PREFIX}limpartipo* [tipo] @usuario - Limpa todos os usuários desse tipo e transforma em usuarios comuns.
@@ -260,10 +261,18 @@ const menu: {
 |
 |- *${PREFIX}pvliberado* - Ativa/desativa os comandos em mensagens privadas.
 |- *${PREFIX}autostickerpv* - Ativa/desativa a criação automática de stickers no privado.
+|- *${PREFIX}taxalimite* [qtd-comandos] [tempo-bloqueio] - Ativa/desativa a taxa de comandos por minuto.
+|- *${PREFIX}limitediario* Ativa/desativa o limite diario de comandos por dia.
+|- *${PREFIX}limitarmsgs* [qtd-msgs] [intervalo] - Ativa/desativa o limite de mensagens privadas em um intervalo.
+|- *${PREFIX}mudarlimite* [tipo] [novo-limite] - Muda o limite de comandos por dia de um tipo de usuário.
+|- *${PREFIX}rtodos* - Reseta os comandos diários de todos.
+|- *${PREFIX}r* @usuario - Reseta os comandos diários de um usuário.
 |
 |-- ☾ GRUPOS ☽
 |
+|- *${PREFIX}entrargrupo* [link-grupo] - BOT entra no grupo.
 |- *${PREFIX}sair* - Sai do grupo.
+|- *${PREFIX}grupos* - Mostra os grupos em que o bot está.
 |
 ╰╼❥ ${nomeBot.trim()}® by *${nomeAdm.trim()}*`;
     },

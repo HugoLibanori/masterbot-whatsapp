@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import msgs_texto from './msgs';
 import moment from 'moment-timezone';
+import db from '../src/dataBase';
 
 interface Bot {
     iniciado: number;
@@ -134,7 +135,6 @@ export const botInfo = {
     },
 
     botQtdLimiteDiario: async (tipo: string, limite: number | null) => {
-        const db = require(path.resolve('lib/database.js'));
         const botData = JSON.parse(fs.readFileSync(botFilePath, { encoding: 'utf-8' }));
         if (limite == -1) limite = null;
         if (botData.limite_diario.limite_tipos[tipo] === undefined) return false;
@@ -145,7 +145,6 @@ export const botInfo = {
     },
 
     botAlterarLimiteDiario: async (status: boolean) => {
-        const db = require(path.resolve('lib/database.js'));
         const botData = JSON.parse(fs.readFileSync(botFilePath, { encoding: 'utf-8' }));
         const timestamp_atual = Math.round(new Date().getTime() / 1000);
         botData.limite_diario.expiracao = status ? timestamp_atual + 86400 : 0;
@@ -158,13 +157,12 @@ export const botInfo = {
         } else {
             await db.resetarComandosDia();
             for (const tipo in botData.limite_diario.limite_tipos) {
-                await db.definirLimite(tipo, null);
+                await db.definirLimite(tipo, 0);
             }
         }
     },
 
     botVerificarExpiracaoLimite: async () => {
-        const db = require(path.resolve('lib/database.js'));
         const botData = JSON.parse(fs.readFileSync(botFilePath, { encoding: 'utf-8' }));
         const timestamp_atual = Math.round(new Date().getTime() / 1000);
         if (timestamp_atual >= botData.limite_diario.expiracao) {
@@ -185,7 +183,7 @@ export const botInfo = {
     },
 
     botLimitarComando: async (usuario_id: string, tipo_usuario: string, isAdmin: boolean) => {
-        const { criarTexto } = require(path.resolve('lib/util.js'));
+        const { criarTexto } = require(path.resolve('src/util.ts'));
         const botData = JSON.parse(fs.readFileSync(botFilePath, { encoding: 'utf-8' }));
         const timestamp_atual = Math.round(new Date().getTime() / 1000);
         let resposta = {};
@@ -242,7 +240,7 @@ export const botInfo = {
             }
         }
 
-        await fs.writeFileSync(botFilePath, JSON.stringify(botData));
+        fs.writeFileSync(botFilePath, JSON.stringify(botData));
         return resposta;
     },
 
@@ -292,7 +290,7 @@ export const botInfo = {
             }
         }
 
-        await fs.writeFileSync(botFilePath, JSON.stringify(botData));
+        fs.writeFileSync(botFilePath, JSON.stringify(botData));
         return resposta;
     },
 

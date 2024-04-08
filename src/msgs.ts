@@ -706,7 +706,7 @@ export const msgs_texto = {
         mudarlimite: {
             invalido: '[❗] O número para definir o limite de comandos é inválido',
             tipo_invalido: `[❗] O tipo de usuário que você inseriu é inválido, verifique os tipos disponíveis em *${PREFIX}tipos*`,
-            erro_limite_diario: '[❗] Este comando só pode ser usado com o *!limitediario* ativado.',
+            erro_limite_diario: `[❗] Este comando só pode ser usado com o *${PREFIX}limitediario* ativado.`,
             sucesso: '✅ O limite diário dos usuários do tipo *{p1}* foi definido para *{p2}* comandos/dia ',
         },
         alterartipo: {
@@ -765,11 +765,11 @@ export const msgs_texto = {
         r: {
             sucesso: '✅ Os comandos diários desse usuário foram resetados',
             nao_registrado: '[❗] Este usuário ainda não está registrado',
-            erro_limite_diario: '[❗] Este comando só pode ser usado com o *!limitediario* ativado.',
+            erro_limite_diario: `[❗] Este comando só pode ser usado com o *${PREFIX}limitediario* ativado.`,
         },
         rtodos: {
             sucesso: '✅ Os comandos diários de todos os usuários foram resetados',
-            erro_limite_diario: '[❗] Este comando só pode ser usado com o *!limitediario* ativado.',
+            erro_limite_diario: `[❗] Este comando só pode ser usado com o *${PREFIX}limitediario* ativado.`,
         },
         verdados: {
             nao_registrado: '[❗] Este usuário ainda não está registrado',
@@ -806,7 +806,7 @@ export const msgs_texto = {
             resposta_itens:
                 '----------------------------\n' +
                 '*Nome* : {p1}\n' +
-                '*Membros* : {p2}/257\n' +
+                '*Membros* : {p2}/1024\n' +
                 '*Bot é admin?* {p3}\n' +
                 '*Link* : {p4}\n\n',
         },

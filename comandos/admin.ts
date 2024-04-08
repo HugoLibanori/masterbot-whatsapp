@@ -7,7 +7,17 @@ import botInfo from '../src/bot';
 import fs from 'fs';
 import path from 'path';
 import { criarTexto, erroComandoMsg } from '../src/util';
-import block from '../src/bloquioComandos';
+import block from './bloqueioComandos';
+import { cadastrarGrupo } from '../src/cadastrarGrupo';
+
+interface Usuario {
+    id_usuario: string;
+    nome: string;
+    comandos_total: number;
+    comandos_dia: number | string;
+    max_comandos_dia: number | null;
+    tipo: string;
+}
 
 export default class Admin {
     async admin(client: Client, message: any) {
@@ -23,7 +33,7 @@ export default class Admin {
             const comando = args[0].toLowerCase().trim();
             const formattedTitle: string = (await client.getChatById(from)).name;
             const isGroupAdmins: boolean = isGroup ? isAdminGroup(author, dadosAdmin) : false;
-            const ownerNumber = process.env.NUMERO_DONO?.trim();
+            const ownerNumber = process.env.NUMERO_DONO?.trim() || 'DONO NÃO REGISTRADO';
             const isOwner = isGroup ? ownerNumber === author.replace(/@c.us/g, '') : ownerNumber === from.replace(/@c.us/g, '');
             const botNumber = client.info.wid._serialized;
             const blockNumberArray = await client.getBlockedContacts();
@@ -79,15 +89,17 @@ export default class Admin {
                           infoBot.limitarmensagens.intervalo,
                       )
                     : msgs_texto.admin.infocompleta.resposta_variavel.limitarmsgs.off;
-                // LIMITE MENSAGENS PV
-                resposta += infoBot.limitarmensagens.status
-                    ? criarTexto(
-                          msgs_texto.admin.infocompleta.resposta_variavel.limitarmsgs.on,
-                          infoBot.limitarmensagens.max,
-                          infoBot.limitarmensagens.intervalo,
-                      )
-                    : msgs_texto.admin.infocompleta.resposta_variavel.limitarmsgs.off;
-
+                // BLOQUEIO DE COMANDOS
+                resposta +=
+                    infoBot.bloqueio_cmds.length != 0
+                        ? criarTexto(msgs_texto.admin.infocompleta.resposta_variavel.bloqueiocmds.on, infoBot.bloqueio_cmds.toString())
+                        : msgs_texto.admin.infocompleta.resposta_variavel.bloqueiocmds.off;
+                resposta += criarTexto(
+                    msgs_texto.admin.infocompleta.resposta_inferior,
+                    blockNumber.length.toString(),
+                    infoBot.cmds_executados,
+                    ownerNumber,
+                );
                 if (fotoBot) {
                     const mediaFotoBot = await MessageMedia.fromUrl(fotoBot);
                     await client.sendMessage(from, mediaFotoBot, { caption: resposta });
@@ -342,6 +354,205 @@ export default class Admin {
                     }
                 }
                 await message.reply(msgs_texto.admin.bcgrupos.bc_sucesso);
+            } else if (comando === `${PREFIX}limitediario`) {
+                const novoEstado = !botInfo.botInfo().limite_diario.status;
+                if (novoEstado) {
+                    botInfo.botAlterarLimiteDiario(true);
+                    await message.reply(msgs_texto.admin.limitediario.ativado);
+                } else {
+                    botInfo.botAlterarLimiteDiario(false);
+                    await message.reply(msgs_texto.admin.limitediario.desativado);
+                }
+            } else if (comando === `${PREFIX}taxalimite`) {
+                const novoEstado = !botInfo.botInfo().limitecomandos.status;
+                if (novoEstado) {
+                    if (args.length !== 3) return await message.reply(erroComandoMsg(command));
+                    const qtd_max_minuto = Number(args[1].trim()),
+                        tempo_bloqueio = Number(args[2].trim());
+                    if (isNaN(qtd_max_minuto) || qtd_max_minuto < 3)
+                        return await message.reply(msgs_texto.admin.limitecomandos.qtd_invalida);
+                    if (isNaN(tempo_bloqueio) || tempo_bloqueio < 10)
+                        return await message.reply(msgs_texto.admin.limitecomandos.tempo_invalido);
+                    botInfo.botAlterarLimitador(true, qtd_max_minuto, tempo_bloqueio);
+                    await message.reply(msgs_texto.admin.limitecomandos.ativado);
+                } else {
+                    botInfo.botAlterarLimitador(false);
+                    await message.reply(msgs_texto.admin.limitecomandos.desativado);
+                }
+            } else if (comando === `${PREFIX}limitarmsgs`) {
+                const novoEstado = !botInfo.botInfo().limitarmensagens.status;
+                if (novoEstado) {
+                    if (args.length !== 3) return await message.reply(erroComandoMsg(command));
+                    const max_msg = Number(args[1].trim()),
+                        msgs_intervalo = Number(args[2].trim());
+                    if (isNaN(max_msg) || max_msg < 3) return await message.reply(msgs_texto.admin.limitarmsgs.qtd_invalida);
+                    if (isNaN(msgs_intervalo) || msgs_intervalo < 10)
+                        return await message.reply(msgs_texto.admin.limitarmsgs.tempo_invalido);
+                    botInfo.botAlterarLimitarMensagensPv(true, max_msg, msgs_intervalo);
+                    await message.reply(msgs_texto.admin.limitarmsgs.ativado);
+                } else {
+                    botInfo.botAlterarLimitarMensagensPv(false);
+                    await message.reply(msgs_texto.admin.limitarmsgs.desativado);
+                }
+            } else if (comando === `${PREFIX}mudarlimite`) {
+                if (!botInfo.botInfo().limite_diario.status) return await message.reply(msgs_texto.admin.mudarlimite.erro_limite_diario);
+                if (args.length === 1) return await message.reply(erroComandoMsg(command));
+                const tipo = args[1].toLowerCase(),
+                    qtd = Number(args[2].trim());
+                if (qtd !== -1) if (isNaN(qtd) || qtd < 5) return await message.reply(msgs_texto.admin.mudarlimite.invalido);
+                const alterou = await botInfo.botQtdLimiteDiario(tipo, qtd);
+                if (!alterou) return await message.reply(msgs_texto.admin.mudarlimite.tipo_invalido);
+                await message.reply(
+                    criarTexto(msgs_texto.admin.mudarlimite.sucesso, tipo.toUpperCase(), qtd === -1 ? '∞' : qtd.toString()),
+                );
+            } else if (comando === `${PREFIX}usuarios`) {
+                if (args.length === 1) return await message.reply(erroComandoMsg(command));
+                const tipo = args[1].toLowerCase();
+                const usuarios = await db.obterUsuariosTipo(tipo);
+                if (usuarios.length == 0) return await message.reply(msgs_texto.admin.usuarios.nao_encontrado);
+                let respostaItens = '';
+                const mentions: Array<string> = [];
+                for (const usuario of usuarios)
+                    mentions.push(usuario.id_usuario),
+                        (respostaItens += criarTexto(
+                            msgs_texto.admin.usuarios.resposta_item,
+                            usuario.nome,
+                            usuario.id_usuario.replace('@c.us', ''),
+                            usuario.comandos_total.toString(),
+                        ));
+                const resposta = criarTexto(
+                    msgs_texto.admin.usuarios.resposta_titulo,
+                    tipo.toUpperCase(),
+                    usuarios.length.toString(),
+                    respostaItens,
+                );
+                await client.sendMessage(from, resposta, { mentions });
+            } else if (comando === `${PREFIX}limparTipo`) {
+                if (args.length === 1) return await message.reply(erroComandoMsg(command));
+                const tipo = args[1].toLowerCase();
+                const limpou = await db.limparTipo(tipo);
+                if (!limpou) return await message.reply(msgs_texto.admin.limpartipo.erro);
+                await message.reply(criarTexto(msgs_texto.admin.limpartipo.sucesso, tipo.toUpperCase()));
+            } else if (comando === `${PREFIX}verdados`) {
+                let idUsuario = '';
+                let dadosUsuario: Usuario;
+                if (hasQuotedMsg) idUsuario = quotedParticipant;
+                else if (mentionedIds.length === 1) idUsuario = mentionedIds;
+                else if (args.length >= 1) idUsuario = args.slice(1).join('').replace(/\W+/g, '') + '@c.us';
+                else return await message.reply(erroComandoMsg(command));
+                const usuarioRegistrado = await db.verificarRegistro(idUsuario);
+                if (usuarioRegistrado) dadosUsuario = await db.obterUsuario(idUsuario);
+                else return await message.reply(msgs_texto.admin.verdados.nao_registrado);
+                const maxComandosDia = dadosUsuario.max_comandos_dia || 'Sem limite';
+                const tipoUsuario = msgs_texto.tipos[dadosUsuario.tipo as keyof typeof msgs_texto.tipos];
+                const nomeUsuario = dadosUsuario.nome || 'Ainda não obtido';
+                let resposta = criarTexto(
+                    msgs_texto.admin.verdados.resposta_superior,
+                    nomeUsuario,
+                    tipoUsuario,
+                    dadosUsuario.id_usuario.replace('@c.us', ''),
+                );
+                if (botInfo.botInfo().limite_diario.status)
+                    resposta += criarTexto(
+                        msgs_texto.admin.verdados.resposta_variavel.limite_diario.on,
+                        dadosUsuario.comandos_dia.toString(),
+                        maxComandosDia.toString(),
+                        maxComandosDia.toString(),
+                    );
+                resposta += criarTexto(msgs_texto.admin.verdados.resposta_inferior, dadosUsuario.comandos_total.toString());
+                await message.reply(resposta);
+            } else if (comando === `${PREFIX}grupos`) {
+                const grupos = await client.getChats();
+                const hasGrupo = grupos.filter((hasGroup: { isGroup: boolean }) => hasGroup.isGroup);
+                const qtdChatContatos = grupos.filter((chat: { isGroup: boolean }) => chat.isGroup);
+                let resposta = criarTexto(msgs_texto.admin.grupos.resposta_titulo, qtdChatContatos.length.toString());
+                for (const grupo of hasGrupo) {
+                    const adminsGrupo = await client.getChatById(grupo.id._serialized);
+                    const nameGroup = (await client.getChatById(grupo.id._serialized)).name;
+                    const castAdmin = adminsGrupo as GroupChat;
+                    const participantesgrupo = castAdmin.participants;
+                    const dadosGrupoBot = castAdmin.isGroup
+                        ? participantesgrupo
+                              .filter((isAdmin: { isAdmin: boolean }) => isAdmin.isAdmin)
+                              .map((admin: { id: { _serialized: string } }) => admin.id._serialized)
+                        : [];
+                    const botAdmin = dadosGrupoBot.includes(botNumber);
+                    let linkGrupo = 'Não Disponível';
+                    if (botAdmin) linkGrupo = 'https://chat.whatsapp.com/' + (await castAdmin.getInviteCode());
+                    resposta += criarTexto(
+                        msgs_texto.admin.grupos.resposta_itens,
+                        nameGroup,
+                        participantesgrupo.length.toString(),
+                        botAdmin ? 'Sim' : 'Não',
+                        linkGrupo,
+                    );
+                }
+                await message.reply(resposta);
+            } else if (comando === `${PREFIX}entrargrupo`) {
+                if (args.length < 2) return await message.reply(erroComandoMsg(command));
+                const linkGrupo = args[1].trim();
+                // const linkGrupo = linkGrupoAll.replace('https://chat.whatsapp.com/', '');
+                console.log('LINKGROUP:', linkGrupo);
+                const grupos = await client.getChats();
+                const totalGrupos = grupos.filter((hasGroup: { isGroup: boolean }) => hasGroup.isGroup);
+                const linkValido = linkGrupo.match(/(https:\/\/chat.whatsapp.com)/gi);
+                try {
+                    const conviteInfo = await client.getInviteInfo(linkGrupo).catch(erro => {
+                        console.log('ERRO:', erro);
+                    });
+                    console.log('CONVITE INFO:', conviteInfo);
+                    if (!linkValido) return await message.reply(msgs_texto.admin.entrar_grupo.link_invalido);
+                    if (totalGrupos.length > 10) return await message.reply(msgs_texto.admin.entrar_grupo.maximo_grupos);
+                    if (linkValido) {
+                        await client.acceptInvite(linkGrupo).then(async gId => {
+                            console.log('DENTRO ACCEPT:', gId);
+                            await cadastrarGrupo(client, 'added');
+                            await message.reply(msgs_texto.admin.entrar_grupo.entrar_sucesso);
+                        });
+                    } else {
+                        await message.reply(msgs_texto.admin.entrar_grupo.link_invalido);
+                    }
+                } catch (erro: any) {
+                    console.log('DENTRO TRY CATCH:', erro);
+                }
+            } else if (comando === `${PREFIX}rtodos`) {
+                if (!botInfo.botInfo().limite_diario.status) return await message.reply(msgs_texto.admin.rtodos.erro_limite_diario);
+                await db.resetarComandosDia();
+                await message.reply(msgs_texto.admin.rtodos.sucesso);
+            } else if (comando === `${PREFIX}r`) {
+                if (!botInfo.botInfo().limite_diario.status) return await message.reply(msgs_texto.admin.r.erro_limite_diario);
+                if (quotedMsg) {
+                    const r_registrado = await db.verificarRegistro(quotedMsg);
+                    if (r_registrado) {
+                        await db.resetarComandosDiaUsuario(quotedMsg);
+                        await message.reply(msgs_texto.admin.r.sucesso);
+                    } else {
+                        return await message.reply(msgs_texto.admin.r.nao_registrado);
+                    }
+                } else if (mentionedIds.length === 1) {
+                    const r_registrado = await db.verificarRegistro(mentionedIds);
+                    if (r_registrado) {
+                        await db.resetarComandosDiaUsuario(mentionedIds);
+                        await message.reply(msgs_texto.admin.r.sucesso);
+                    } else {
+                        return await message.reply(msgs_texto.admin.r.nao_registrado);
+                    }
+                } else if (args.length >= 1) {
+                    let r_numero_usuario = '';
+                    for (let i = 1; i < args.length; i++) {
+                        r_numero_usuario += args[i];
+                    }
+                    r_numero_usuario = r_numero_usuario.replace(/\W+/g, '');
+                    const r_registrado = await db.verificarRegistro(r_numero_usuario + '@c.us');
+                    if (r_registrado) {
+                        await db.resetarComandosDiaUsuario(r_numero_usuario + '@c.us');
+                        await message.reply(msgs_texto.admin.r.sucesso);
+                    } else {
+                        return await message.reply(msgs_texto.admin.r.nao_registrado);
+                    }
+                } else {
+                    return await message.reply(erroComandoMsg(command));
+                }
             }
         } catch (err: any) {
             consoleErro(err, 'ADMINISTRAÇÂO');
