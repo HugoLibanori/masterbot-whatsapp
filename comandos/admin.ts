@@ -416,7 +416,7 @@ export default class Admin {
                     mentions.push(usuario.id_usuario),
                         (respostaItens += criarTexto(
                             msgs_texto.admin.usuarios.resposta_item,
-                            usuario.nome,
+                            usuario.nome || 'Zé Ruéla',
                             usuario.id_usuario.replace('@c.us', ''),
                             usuario.comandos_total.toString(),
                         ));
