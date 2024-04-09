@@ -51,8 +51,8 @@ export class ChecandoMensagens {
 
             //SE O CONTADOR TIVER ATIVADO E FOR UMA MENSAGEM DE GRUPO, VERIFICA SE O USUARIO EXISTE NO CONTADOR , REGISTRA ELE E ADICIONA A CONTAGEM
             if (isGroup && (await db.obterGrupo(from)).contador.status) {
-                await db.existeUsuarioContador(from, author);
-                await db.addContagem(from, author, type);
+                await db.existeUsuarioContador(from, autor);
+                await db.addContagem(from, autor, type);
             }
 
             //SE O USUARIO NÃO FOR REGISTRADO, FAÇA O REGISTRO
@@ -125,10 +125,10 @@ export class ChecandoMensagens {
                 if (!isGroup && botInfo.botInfo().limitarmensagens.status) {
                     const u = await db.obterUsuario(autor);
                     const tipo_usuario_pv = u ? u.tipo : 'bronze';
-                    const limitarMensagens: any = await botInfo.botLimitarMensagensPv(author, tipo_usuario_pv);
+                    const limitarMensagens: any = await botInfo.botLimitarMensagensPv(autor, tipo_usuario_pv);
                     if (limitarMensagens.bloquear_usuario) {
                         await client.sendMessage(autor, limitarMensagens.msg);
-                        const contato = await client.getContactById(author);
+                        const contato = await client.getContactById(autor);
                         await contato.block();
                         return false;
                     }
