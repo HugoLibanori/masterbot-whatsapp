@@ -127,7 +127,7 @@ export class ChecandoMensagens {
                     const tipo_usuario_pv = u ? u.tipo : 'bronze';
                     const limitarMensagens: any = await botInfo.botLimitarMensagensPv(autor, tipo_usuario_pv);
                     if (limitarMensagens.bloquear_usuario) {
-                        await client.sendMessage(autor, limitarMensagens.msg);
+                        await message.reply(limitarMensagens.msg);
                         const contato = await client.getContactById(autor);
                         await contato.block();
                         return false;
