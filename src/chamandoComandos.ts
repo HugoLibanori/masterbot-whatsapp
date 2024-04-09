@@ -105,22 +105,22 @@ export class ChamandoComandos {
                     if (isGroup && !isGroupAdmins && grupoInfo?.mutar) return;
                     //LIMITACAO DE COMANDO POR MINUTO
                     if (botInfo.botInfo().limitecomandos.status) {
-                        const usuario = await db.obterUsuario(author);
-                        const limiteComando: any = await botInfo.botLimitarComando(author, usuario.tipo, isGroupAdmins);
+                        const usuario = await db.obterUsuario(autor);
+                        const limiteComando: any = await botInfo.botLimitarComando(autor, usuario.tipo, isGroupAdmins);
                         if (limiteComando.comando_bloqueado)
                             if (limiteComando.msg != undefined) return await message.reply(limiteComando.msg);
                     }
                     //SE O LIMITE DIARIO DE COMANDOS ESTIVER ATIVADO
                     if (botInfo.botInfo().limite_diario.status) {
                         await botInfo.botVerificarExpiracaoLimite();
-                        const ultrapassou = await db.ultrapassouLimite(author);
-                        if (!ultrapassou) await db.addContagemDiaria(author);
+                        const ultrapassou = await db.ultrapassouLimite(autor);
+                        if (!ultrapassou) await db.addContagemDiaria(autor);
                         else
                             return await message.reply(
                                 criarTexto(msgs_texto.admin.limitediario.resposta_excedeu_limite, notifyName, ownerNumber),
                             );
                     } else {
-                        await db.addContagemTotal(author);
+                        await db.addContagemTotal(autor);
                     }
 
                     await AutoSticker.autoSticker(message, client);
@@ -130,22 +130,22 @@ export class ChamandoComandos {
                 if (!isGroup && (type === MessageTypes.IMAGE || type === MessageTypes.VIDEO) && botInfo.botInfo().autosticker) {
                     //LIMITACAO DE COMANDO POR MINUTO
                     if (botInfo.botInfo().limitecomandos.status) {
-                        const usuario = await db.obterUsuario(author);
-                        const limiteComando: any = await botInfo.botLimitarComando(author, usuario.tipo, isGroupAdmins);
+                        const usuario = await db.obterUsuario(autor);
+                        const limiteComando: any = await botInfo.botLimitarComando(autor, usuario.tipo, isGroupAdmins);
                         if (limiteComando.comando_bloqueado)
                             if (limiteComando.msg != undefined) return await message.reply(limiteComando.msg);
                     }
                     //SE O LIMITE DIARIO DE COMANDOS ESTIVER ATIVADO
                     if (botInfo.botInfo().limite_diario.status) {
                         await botInfo.botVerificarExpiracaoLimite();
-                        const ultrapassou = await db.ultrapassouLimite(author);
-                        if (!ultrapassou) await db.addContagemDiaria(author);
+                        const ultrapassou = await db.ultrapassouLimite(autor);
+                        if (!ultrapassou) await db.addContagemDiaria(autor);
                         else
                             return await message.reply(
                                 criarTexto(msgs_texto.admin.limitediario.resposta_excedeu_limite, notifyName, ownerNumber),
                             );
                     } else {
-                        await db.addContagemTotal(author);
+                        await db.addContagemTotal(autor);
                     }
                     await AutoSticker.autoSticker(message, client);
                     consoleComando(isGroup, 'FIGURINHAS', 'AUTO-STICKER', '#ae45d1', t, notifyName, formattedTitle);
