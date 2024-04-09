@@ -123,7 +123,7 @@ export class ChamandoComandos {
                         await db.addContagemTotal(author);
                     }
 
-                    AutoSticker.autoSticker(message, client);
+                    await AutoSticker.autoSticker(message, client);
                     consoleComando(isGroup, 'FIGURINHAS', 'AUTO-STICKER', '#ae45d1', t, notifyName, formattedTitle);
                 }
                 //AUTO-STICKER PRIVADO
@@ -147,7 +147,7 @@ export class ChamandoComandos {
                     } else {
                         await db.addContagemTotal(author);
                     }
-                    AutoSticker.autoSticker(message, client);
+                    await AutoSticker.autoSticker(message, client);
                     consoleComando(isGroup, 'FIGURINHAS', 'AUTO-STICKER', '#ae45d1', t, notifyName, formattedTitle);
                 }
             }
