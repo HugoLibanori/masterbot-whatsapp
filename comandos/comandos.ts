@@ -52,6 +52,7 @@ const comandos: Comandos = {
         `${PREFIX}contador`,
         `${PREFIX}topativos`,
         `${PREFIX}hidetag`,
+        `${PREFIX}admins`,
     ],
     info: [`${PREFIX}menu`],
     download: [`${PREFIX}play`, `${PREFIX}ig`, `${PREFIX}fb`, `${PREFIX}img`, `${PREFIX}yt`],

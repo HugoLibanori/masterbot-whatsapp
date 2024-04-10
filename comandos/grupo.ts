@@ -467,6 +467,14 @@ class Grupo {
                 } else {
                     return message.reply(erroComandoMsg(command));
                 }
+            } else if (command === `${PREFIX}admins`) {
+                const mentions = [];
+                let admsResposta = msgs_texto.grupo.adms.resposta_titulo;
+                for (const adm of dadosGrupoBot) {
+                    mentions.push(adm);
+                    admsResposta += criarTexto(msgs_texto.grupo.adms.resposta_itens, adm.replace(/@c.us/g, ''));
+                }
+                await client.sendMessage(from, admsResposta, { mentions });
             }
         } catch (err: any) {
             console.log(err);
