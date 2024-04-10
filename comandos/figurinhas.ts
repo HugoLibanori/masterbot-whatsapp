@@ -99,15 +99,15 @@ class Figurinhas {
                             if (args[1] === '1') {
                                 const pathVideo = path.resolve('media/videos/video_recortado.mp4');
                                 const videoSave = await Stickers.salvarArquivoBase64(pathVideo, mediaData.data);
-                                // Atraso de 1 segundo
+                                // Atraso de 3 segundo
                                 await new Promise(resolve => setTimeout(resolve, 3000));
                                 const videoCrop = await Stickers.recortarVideo(videoSave);
-                                console.log(videoCrop);
                                 const videoRecortado = MessageMedia.fromFilePath(videoCrop);
                                 await client.sendMessage(from, videoRecortado, dadosStickers).catch((err: any) => {
                                     console.log(err);
                                     message.reply(msgs_texto.figurinhas.sticker.erro_s);
                                 });
+                                await new Promise(resolve => setTimeout(resolve, 3000));
                                 fs.unlinkSync(videoCrop);
                                 fs.unlinkSync(videoSave);
                                 return;
