@@ -20,7 +20,7 @@ interface Bot {
             bronze: number;
             prata: number;
             ouro: number;
-            vip: number;
+            vip: null;
         };
     };
     limitarmensagens: {
@@ -68,7 +68,7 @@ const bot: Bot = {
             bronze: 25,
             prata: 50,
             ouro: 100,
-            vip: 1000000,
+            vip: null,
         },
     },
     limitarmensagens: {

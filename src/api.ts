@@ -319,4 +319,21 @@ export = {
             }
         }
     },
+
+    obterClima: async (local: string) => {
+        try {
+            local = local.normalize(`NFD`).replace(/[\u0300-\u036f]/g, ``);
+            const climaTextoURL = `http://pt.wttr.in/${local}?format=Local%20=%20%l+\nClima atual%20=%20%C+%c+\nTemperatura%20=%20%t+\nUmidade%20=%20%h\nVento%20=%20%w\nLua%20agora%20=%20%m\nNascer%20do%20Sol%20=%20%S\nPor%20do%20Sol%20=%20%s`;
+            const respostaTexto = await axios.get(climaTextoURL).catch(err => {
+                throw new Error(err.message);
+            });
+            return {
+                foto_clima: `http://pt.wttr.in/${local}.png`,
+                texto: respostaTexto.data,
+            };
+        } catch (err: any) {
+            err.message = `API obterClima - ${err.message}`;
+            throw err;
+        }
+    },
 };

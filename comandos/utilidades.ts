@@ -71,6 +71,18 @@ export default class Utilidade {
                 } catch (err: any) {
                     await message.reply(err.message);
                 }
+            } else if (comando === `${PREFIX}clima`) {
+                try {
+                    if (args.length === 1) return await message.reply(erroComandoMsg(command));
+                    const usuarioTexto = body.slice(7).trim();
+                    const clima = await api.obterClima(usuarioTexto);
+                    const respostaClimaTexto = criarTexto(msgs_texto.utilidades.clima.resposta, clima.texto);
+                    await message.reply(respostaClimaTexto);
+                } catch (err: any) {
+                    await message.reply(criarTexto(msgs_texto.geral.erro_comando_codigo, command));
+                    err.message = `${command} - ${err.message}`;
+                    throw err;
+                }
             }
         } catch (err: any) {
             consoleErro(err.message, 'UTILIDADES');

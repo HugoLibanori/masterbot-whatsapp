@@ -25,6 +25,7 @@ const comandos: Comandos = {
         `${PREFIX}atps`,
         `${PREFIX}figurinhas+18`,
         `${PREFIX}salvar+18`,
+        `${PREFIX}emojimix`,
     ],
     grupo: [
         `${PREFIX}add`,
@@ -93,7 +94,7 @@ const comandos: Comandos = {
         `${PREFIX}listablock`,
     ],
     diversao: [`${PREFIX}viadometro`, `${PREFIX}bafometro`, `${PREFIX}gadometro`],
-    utilidades: [`${PREFIX}voz`, `${PREFIX}pesquisa`, `${PREFIX}noticias`],
+    utilidades: [`${PREFIX}voz`, `${PREFIX}pesquisa`, `${PREFIX}noticias`, `${PREFIX}clima`],
     excecoes_contagem: [
         `${PREFIX}meusdados`,
         `${PREFIX}ajuda`,

@@ -58,7 +58,8 @@ const menu: {
 |- *${PREFIX}figurinhas* - Envia varias figurinhas para o grupo. obs: funciona só em grupos.
 |- *${PREFIX}salvar* - Salva uma figurinha para ser enviada pelo comando *${PREFIX}figurinhas*.
 |- *${PREFIX}figurinhas+18* - Envia varias figurinhas+18 para o usuário. obs: funciona só no privado.
-|- *${PREFIX}salvar+18* - Salva uma figurinha+18 para ser enviada pelo comando *${PREFIX}figurinhas+18*.
+|- *${PREFIX}salvar+18* - Salva uma figurinha+18.
+|- *${PREFIX}emojimix* - Cria uma figurinha de dois emojis.
 
 
 |
@@ -105,6 +106,7 @@ const menu: {
 |- *${PREFIX}voz* [idioma] [mensagem] - Transforma texto em audio.
 |- *${PREFIX}pesquisa* [tema] - Faz uma rápida pesquisa na internet.
 |- *${PREFIX}noticias* - Obtem noticias atuais.
+|- *${PREFIX}clima* [cidade] - Mostra a temperatura atual.
 |
 ╰╼❥ ${nomeBot.trim()}® by *${nomeAdm.trim()}*`;
     },

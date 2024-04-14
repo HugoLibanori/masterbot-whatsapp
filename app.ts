@@ -58,10 +58,6 @@ client.on('qr', (qr: string) => {
     qrcode.generate(qr, { small: true });
 });
 
-client.on('loading_screen', (percent, message) => {
-    console.log('LOADING SCREEN:', percent, message);
-});
-
 client.on('authenticated', () => {
     console.log('©  Autenticado');
 });

@@ -1,10 +1,11 @@
 import { Client, MessageMedia } from 'whatsapp-web.js';
 require('dotenv').config();
-import { removerNegritoComando, erroComandoMsg, isAdminGroup, obterNomeAleatorio } from '../src/util';
+import { removerNegritoComando, erroComandoMsg, isAdminGroup, obterNomeAleatorio, consoleErro } from '../src/util';
 import Stickers from '../src/sticker';
 import msgs_texto from '../src/msgs';
 import fs from 'fs';
 import path from 'path';
+import axios from 'axios';
 
 class Figurinhas {
     async criarFigurinhas(client: Client, message: any): Promise<void> {
@@ -363,6 +364,39 @@ class Figurinhas {
                     }
                 } else {
                     await message.reply(erroComandoMsg(command));
+                }
+            } else if (command === `${PREFIX}emojimix`) {
+                try {
+                    if (!isOwner) return message.reply(msgs_texto.permissao.apenas_dono_bot);
+                    if (args.length !== 2) return await message.reply(erroComandoMsg(command));
+                    if (args[1].split('+').length !== 2) return await message.reply(erroComandoMsg(command));
+
+                    await message.reply(msgs_texto.geral.espera);
+                    const emoji1 = encodeURIComponent(args[1].split('+')[0].trim());
+                    const emoji2 = encodeURIComponent(args[1].split('+')[1].trim());
+                    const url = `https://api.lolhuman.xyz/api/emojimix/${emoji1}+${emoji2}`;
+
+                    await axios
+                        .get(url, {
+                            params: {
+                                apikey: process.env.API_LOLHUMAN,
+                            },
+                            responseType: 'arraybuffer',
+                        })
+                        .then(async response => {
+                            const buffer = Buffer.from(response.data);
+                            const base64 = buffer.toString('base64');
+                            const media = new MessageMedia('image/png', base64);
+                            dadosStickers.stickerName += ' Sticker';
+                            await client.sendMessage(from, media, dadosStickers);
+                        })
+                        .catch(err => {
+                            if (err.response.status === 429) return message.reply('[❗] Você excedeu o limite gratis diario a API.');
+                            consoleErro(err.message, 'API EMOJIMIX');
+                            message.reply(msgs_texto.figurinhas.sticker.erro_conversao);
+                        });
+                } catch (err: any) {
+                    consoleErro(err.message, 'API TRY/CATCH EMOJIMIX');
                 }
             }
         } catch (err: any) {

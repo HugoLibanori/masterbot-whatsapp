@@ -18,6 +18,7 @@ export const msgs_texto = {
         cmd_erro:
             '[❗] Ops, parece que você usou o comando *{p1}* incorretamente. Quer aprender a usar?\n\n Digite :\n  - Ex: *{p2} guia* para ver o guia.',
         resposta_ban: '🤖✅ @{p1} banido com sucesso\n\n' + 'Motivo : {p2}\n' + 'Quem baniu : {p3}',
+        erro_comando_codigo: '[❗] Houve um erro no comando *{p1}*, relate ao administrador ou tente novamente mais tarde.',
     },
     info: {
         ajuda: {
@@ -61,6 +62,7 @@ export const msgs_texto = {
             erro_remover: '[❗] Houve um erro ao remover fundo, verifique se a imagem é compatível.',
             indisponivel: '[❗] Este comando está indisponível no momento, tente novamente mais tarde.',
             download: '[❗] Erro ao realizar o download tente novamente',
+            emojimix: '[❗] Por favor envie apenas 2(dois) emojis.',
         },
         tps: {
             erro_conversao: `[❗] Houve algum erro na conversao do *${PREFIX}tps*, verifique se não há emojis no seu texto.`,
