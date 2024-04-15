@@ -490,30 +490,38 @@ export default class Admin {
                 await message.reply(resposta);
             } else if (comando === `${PREFIX}entrargrupo`) {
                 if (args.length < 2) return await message.reply(erroComandoMsg(command));
-                const linkGrupo = args[1].trim();
-                // const linkGrupo = linkGrupoAll.replace('https://chat.whatsapp.com/', '');
-                console.log('LINKGROUP:', linkGrupo);
+                const linkGrupoAll = args[1].trim();
+                const linkGrupo = linkGrupoAll.replace('https://chat.whatsapp.com/', '');
                 const grupos = await client.getChats();
                 const totalGrupos = grupos.filter((hasGroup: { isGroup: boolean }) => hasGroup.isGroup);
-                const linkValido = linkGrupo.match(/(https:\/\/chat.whatsapp.com)/gi);
                 try {
-                    const conviteInfo = await client.getInviteInfo(linkGrupo).catch(erro => {
+                    const conviteInfo: any = await client.getInviteInfo(linkGrupo).catch(erro => {
                         console.log('ERRO:', erro);
                     });
-                    console.log('CONVITE INFO:', conviteInfo);
-                    if (!linkValido) return await message.reply(msgs_texto.admin.entrar_grupo.link_invalido);
+
+                    const participantesIds: string[] = conviteInfo.participants.map(
+                        (participante: { id: { _serialized: string } }) => participante.id._serialized,
+                    );
+
+                    await db.registrarGrupo(conviteInfo.id._serialized, participantesIds);
+
+                    if (!conviteInfo) return await message.reply(msgs_texto.admin.entrar_grupo.link_invalido);
                     if (totalGrupos.length > 10) return await message.reply(msgs_texto.admin.entrar_grupo.maximo_grupos);
-                    if (linkValido) {
-                        await client.acceptInvite(linkGrupo).then(async gId => {
-                            console.log('DENTRO ACCEPT:', gId);
-                            await cadastrarGrupo(client, 'added');
+                    if (conviteInfo) {
+                        await client.acceptInvite(linkGrupo).then(async () => {
                             await message.reply(msgs_texto.admin.entrar_grupo.entrar_sucesso);
+                            await client.sendMessage(
+                                conviteInfo.id._serialized,
+                                `✅ Saudações "*${conviteInfo.subject}*", para ver meus comandos por favor digite ${PREFIX}menu.`,
+                            );
                         });
                     } else {
                         await message.reply(msgs_texto.admin.entrar_grupo.link_invalido);
                     }
                 } catch (erro: any) {
-                    console.log('DENTRO TRY CATCH:', erro);
+                    if (erro.toString().includes('Evaluation failed:')) {
+                        await message.reply('O grupo está restrito ou você saiu recentemente dele.');
+                    }
                 }
             } else if (comando === `${PREFIX}rtodos`) {
                 if (!botInfo.botInfo().limite_diario.status) return await message.reply(msgs_texto.admin.rtodos.erro_limite_diario);
