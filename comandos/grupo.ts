@@ -249,6 +249,8 @@ class Grupo {
                         await message.reply(criarTexto(msgs_texto.grupo.add.convite, numeroCompleto.replace('@c.us', '')));
                     } else if (res[numeroCompleto].code === 408) {
                         await message.reply(criarTexto(msgs_texto.grupo.add.saiu_recente, numeroCompleto.replace('@c.us', '')));
+                    } else if (res[numeroCompleto].code === 409) {
+                        await message.reply(criarTexto(msgs_texto.grupo.add.membro_grupo, numeroCompleto.replace('@c.us', '')));
                     }
                 }
             } else if (command === `${PREFIX}ban`) {

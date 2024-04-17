@@ -508,13 +508,20 @@ export default class Admin {
                     if (!conviteInfo) return await message.reply(msgs_texto.admin.entrar_grupo.link_invalido);
                     if (totalGrupos.length > 10) return await message.reply(msgs_texto.admin.entrar_grupo.maximo_grupos);
                     if (conviteInfo) {
-                        await client.acceptInvite(linkGrupo).then(async () => {
-                            await message.reply(msgs_texto.admin.entrar_grupo.entrar_sucesso);
-                            await client.sendMessage(
-                                conviteInfo.id._serialized,
-                                `✅ Saudações "*${conviteInfo.subject}*", para ver meus comandos por favor digite ${PREFIX}menu.`,
-                            );
-                        });
+                        await client
+                            .acceptInvite(linkGrupo)
+                            .then(async () => {
+                                await message.reply(msgs_texto.admin.entrar_grupo.entrar_sucesso);
+                                await client.sendMessage(
+                                    conviteInfo.id._serialized,
+                                    `✅ Saudações "*${conviteInfo.subject}*", para ver meus comandos por favor digite ${PREFIX}menu.`,
+                                );
+                            })
+                            .catch(async erro => {
+                                if (erro.toString().includes('Evaluation failed:')) {
+                                    await message.reply('O grupo está restrito ou você saiu recentemente dele.');
+                                }
+                            });
                     } else {
                         await message.reply(msgs_texto.admin.entrar_grupo.link_invalido);
                     }
