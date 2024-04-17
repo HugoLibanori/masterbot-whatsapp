@@ -495,8 +495,10 @@ export default class Admin {
                 const grupos = await client.getChats();
                 const totalGrupos = grupos.filter((hasGroup: { isGroup: boolean }) => hasGroup.isGroup);
                 try {
-                    const conviteInfo: any = await client.getInviteInfo(linkGrupo).catch(erro => {
-                        console.log('ERRO:', erro);
+                    const conviteInfo: any = await client.getInviteInfo(linkGrupo).catch(async erro => {
+                        if (erro.toString().includes('Evaluation failed:')) {
+                            await message.reply('[❗] O grupo está restrito ou você foi expulso dele.');
+                        }
                     });
 
                     const participantesIds: string[] = conviteInfo.participants.map(
@@ -519,7 +521,7 @@ export default class Admin {
                             })
                             .catch(async erro => {
                                 if (erro.toString().includes('Evaluation failed:')) {
-                                    await message.reply('O grupo está restrito ou você saiu recentemente dele.');
+                                    await message.reply('[❗] O grupo está restrito ou você saiu recentemente dele.');
                                 }
                             });
                     } else {
@@ -527,7 +529,7 @@ export default class Admin {
                     }
                 } catch (erro: any) {
                     if (erro.toString().includes('Evaluation failed:')) {
-                        await message.reply('O grupo está restrito ou você saiu recentemente dele.');
+                        await message.reply('[❗] O grupo está restrito ou você saiu recentemente dele.');
                     }
                 }
             } else if (comando === `${PREFIX}rtodos`) {
