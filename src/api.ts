@@ -165,7 +165,7 @@ export = {
     obterMidiaFacebook: async (url: string): Promise<string> => {
         try {
             const res = await fbDownloader(url);
-            return res.hd;
+            return res.sd;
         } catch {
             throw new Error(msgs_texto.downloads.fb.erro_download);
         }
