@@ -177,11 +177,12 @@ class Figurinhas {
                     };
 
                     if (dadosMsgSsf.tipo === 'image') {
+                        await message.reply(msgs_texto.figurinhas.sticker.ssf_espera);
                         const media_quoted: any = await message.getQuotedMessage();
                         const midiaData: MessageMedia = (await message.downloadMedia()) || (await media_quoted.downloadMedia());
                         const buffer: Buffer = Buffer.from(midiaData.data, 'base64');
                         try {
-                            const saidaImg: string = await Stickers.removerFundoImagem(buffer, midiaData.mimetype);
+                            const saidaImg: string = await Stickers.removerFundoImagem(buffer);
                             const dataImg: MessageMedia = new MessageMedia('image/png', saidaImg);
                             dadosStickers.stickerName += ' Sticker sem fundo';
                             await client.sendMessage(from, dataImg, dadosStickers).catch(err => {

@@ -10,6 +10,7 @@ import sharp from 'sharp';
 const gifyImport = require('gify') as any;
 import GIFEncoder = require('gifencoder');
 import ffmpeg from 'fluent-ffmpeg';
+import qs from 'qs';
 
 class Stickers {
     public static textoParaFoto = async (texto: string): Promise<any> => {
@@ -144,51 +145,74 @@ class Stickers {
         return apiKey?.trim();
     }
 
-    public static removerFundoImagem = async (buffer: Buffer, mimetype: string): Promise<string> => {
-        const imagemEntradaCaminho: string = path.resolve('media/img/tmp/' + obterNomeAleatorio('.jpg'));
+    public static removerFundoImagem = async (imagemBuffer: Buffer): Promise<string> => {
         try {
-            fs.writeFileSync(imagemEntradaCaminho, buffer);
+            const nomeArquivo = obterNomeAleatorio('.png');
+            const data = new FormData();
+            data.append('files', imagemBuffer, { filename: nomeArquivo });
 
-            const data: FormData = new FormData();
-            data.append('size', 'auto');
-            data.append('image_file', fs.createReadStream(imagemEntradaCaminho));
-
-            // interface Config {
-            //     method: string;
-            //     url: string;
-            //     data: FormData;
-            //     responseType: string;
-            //     headers: {
-            //         'X-Api-Key': string;
-            //     };
-            //     encoding: null;
-            // }
-
-            const config: AxiosRequestConfig = {
+            let config: AxiosRequestConfig = {
                 method: 'post',
-                url: 'https://api.remove.bg/v1.0/removebg',
-                data: data,
-                responseType: 'arraybuffer',
+                maxBodyLength: Infinity,
+                url: 'https://download1.imageonline.co/ajax_upload_file.php',
                 headers: {
+                    'User-Agent': ' Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0',
+                    Accept: ' */*',
+                    Origin: ' https://imageonline.co',
+                    Connection: ' keep-alive',
+                    Referer: ' https://imageonline.co/',
+                    'Sec-Fetch-Dest': ' empty',
+                    'Sec-Fetch-Mode': ' cors',
+                    'Sec-Fetch-Site': ' same-site',
                     ...data.getHeaders(),
-                    'X-Api-Key': Stickers.getApiKey(),
                 },
+                data: data,
             };
 
-            const res = await axios(config);
-            const base64 = Buffer.from(res.data).toString('base64');
+            const respostaUpload = await axios.request(config).catch(() => {
+                throw new Error('Erro na requisição de fazer upload da foto');
+            });
 
-            fs.unlinkSync(imagemEntradaCaminho);
-            return base64;
-        } catch (err) {
-            if (imagemEntradaCaminho) {
-                fs.unlinkSync(imagemEntradaCaminho);
-            }
-            consoleErro(
-                'Houve um erro na API REMOVEBG, confira se o limite gratuito da chave excedeu ou se ela está configurada.',
-                'API REMOVEBG',
+            const dadosUpload = JSON.parse(JSON.stringify(respostaUpload.data));
+            const newData: FormData = new FormData();
+            newData.append('name', dadosUpload.files[0].name);
+            newData.append('originalname', dadosUpload.files[0].old_name);
+            newData.append('option3', dadosUpload.files[0].extension);
+            newData.append('option4', '1');
+
+            config = {
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: 'https://download1.imageonline.co/pngmaker.php',
+                headers: {
+                    'User-Agent': ' Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0',
+                    Accept: ' */*',
+                    'Accept-Language': ' pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3',
+                    'Accept-Encoding': ' gzip, deflate, br',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    Origin: ' https://imageonline.co',
+                    Connection: ' keep-alive',
+                    Referer: ' https://imageonline.co/',
+                    'Sec-Fetch-Dest': ' empty',
+                    'Sec-Fetch-Mode': ' cors',
+                    'Sec-Fetch-Site': ' same-site',
+                },
+                data: newData,
+            };
+
+            const respostaFotoUrl = await axios.request(config).catch(() => {
+                throw new Error('Erro na requisição de obter a imagem sem fundo.');
+            });
+            const fotoUrl = respostaFotoUrl.data.match(
+                /https:\/\/download1\.imageonline\.co\/download\.php\?filename=[A-Za-z0-9]+-imageonline\.co-[0-9]+\.png/m,
             );
-            throw new Error();
+            const imagemBufferResposta = await axios.get(fotoUrl[0], { responseType: 'arraybuffer' }).catch(() => {
+                throw new Error('Erro em obter o buffer da imagem sem fundo.');
+            });
+            return imagemBufferResposta.data.toString('base64');
+        } catch (err: any) {
+            err.message = `API removerFundo - ${err.message}`;
+            throw err;
         }
     };
     public static autoSticker = async (message: any, client: Client): Promise<void> => {

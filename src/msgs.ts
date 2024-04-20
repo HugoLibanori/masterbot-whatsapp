@@ -58,6 +58,7 @@ export const msgs_texto = {
             erro_conversao: '[❗] Houve um problema de conversão de mídia, ou esta mídia não pode ser convertida.',
             link_invalido: '[❗] O link que você enviou não é válido.',
             ssf_imagem: `[❗] Este comando é válido apenas para imagens.`,
+            ssf_espera: `[AGUARDE] 📸 O fundo da imagem está sendo removido e o sticker será enviado em breve.`,
             video_invalido: '[❗] Envie um video/gif com no máximo 10 segundos.',
             erro_remover: '[❗] Houve um erro ao remover fundo, verifique se a imagem é compatível.',
             indisponivel: '[❗] Este comando está indisponível no momento, tente novamente mais tarde.',
