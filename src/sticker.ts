@@ -365,7 +365,7 @@ class Stickers {
     };
 
     public static recortarVideo = (caminho: string): Promise<string> => {
-        const output = path.resolve(`media/videos/output_${obterNomeAleatorio('.mp4')}`);
+        const output = path.resolve(`media/videos/output_${obterNomeAleatorio('.h264')}`);
         return new Promise((resolve, reject) => {
             ffmpeg.ffprobe(caminho, (err, metadata) => {
                 if (err) {
