@@ -49,8 +49,8 @@ const menu: {
 |
 |- *${PREFIX}s* - Transfome uma IMAGEM em sticker.
 |- *${PREFIX}s* 1 - Transfome uma IMAGEM em sticker circular.
-|- *${PREFIX}sgif* - Transforme um VIDEO/GIF em sticker.
-|- *${PREFIX}sgif* 1 - Transforme um VIDEO/GIF em sticker (Sem corte).
+|- *${PREFIX}sgif* - Transforme um VIDEO/GIF em sticker (Sem corte).
+|- *${PREFIX}sgif* 1 - Transforme um VIDEO/GIF em sticker com recorte.
 |- *${PREFIX}sgif* 2 - Transforme um VIDEO/GIF em sticker circular.
 |- *${PREFIX}simg* - Transforme um STICKER em foto.
 |- *${PREFIX}tps* - Transforme um TEXTO em sticker.
