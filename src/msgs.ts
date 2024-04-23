@@ -122,7 +122,7 @@ export const msgs_texto = {
     },
     utilidades: {
         master: {
-            resposta: '🤖 Chat GPT v3 :\n\n' + '{p1}',
+            resposta: '🤖 Chat M@ster:\n\n' + '{p1}',
         },
         tabela: {
             resposta: '🤖 Tabela de Nicks :\n\n' + '{p1}',
