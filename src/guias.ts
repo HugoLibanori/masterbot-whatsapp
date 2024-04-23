@@ -56,6 +56,7 @@ const guias: Comandos = {
             `Ex: *${PREFIX}img* 5 tema - Envia 5 imagens com o tema que você digitar.`,
     },
     utilidade: {
+        master: cabecalho + `Ex.: ${PREFIX}master pergunta - ele responde a qualquer duvida que você perguntar.`,
         tabela: cabecalho + `Ex: *${PREFIX}tabela* - Exibe a tabela de letras para criação de nicks.`,
         audio:
             cabecalho +

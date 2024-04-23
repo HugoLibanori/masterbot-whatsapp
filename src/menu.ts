@@ -107,6 +107,7 @@ const menu: {
 |- *${PREFIX}pesquisa* [tema] - Faz uma rápida pesquisa na internet.
 |- *${PREFIX}noticias* - Obtem noticias atuais.
 |- *${PREFIX}clima* [cidade] - Mostra a temperatura atual.
+|- *${PREFIX}master* [pergunta] - responde a qualquer pergunta.
 |
 ╰╼❥ ${nomeBot.trim()}® by *${nomeAdm.trim()}*`;
     },

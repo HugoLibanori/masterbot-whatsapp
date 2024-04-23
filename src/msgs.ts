@@ -19,6 +19,7 @@ export const msgs_texto = {
             '[❗] Ops, parece que você usou o comando *{p1}* incorretamente. Quer aprender a usar?\n\n Digite :\n  - Ex: *{p2} guia* para ver o guia.',
         resposta_ban: '🤖✅ @{p1} banido com sucesso\n\n' + 'Motivo : {p2}\n' + 'Quem baniu : {p3}',
         erro_comando_codigo: '[❗] Houve um erro no comando *{p1}*, relate ao administrador ou tente novamente mais tarde.',
+        erro_api: '[❗] Houve um erro no comando *{p1}*.\n\n' + 'Motivo: *{p2}*\n',
     },
     info: {
         ajuda: {
@@ -120,6 +121,9 @@ export const msgs_texto = {
         },
     },
     utilidades: {
+        master: {
+            resposta: '🤖 Chat GPT v3 :\n\n' + '{p1}',
+        },
         tabela: {
             resposta: '🤖 Tabela de Nicks :\n\n' + '{p1}',
         },

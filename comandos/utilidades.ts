@@ -83,6 +83,18 @@ export default class Utilidade {
                     err.message = `${command} - ${err.message}`;
                     throw err;
                 }
+            } else if (comando === `${PREFIX}master`) {
+                try {
+                    if (args.length === 1) return await message.reply(erroComandoMsg(command));
+                    const usuarioTexto = body.slice(5).trim();
+                    const { sucesso, texto, erro } = await api.respostaHercaiTexto(usuarioTexto);
+                    if (!sucesso) return await message.reply(criarTexto(msgs_texto.geral.erro_api, command, erro || 'Erro Desconhecido'));
+                    else await message.reply(criarTexto(msgs_texto.utilidades.master.resposta, texto || ''));
+                } catch (err: any) {
+                    await message.reply(criarTexto(msgs_texto.geral.erro_comando_codigo, command));
+                    err.message = `${command} - ${err.message}`;
+                    throw err;
+                }
             }
         } catch (err: any) {
             consoleErro(err.message, 'UTILIDADES');

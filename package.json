@@ -43,6 +43,7 @@
         "gifencoder": "^2.0.1",
         "gify": "^0.2.0",
         "google-it": "^1.6.4",
+        "hercai": "^12.2.0",
         "imgur": "^2.4.1",
         "moment": "^2.30.1",
         "moment-timezone": "^0.5.44",

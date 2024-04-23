@@ -16,6 +16,7 @@ const asyncExec = promisify(exec);
 import googleIt from 'google-it';
 import fs from 'fs';
 import FormData = require('form-data');
+import { Hercai } from 'hercai';
 
 interface Nsfw {
     status: string;
@@ -61,6 +62,12 @@ interface Nsfw {
         id: string;
         uri: string;
     };
+}
+
+interface Resposta {
+    sucesso: boolean;
+    texto?: string;
+    erro?: string;
 }
 
 export = {
@@ -333,6 +340,31 @@ export = {
             };
         } catch (err: any) {
             err.message = `API obterClima - ${err.message}`;
+            throw err;
+        }
+    },
+
+    respostaHercaiTexto: async (textoUsuario: string): Promise<Resposta> => {
+        try {
+            let resposta: Resposta = { sucesso: false };
+            const herc = new Hercai();
+
+            await herc
+                .question({ model: 'v3', content: textoUsuario })
+                .then(respostaHercai => {
+                    resposta = { sucesso: true, texto: respostaHercai.reply };
+                })
+                .catch((err: any) => {
+                    if (err.response?.status === 429) {
+                        resposta = { sucesso: false, erro: 'Limite de pedidos foi excedido, tente novamente mais tarde' };
+                    } else {
+                        resposta = { sucesso: false, erro: 'Houve um erro no servidor, tente novamente mais tarde.' };
+                    }
+                });
+
+            return resposta;
+        } catch (err: any) {
+            err.message = `API respostaGpt4 - ${err.message}`;
             throw err;
         }
     },

@@ -94,7 +94,7 @@ const comandos: Comandos = {
         `${PREFIX}listablock`,
     ],
     diversao: [`${PREFIX}viadometro`, `${PREFIX}bafometro`, `${PREFIX}gadometro`],
-    utilidades: [`${PREFIX}voz`, `${PREFIX}pesquisa`, `${PREFIX}noticias`, `${PREFIX}clima`],
+    utilidades: [`${PREFIX}voz`, `${PREFIX}pesquisa`, `${PREFIX}noticias`, `${PREFIX}clima`, `${PREFIX}master`],
     excecoes_contagem: [
         `${PREFIX}meusdados`,
         `${PREFIX}ajuda`,
