@@ -255,9 +255,13 @@ class Figurinhas {
                     }
                 }
             } else if (command === `${PREFIX}salvar`) {
-                if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 if (!isGroup) return message.reply(msgs_texto.permissao.grupo);
+                if (!isGroupAdmins) return message.reply(msgs_texto.permissao.apenas_admin);
                 if (hasQuotedMsg) {
+                    const arquivoFile = path.resolve(`figurinhas/figurinhas.txt`);
+                    const content = fs.readFileSync(arquivoFile, 'utf-8');
+                    const files = JSON.parse(content);
+                    if (files.length >= 250) return await message.reply('[❗] Limite máximo de figurinhas ja atingindo.');
                     const media_quoted: any = await message.getQuotedMessage();
                     const midiaData: MessageMedia = await media_quoted.downloadMedia();
 
