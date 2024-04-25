@@ -208,7 +208,6 @@ class Grupo {
                 for (const participante of dadosGrupo.participants) {
                     if (!participante.isAdmin) {
                         mentions.push(participante.id._serialized);
-                        text += criarTexto(msgs_texto.grupo.mm.resposta_itens, participante.id._serialized.split('@')[0]);
                     }
                 }
                 const nomeBot = process.env.NOME_BOT || 'NOME_BOT';
@@ -227,7 +226,6 @@ class Grupo {
                         : msgs_texto.grupo.mm.resposta_titulo_comum;
                 for (const participante of dadosGrupo.participants) {
                     mentions.push(participante.id._serialized);
-                    text += criarTexto(msgs_texto.grupo.mm.resposta_itens, participante.id._serialized.split('@')[0]);
                 }
                 const nomeBot = process.env.NOME_BOT || 'NOME_BOT';
                 text += `╚═〘 ${nomeBot.trim()}®〙`;
