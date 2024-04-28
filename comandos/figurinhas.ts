@@ -6,6 +6,7 @@ import msgs_texto from '../src/msgs';
 import fs from 'fs';
 import path from 'path';
 import axios from 'axios';
+import api from '../src/api';
 
 class Figurinhas {
     async criarFigurinhas(client: Client, message: any): Promise<void> {
@@ -146,6 +147,7 @@ class Figurinhas {
                 const usuarioTexto: string = body.slice(5).trim();
                 if (usuarioTexto.length > 100) return message.reply(msgs_texto.figurinhas.tps.texto_longo);
                 try {
+                    await message.reply(msgs_texto.figurinhas.tps.espera);
                     const imagemBase64 = await Stickers.textoParaFoto(usuarioTexto);
                     const media = new MessageMedia('image/png', imagemBase64);
                     dadosStickers.stickerName += ' Texto para Sticker';
@@ -293,22 +295,17 @@ class Figurinhas {
             } else if (command === `${PREFIX}atps`) {
                 if (args.length === 1 || type != 'chat') return await message.reply(erroComandoMsg(command));
                 const usuarioTexto: string = body.slice(5).trim();
-                if (usuarioTexto.length > 100) return message.reply(msgs_texto.figurinhas.atps.texto_longo);
+                if (usuarioTexto.length > 50) return message.reply(msgs_texto.figurinhas.atps.texto_longo);
                 try {
+                    await message.reply(msgs_texto.figurinhas.atps.espera);
                     const imagemBase64 = await Stickers.textoParaGif(usuarioTexto);
                     await new Promise(resolve => setTimeout(resolve, 3000));
-                    const media = MessageMedia.fromFilePath(imagemBase64);
-                    dadosStickers.stickerName += ' Texto para Sticker';
-                    await client
-                        .sendMessage(from, media, dadosStickers)
-                        .then(() => {
-                            fs.unlinkSync(imagemBase64);
-                        })
-                        .catch(err => {
-                            message.reply(msgs_texto.figurinhas.sticker.erro_s);
-                            console.log(err);
-                            fs.unlinkSync(imagemBase64);
-                        });
+                    const media = new MessageMedia('video/gif', imagemBase64);
+                    dadosStickers.stickerName += ' Texto animado Sticker';
+                    await client.sendMessage(from, media, dadosStickers).catch(err => {
+                        message.reply(msgs_texto.figurinhas.sticker.erro_s);
+                        console.log(err);
+                    });
                 } catch (err: any) {
                     await message.reply(err.message);
                 }
