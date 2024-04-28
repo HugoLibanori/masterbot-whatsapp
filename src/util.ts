@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+const chalk = require('chalk');
 import fs from 'fs';
 import path from 'path';
 import { criacaoEnv } from './env';
