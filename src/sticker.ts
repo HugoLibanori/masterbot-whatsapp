@@ -107,27 +107,27 @@ class Stickers {
             stream.pipe(createWriteStream(output));
 
             encoder.start();
-            encoder.setRepeat(0); // 0 for repeat, -1 for no-repeat
-            encoder.setDelay(500); // frame delay in ms
-            encoder.setQuality(10); // image quality. 10 is default.
+            encoder.setRepeat(0);
+            encoder.setDelay(500);
+            encoder.setQuality(10);
 
             const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
 
             const words = texto.split(' ');
-            let fontSize = 100; // Tamanho máximo da fonte
+            let fontSize = 100;
             if (texto.length > 50) {
-                fontSize = 50; // Diminui o tamanho da fonte se o texto for muito longo
+                fontSize = 50;
             }
-            const lineHeight = fontSize; // Altura da linha, ajuste conforme necessário
+            const lineHeight = fontSize;
             let line = '';
             let y = canvas.height / 2 - (lineHeight * (words.length - 1)) / 2;
 
             colors.forEach(color => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpa o quadro antes de desenhar o próximo
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = color;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.font = `${fontSize}px impact`; // Tamanho da fonte, ajuste conforme necessário
+                ctx.font = `${fontSize}px impact`;
 
                 for (let n = 0; n < words.length; n++) {
                     const testLine = line + words[n] + ' ';

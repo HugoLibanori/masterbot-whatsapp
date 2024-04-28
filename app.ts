@@ -58,18 +58,6 @@ client.on('qr', (qr: string) => {
     qrcode.generate(qr, { small: true });
 });
 
-client.on('authenticated', () => {
-    console.log('©  Autenticado');
-});
-
-client.on('auth_failure', function () {
-    console.error('©  Falha na autenticação');
-});
-
-client.on('change_state', state => {
-    console.log('©  Status de conexão: ', state);
-});
-
 client.on('ready', async () => {
     console.log('© Cliente conectado!');
     const necessitaCriar = await criarArquivosNecessarios();
@@ -90,6 +78,18 @@ client.on('ready', async () => {
         //Verificando se os campos do .env foram modificados e envia para o console
         verificarEnv();
     }
+});
+
+client.on('authenticated', () => {
+    console.log('©  Autenticado');
+});
+
+client.on('auth_failure', function () {
+    console.error('©  Falha na autenticação');
+});
+
+client.on('change_state', state => {
+    console.log('©  Status de conexão: ', state);
 });
 
 client.on('disconnected', reason => {
