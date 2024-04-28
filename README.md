@@ -98,7 +98,7 @@ Para que o comando **!figurinhas** funcione, adicione imagens dentro da pasta 'f
         API_REMOVEBG=??????
 
         ############ PATH GOOGLE CHROME ##############
-        PATH_CHROME='C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+        PATH_CHROME='??????'
 
         ############ API SITE https://sightengine.com/ PARA ANTIPORNO ##############
         API_USER=??????
