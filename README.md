@@ -106,8 +106,6 @@ Para que o comando **!figurinhas** funcione, adicione imagens dentro da pasta 'f
 
 **Obs**: Se o seu sistema for MAC, habilite a exibição de arquivos ocultos para exibir o .env na raiz do projeto.<br>
 
-Configure o caminho do PATH_CHROME para não haver erros, por padrão ele vem com path do windows. Se seu sistema for diferente mude-o.
-
 <br>
 
 #### Caso você queira usar o bot com PM2 rode o comando: <br>
@@ -186,7 +184,7 @@ pm2 start ./dist/app.js
 
 | Apenas Dono do Bot |           Recurso            |
 | :----------------: | :--------------------------: |
-|         ❌         |      Entrar em um grupo      |
+|         ✅         |      Entrar em um grupo      |
 |         ❌         |   Sair de todos os grupos    |
 |         ✅         |  Broadcast - Anuncio Geral   |
 |         ✅         | Bloquear/Desbloquear usuário |
