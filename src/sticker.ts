@@ -115,8 +115,8 @@ class Stickers {
 
             const words = texto.split(' ');
             let fontSize = 100; // Tamanho máximo da fonte
-            if (texto.length > 100) {
-                fontSize = 30; // Diminui o tamanho da fonte se o texto for muito longo
+            if (texto.length > 50) {
+                fontSize = 50; // Diminui o tamanho da fonte se o texto for muito longo
             }
             const lineHeight = fontSize; // Altura da linha, ajuste conforme necessário
             let line = '';
@@ -124,12 +124,6 @@ class Stickers {
 
             colors.forEach(color => {
                 ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpa o quadro antes de desenhar o próximo
-
-                // Desenha a borda
-                ctx.lineWidth = 20; // Ajuste a largura da borda conforme necessário
-                ctx.strokeStyle = color;
-                ctx.strokeRect(0, 0, canvas.width, canvas.height);
-
                 ctx.fillStyle = color;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
