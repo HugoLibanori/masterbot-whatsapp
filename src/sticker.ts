@@ -74,8 +74,8 @@ class Stickers {
 
             lines.forEach((line, index) => {
                 const lineY: number = startY + index * lineHeight;
-                ctx.strokeText(line, canvas.width / 2, lineY);
-                ctx.fillText(line, canvas.width / 2, lineY);
+                ctx.strokeText(line, canvas.width / 2, lineY + ctx.lineWidth / 2);
+                ctx.fillText(line, canvas.width / 2, lineY + ctx.lineWidth / 2);
             });
 
             const dataURL: string = canvas.toDataURL();
@@ -101,6 +101,8 @@ class Stickers {
             const ctx: any = canvas.getContext('2d');
             const encoder = new GIFEncoder(512, 512);
 
+            encoder.setTransparent(0x00000000);
+
             const stream = encoder.createReadStream();
             stream.pipe(createWriteStream(output));
 
@@ -111,14 +113,43 @@ class Stickers {
 
             const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
 
+            const words = texto.split(' ');
+            let fontSize = 100; // Tamanho máximo da fonte
+            if (texto.length > 100) {
+                fontSize = 30; // Diminui o tamanho da fonte se o texto for muito longo
+            }
+            const lineHeight = fontSize; // Altura da linha, ajuste conforme necessário
+            let line = '';
+            let y = canvas.height / 2 - (lineHeight * (words.length - 1)) / 2;
+
             colors.forEach(color => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpa o quadro antes de desenhar o próximo
+
+                // Desenha a borda
+                ctx.lineWidth = 20; // Ajuste a largura da borda conforme necessário
+                ctx.strokeStyle = color;
+                ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
                 ctx.fillStyle = color;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = 'white';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.font = '50px impact';
-                ctx.fillText(texto, canvas.width / 2, canvas.height / 2);
+                ctx.font = `${fontSize}px impact`; // Tamanho da fonte, ajuste conforme necessário
+
+                for (let n = 0; n < words.length; n++) {
+                    const testLine = line + words[n] + ' ';
+                    const metrics = ctx.measureText(testLine);
+                    const testWidth = metrics.width;
+                    if (testWidth > canvas.width && n > 0) {
+                        ctx.fillText(line, canvas.width / 2, y);
+                        line = words[n] + ' ';
+                        y += lineHeight;
+                    } else {
+                        line = testLine;
+                    }
+                }
+                ctx.fillText(line, canvas.width / 2, y);
+                y = canvas.height / 2 - (lineHeight * (words.length - 1)) / 2;
+                line = '';
 
                 encoder.addFrame(ctx);
             });
@@ -126,11 +157,12 @@ class Stickers {
             encoder.finish();
 
             await new Promise(resolve => setTimeout(resolve, 3000));
-            const image = await loadImage(path.resolve('media/videos/animated.gif'));
-            await ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-            const imageBase64 = canvas.toDataURL().replace(/^data:image\/png;base64,/, '');
+            const base64Gif = fs.readFileSync(output, { encoding: 'base64' });
 
-            return imageBase64;
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            fs.unlinkSync(output);
+
+            return base64Gif;
         } catch (err: any) {
             console.log(err, 'Erro na conversão de texto para GIF.');
             throw new Error('Erro na conversão de texto para GIF.');
