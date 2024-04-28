@@ -18,16 +18,16 @@ https://github.com/HugoLibanori/masterbot-whatsapp
 
 ## 2 - Instale as dependências :
 
+Instale o ts-node globalmente.
+
+```bash
+npm install -g ts-node
+```
+
 Abra o prompt de comando (CMD/Terminal) na pasta do projeto que você extraiu e execute o comando abaixo :
 
 ```bash
 npm i
-```
-
-depois instale o ts-node globalmente.
-
-```bash
-npm install -g ts-node
 ```
 
 #### Obs: Se houver algum erro verifique as dependências estão todas instaladas.
@@ -45,6 +45,13 @@ npm start
 Se for a sua primeira vez executando escaneie o QR Code com o seu celular (No modo BETA que não exige conexão com o celular) e digite no terminal **SEU** número de telefone **COM CÓDIGO DO PAÍS** no terminal. Ele irá encerrar o bot e você deverá inicia-lo novamente.
 
 <br>
+
+Antes de inciar o bot novamente edite o arquivo .env e coloque o caminho do google chrome na variavel PATH_CHROME='/usr/bin/google-chrome-stable', se não o bot não ira iniciar e dará erro. edite de acordo com o seu sistema.
+
+```bash
+PATH_CHROME='/usr/bin/google-chrome-stable' # sistema linux
+PATH_CHROME='C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' # sistema windows
+```
 
 ## 4 - Funcionamento :
 
