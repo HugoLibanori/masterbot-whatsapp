@@ -18,6 +18,8 @@ import fs from 'fs';
 import FormData = require('form-data');
 import { Hercai } from 'hercai';
 
+const execPromise = promisify(exec);
+
 interface Nsfw {
     status: string;
     request: {
