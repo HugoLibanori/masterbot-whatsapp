@@ -99,27 +99,23 @@ class Figurinhas {
                             if (!mediaData) return await message.reply(msgs_texto.figurinhas.sticker.download);
 
                             if (args[1] === '1') {
-                                const pathVideo = path.resolve('media/videos/video_recortado.mp4');
+                                const pathVideo = path.resolve(`media/videos/video_recorte_${obterNomeAleatorio('.mp4')}`);
                                 const videoSave = await Stickers.salvarArquivoBase64(pathVideo, mediaData.data);
-                                // Atraso de 3 segundo
-                                await new Promise(resolve => setTimeout(resolve, 3000));
                                 const videoCrop = await Stickers.recortarVideo(videoSave);
                                 const videoRecortado = MessageMedia.fromFilePath(videoCrop);
                                 await client.sendMessage(from, videoRecortado, dadosStickers).catch((err: any) => {
                                     console.log(err);
                                     message.reply(msgs_texto.figurinhas.sticker.erro_s);
                                 });
-                                await new Promise(resolve => setTimeout(resolve, 3000));
                                 fs.unlinkSync(videoCrop);
                                 fs.unlinkSync(videoSave);
                                 return;
                             } else if (args[1] === '2') {
-                                const pathVideo = path.resolve('media/videos/video_recortado_circular.mp4');
+                                const pathVideo = path.resolve(`media/videos/video_recorte_circular_${obterNomeAleatorio('.mp4')}`);
                                 const videoSave = await Stickers.salvarArquivoBase64(pathVideo, mediaData.data);
-                                // Atraso de 2 segundo
-                                await new Promise(resolve => setTimeout(resolve, 2000));
                                 const videoCrop = await Stickers.videoCircular(videoSave);
-                                const videoRecortado = new MessageMedia('video/gif', videoCrop);
+                                const base64Gif = fs.readFileSync(videoCrop, 'base64');
+                                const videoRecortado = new MessageMedia('video/gif', base64Gif);
                                 await client.sendMessage(from, videoRecortado, dadosStickers).catch((err: any) => {
                                     console.log(err);
                                     message.reply(msgs_texto.figurinhas.sticker.erro_s);
@@ -151,7 +147,7 @@ class Figurinhas {
                     const imagemBase64 = await Stickers.textoParaFoto(usuarioTexto);
                     const media = new MessageMedia('image/png', imagemBase64);
                     dadosStickers.stickerName += ' Texto para Sticker';
-                    await client.sendMessage(from, media, dadosStickers).catch(err => {
+                    await client.sendMessage(from, media, dadosStickers).catch((err: any) => {
                         message.reply(msgs_texto.figurinhas.sticker.erro_s);
                         console.log(err);
                     });
@@ -187,7 +183,7 @@ class Figurinhas {
                             const saidaImg: string = await Stickers.removerFundoImagem(buffer);
                             const dataImg: MessageMedia = new MessageMedia('image/png', saidaImg);
                             dadosStickers.stickerName += ' Sticker sem fundo';
-                            await client.sendMessage(from, dataImg, dadosStickers).catch(err => {
+                            await client.sendMessage(from, dataImg, dadosStickers).catch((err: any) => {
                                 console.log(err);
                                 message.reply(msgs_texto.figurinhas.sticker.erro_s);
                             });
@@ -302,7 +298,7 @@ class Figurinhas {
                     await new Promise(resolve => setTimeout(resolve, 3000));
                     const media = new MessageMedia('video/gif', imagemBase64);
                     dadosStickers.stickerName += ' Texto animado Sticker';
-                    await client.sendMessage(from, media, dadosStickers).catch(err => {
+                    await client.sendMessage(from, media, dadosStickers).catch((err: any) => {
                         message.reply(msgs_texto.figurinhas.sticker.erro_s);
                         console.log(err);
                     });
