@@ -294,7 +294,7 @@ class Stickers {
     public static videoCircular = async (caminho: string): Promise<string> => {
         try {
             const outputGif = path.resolve(`media/videos/circular_${obterNomeAleatorio('.gif')}`);
-            const outputWebp = path.resolve(`media/videos/circular_${obterNomeAleatorio('.webp')}`);
+            const outputMp4 = path.resolve(`media/videos/circular_${obterNomeAleatorio('.gif')}`);
 
             return new Promise((resolve, reject) => {
                 ffmpeg.ffprobe(caminho, (err, metadata) => {
@@ -308,6 +308,9 @@ class Stickers {
                             const y = (stream.height - menorLado) / 2;
 
                             const encoder = new GIFEncoder(menorLado, menorLado);
+
+                            encoder.setTransparent(0x00000000);
+
                             const streamGif = encoder.createReadStream();
                             streamGif.pipe(createWriteStream(outputGif));
 
@@ -350,14 +353,11 @@ class Stickers {
                                 .on('end', () => {
                                     encoder.finish();
                                     ffmpeg(outputGif)
-                                        .outputOptions([`-vcodec libwebp`, `-vf fps=30`, `-loop 0`])
-                                        .save(outputWebp)
+                                        .outputOptions([`-vcodec libx264`, `-vf fps=30`, `-loop 0`])
+                                        .save(outputMp4)
                                         .on('end', () => {
-                                            const gifBuffer = fs.readFileSync(outputWebp);
-                                            const base64Gif = gifBuffer.toString('base64');
-                                            resolve(base64Gif);
+                                            resolve(outputMp4);
                                             fs.unlinkSync(outputGif);
-                                            fs.unlinkSync(outputWebp);
                                         })
                                         .on('error', reject);
                                 })
@@ -391,27 +391,35 @@ class Stickers {
     };
 
     public static recortarVideo = (caminho: string): Promise<string> => {
-        const output = path.resolve(`media/videos/output_${obterNomeAleatorio('.h264')}`);
+        const output = path.resolve(`media/videos/output_video_recortado_${obterNomeAleatorio('.mp4')}`);
         return new Promise((resolve, reject) => {
             ffmpeg.ffprobe(caminho, (err, metadata) => {
                 if (err) {
+                    console.log(err);
                     reject(err);
                 } else {
                     const stream = metadata.streams[0];
-                    if (stream && stream.width && stream.height) {
-                        const menorLado = Math.min(stream.width, stream.height);
-                        const x = (stream.width - menorLado) / 2;
-                        const y = (stream.height - menorLado) / 2;
+                    try {
+                        if (stream && stream.width && stream.height) {
+                            const menorLado = Math.min(stream.width, stream.height);
+                            const x = (stream.width - menorLado) / 2;
+                            const y = (stream.height - menorLado) / 2;
 
-                        ffmpeg(caminho)
-                            .outputOptions([`-vf crop=${menorLado}:${menorLado}:${x}:${y}`])
-                            .save(output)
-                            .on('end', () => {
-                                resolve(output);
-                            })
-                            .on('error', reject);
-                    } else {
-                        reject(new Error('Não foi possível obter a largura e a altura do vídeo.'));
+                            ffmpeg(caminho)
+                                .outputOptions([`-vcodec libx264`, `-vf crop=${menorLado}:${menorLado}:${x}:${y}`])
+                                .save(output)
+                                .on('end', () => {
+                                    resolve(output);
+                                })
+                                .on('error', (erro: any) => {
+                                    console.log(erro);
+                                    reject;
+                                });
+                        } else {
+                            reject(new Error('Não foi possível obter a largura e a altura do vídeo.'));
+                        }
+                    } catch (erro: any) {
+                        console.log(erro);
                     }
                 }
             });
