@@ -13,6 +13,7 @@
     "devDependencies": {
         "@types/axios": "^0.14.0",
         "@types/fluent-ffmpeg": "^2.1.24",
+        "@types/form-data": "^2.5.0",
         "@types/fs-extra": "^11.0.4",
         "@types/gifencoder": "^2.0.3",
         "@types/prompt": "^1.1.8",
