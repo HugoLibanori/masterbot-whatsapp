@@ -197,3 +197,4 @@ pm2 start ./dist/app.js
 ## 8 - Agradecimentos
 
 -   [`whatsapp-web.js`](https://github.com/pedroslopez/whatsapp-web.js)
+-   [`lbot-victorsouzaleal`](https://github.com/victorsouzaleal/lbot-whatsapp)
