@@ -69,11 +69,9 @@ export async function handleConnectionUpdate(
 
   if (connection === "close") {
     const botInfo = await botController.getBotData();
-    if (!botInfo) return true;
 
-    const shouldReconnect = await handleConnectionClose(connectionState, botInfo);
+    const shouldReconnect = await handleConnectionClose(connectionState, botInfo!);
     if (shouldReconnect) {
-      console.log("Tentando reconectar...");
       await reconnectCallback();
     }
     return true;
