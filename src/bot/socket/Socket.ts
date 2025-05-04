@@ -23,6 +23,10 @@ export class Socket {
     });
   }
 
+  async restartBot(): Promise<void> {
+    await this.sock.ws.close();
+  }
+
   async sendReact(messageId: proto.IMessageKey, emoji: string, chat_id: string): Promise<void> {
     await this.sock.sendMessage(chat_id, { react: { text: emoji, key: messageId } });
   }

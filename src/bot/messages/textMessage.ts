@@ -1,6 +1,6 @@
 import { Bot } from "../../interfaces/interfaces.js";
 
-export function comandosInfo(botInfo: Partial<Bot>) {
+export function comandosInfo(botInfo?: Partial<Bot>) {
   const { prefix: prefixo, name: nome_bot } = botInfo || {};
   const comandos = {
     //COMANDOS INFO

@@ -7,12 +7,13 @@ import { Socket } from "../bot/socket/Socket.js";
 
 import { comandosInfo } from "../bot/messages/textMessage.js";
 import { Bot } from "../interfaces/interfaces.js";
+import { criarTexto } from "../lib/utils.js";
 
 const handleConnectionClose = async (
   conn: Partial<ConnectionState>,
-  botInfo: Partial<Bot>,
+  botInfo?: Partial<Bot>,
 ): Promise<boolean> => {
-  const textCommands = comandosInfo(botInfo);
+  const textCommands = comandosInfo();
   try {
     const { lastDisconnect } = conn;
     let reconectar = false;
@@ -24,15 +25,10 @@ const handleConnectionClose = async (
       console.log(textCommands.outros.desconectado.deslogado);
       fs.rmSync("./session", { recursive: true, force: true });
       reconectar = true;
-    } else if (erroCode == DisconnectReason?.restartRequired) {
+    } else if (erroCode === DisconnectReason?.restartRequired) {
       console.log(textCommands.outros.desconectado.reiniciar);
       reconectar = true;
-    } else if (erroCode == DisconnectReason?.connectionClosed) {
-      console.log(textCommands.outros.desconectado.desconect);
-      reconectar = true;
-    } else if (erroCode === DisconnectReason.timedOut) {
-      reconectar = true;
-    } else if (erroCode === DisconnectReason?.unavailableService) {
+    } else if (erroCode !== undefined) {
       reconectar = true;
     }
     return reconectar;
@@ -57,8 +53,8 @@ export async function handleConnectionUpdate(
     if (!botInfo) {
       await botController.registerBotData(socket);
       console.log("BOT REGISTRADO COM SUCESSO. REINICIANDO CONEXÃO...");
-      await reconnectCallback();
-      return true;
+      await socket.restartBot();
+      return false;
     }
 
     const groupInfo = await socket.getAllGroups();
@@ -68,11 +64,15 @@ export async function handleConnectionUpdate(
   }
 
   if (connection === "close") {
-    const botInfo = await botController.getBotData();
-
-    const shouldReconnect = await handleConnectionClose(connectionState, botInfo!);
+    const shouldReconnect = await handleConnectionClose(connectionState);
     if (shouldReconnect) {
-      await reconnectCallback();
+      try {
+        await reconnectCallback();
+      } catch (err) {
+        console.error("Erro ao tentar reconectar:", err);
+      }
+
+      return false;
     }
     return true;
   }
