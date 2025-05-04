@@ -28,8 +28,9 @@ export default function configWaSocket(
     },
     version,
     msgRetryCounterCache: retryCache,
-    defaultQueryTimeoutMs: undefined,
-    syncFullHistory: true,
+    defaultQueryTimeoutMs: 45000,
+    syncFullHistory: false,
+    qrTimeout: undefined,
     shouldIgnoreJid: (jid) => isJidBroadcast(jid) || jid?.endsWith("@newsletter"),
     getMessage: async (key: proto.IMessageKey): Promise<proto.IMessage | undefined> => {
       const message = key.id ? ((await messagesCache.get(key.id)) as proto.IMessage) : undefined;
