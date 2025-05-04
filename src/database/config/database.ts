@@ -9,7 +9,7 @@ const config: Options = {
   port: Number(process.env.DATABASE_PORT) || 3306,
   username: process.env.DATABASE_USERNAME || "root",
   password: process.env.DATABASE_PASSWORD || "123456",
-  database: process.env.NOME_DATABASE || "BOT_TESTE",
+  database: process.env.DATABASE || "BOT_TESTE",
   logging: false,
   define: {
     timestamps: true,
