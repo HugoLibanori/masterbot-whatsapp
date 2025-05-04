@@ -1,0 +1,5 @@
+node_modules
+dist
+session
+package-lock.json
+.env
