@@ -31,6 +31,7 @@ export default function configWaSocket(
     defaultQueryTimeoutMs: 45000,
     syncFullHistory: false,
     qrTimeout: undefined,
+    markOnlineOnConnect: true,
     shouldIgnoreJid: (jid) => isJidBroadcast(jid) || jid?.endsWith("@newsletter"),
     getMessage: async (key: proto.IMessageKey): Promise<proto.IMessage | undefined> => {
       const message = key.id ? ((await messagesCache.get(key.id)) as proto.IMessage) : undefined;
