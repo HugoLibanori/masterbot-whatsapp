@@ -31,8 +31,6 @@ const command: Command = {
 
     const arrayNumber: string[] = [];
 
-    console.log();
-
     if (quotedMsg) {
       arrayNumber.push(contentQuotedMsg.sender);
     } else if (mentionedJid.length) {

@@ -60,7 +60,6 @@ export const checkingSendMessage = async (
       let grupoVerificado = await grupoController.groupVerified(id_group);
       let dataAtual = new Date().toLocaleDateString("pt-br");
       let expirado = checkExpirationDate(dataAtual, grupoVerificado?.expiracao ?? "");
-      console.log(dataBot.grupo_oficial, id_group);
       if (!grupoVerificado && id_group !== dataBot?.grupo_oficial) {
         await sock.replyText(
           id_group,
