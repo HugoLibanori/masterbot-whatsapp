@@ -34,7 +34,7 @@ export default function configWaSocket(
     markOnlineOnConnect: true,
     shouldIgnoreJid: (jid) => isJidBroadcast(jid) || jid?.endsWith("@newsletter"),
     getMessage: async (key: proto.IMessageKey): Promise<proto.IMessage | undefined> => {
-      const message = key.id ? ((await messagesCache.get(key.id)) as proto.IMessage) : undefined;
+      const message = key.id ? (messagesCache.get(key.id) as proto.IMessage) : undefined;
       return message;
     },
     cachedGroupMetadata: async (jid) => groupCache.get(jid),
