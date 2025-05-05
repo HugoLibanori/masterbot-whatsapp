@@ -111,8 +111,10 @@ const contentMessage = async (
             description: groupMetadata.desc ?? "",
             participants: groupMetadata.participants.map((p) => p.id) ?? [],
             owner: groupMetadata.owner?.replace(/:\d+/, "") ?? "",
-            isBotAdmin:
-              groupMetadata.participants.find((p) => p.id === numberBot)?.admin === "admin",
+            isBotAdmin: (() => {
+              const bot = groupMetadata.participants.find((p) => p.id === numberBot);
+              return bot?.admin === "admin" || bot?.admin === "superadmin";
+            })(),
             isAdmin: participant?.admin === "admin" || participant?.admin === "superadmin",
             mentionedJid: content?.contextInfo?.mentionedJid ?? [],
             dataBd: groupInfo,
