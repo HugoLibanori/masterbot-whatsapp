@@ -78,7 +78,7 @@ export async function up(queryInterface, Sequelize) {
       allowNull: true,
     },
     descricao: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
       allowNull: true,
     },
     created_at: {
