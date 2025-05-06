@@ -970,9 +970,9 @@ export class GrupoController {
               comandos_info.outros.resposta_ban,
               participante.replace("@s.whatsapp.net", ""),
               comandos_info.grupo.afake.msgs.motivo,
-              botInfo.number_bot!,
+              botInfo.number_bot!.replace("@s.whatsapp.net", ""),
             ),
-            [participante],
+            [participante, botInfo.number_bot!],
           );
           await sock.removerParticipant(evento.id, participante);
           return false;
