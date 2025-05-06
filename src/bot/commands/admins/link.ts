@@ -12,6 +12,7 @@ const command: Command = {
   aliases: ["link"], // não mude o index 0 do array pode dar erro no guia dos comandos.
   group: true,
   admin: true,
+  isBotAdmin: true,
   exec: async (
     sock: Socket,
     message: proto.IWebMessageInfo,

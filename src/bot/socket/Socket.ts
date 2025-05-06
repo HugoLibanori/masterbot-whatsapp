@@ -227,17 +227,15 @@ export class Socket {
     return codigoConvite ? `https://chat.whatsapp.com/${codigoConvite}` : undefined;
   }
 
-  async sendLinkWithPrevia(id_chat: string, texto: string, linkGroup: string) {
-    await this.updatePresence(id_chat, "composing");
-
+  async sendLinkWithPrevia(id_chat: string, text: string, linkGroup: string) {
     const linkPreview: WAUrlInfo = {
-      title: "Link do Grupo",
       "canonical-url": linkGroup,
       "matched-text": linkGroup,
+      title: "Link do Grupo",
     };
 
     return await this.sock.sendMessage(id_chat, {
-      text: texto,
+      text,
       linkPreview,
     });
   }
