@@ -1020,7 +1020,7 @@ export class GrupoController {
             );
           })
           .catch(async () => {
-            const caminhoFoto = path.resolve("bot", "midia", "usuariosemfoto.jpg");
+            const caminhoFoto = path.resolve("src", "bot", "midia", "usuariosemfoto.jpg");
             await sock.sendTextWithImageMentions(
               evento.id,
               mensagem_bemvindo,
