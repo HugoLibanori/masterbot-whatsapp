@@ -270,9 +270,9 @@ export const timestampForData = (timestampMsg: number | Date) => {
 
 export const convertSecondsToMinutes = (totalSeconds: number) => {
   const minutes = Math.floor(totalSeconds / 60);
-  let seconds = totalSeconds % 60;
+  let seconds: string | number = totalSeconds % 60;
 
-  seconds = seconds < 10 ? 0 + seconds : seconds;
+  seconds = seconds < 10 ? "0" + `${seconds}` : seconds;
 
   return `${minutes}:${seconds}`;
 };

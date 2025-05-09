@@ -32,7 +32,7 @@ const command: Command = {
       if (!args.length)
         return await sock.replyText(id_chat, commandErrorMsg(command, botInfo), message);
       let textUser = textReceived?.trim();
-      await sock.sendReact(message, "🕒", id_chat);
+      await sock.sendReact(message.key, "🕒", id_chat);
       const { resultado: resultadoInfoVideo } = await api.getInfoVideoYT(textUser);
       if (resultadoInfoVideo?.isLiveContent)
         return await sock.replyText(id_chat, textMessage.downloads.play.msgs.erro_live, message);
@@ -47,7 +47,7 @@ const command: Command = {
       await sock.replyText(id_chat, mensagemEspera, message);
       const { resultado: resultadoYTMP3 } = await api.obterYTMP3(resultadoInfoVideo.videoId);
       if (!resultadoYTMP3) return;
-      await sock.sendReact(message, "✅", id_chat);
+      await sock.sendReact(message.key, "✅", id_chat);
       await sock.replyFileBuffer(
         typeMessages.AUDIO,
         id_chat,
