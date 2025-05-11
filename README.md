@@ -7,7 +7,7 @@
 - Nodejs LTS instalado.
 - Ffmpeg instalado.
 - Git instalado.
-- MySql instalado.
+- Docker instalado.
 - Um numero do whatsapp para conectar ao bot.
 
 ---
@@ -50,12 +50,18 @@ DATABASE_DIALECT=mysql
 ### Mysql
 
 <p>
-Você deve ter o MySql instalado no seu sistema, o bot usa o Sequelize para banco de dados.
+Você deve ter o Docker instalado no seu sistema, o bot usa o Sequelize para banco de dados.
 </p>
 
 ###### A - Depois que o arquivo estiver preenchido, rode os comandos abaixo:
 
 obs: você deve entrar dentro da pasta do bot.
+
+```bash
+docker compose up -d
+```
+
+Este comando irá criar o banco de dados com o nome que esta no arquivo docker-compose.yml que é BOT_TESTE. mude conforme sua nescessidade!
 
 ```bash
 npx sequelize db:create
@@ -66,6 +72,8 @@ Ele cria o banco de dados, agora rode:
 ```bash
 npx sequelize db:migrate
 ```
+
+Cria as tabelas do BD.
 
 Pronto, se não ocorreu nenhum erro seu banco de dados foi criado.
 
