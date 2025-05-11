@@ -7,7 +7,7 @@
 - Nodejs LTS instalado.
 - Ffmpeg instalado.
 - Git instalado.
-- Docker instalado.
+- Docker e Docker Compose instalado.
 - Um numero do whatsapp para conectar ao bot.
 
 ---
