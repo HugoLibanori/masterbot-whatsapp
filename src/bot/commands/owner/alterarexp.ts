@@ -37,8 +37,6 @@ const command: Command = {
       let infoGrupo = await sock.groupGetInviteInfo(idLink);
       let infoExp = await grupos.getGroupExpiration(infoGrupo.id);
 
-      console.log("INFOEXPIRAÇÂO:", infoExp?.expiracao);
-
       if (!infoExp)
         return await sock.replyText(id_chat, textMessage.admin.alterarexp.msgs.sem_grupo, message);
 
