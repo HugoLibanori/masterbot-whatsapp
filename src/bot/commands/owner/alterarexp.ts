@@ -9,10 +9,10 @@ import { GrupoController } from "../../../controllers/GrupoController.js";
 const grupos = new GrupoController();
 
 const command: Command = {
-  name: "alteraExp",
+  name: "alteraexp",
   description: "ALtera a expiração do grupo verificado.",
   category: "owner",
-  aliases: ["alteraexp"], // não mude o index 0 do array pode dar erro no guia dos comandos.
+  aliases: ["alterarexp"], // não mude o index 0 do array pode dar erro no guia dos comandos.
   group: false,
   admin: false,
   owner: true,
@@ -36,6 +36,8 @@ const command: Command = {
       let idLink = groupLink.replace(/(https:\/\/chat.whatsapp.com\/)/gi, "");
       let infoGrupo = await sock.groupGetInviteInfo(idLink);
       let infoExp = await grupos.getGroupExpiration(infoGrupo.id);
+
+      console.log("INFOEXPIRAÇÂO:", infoExp?.expiracao);
 
       if (!infoExp)
         return await sock.replyText(id_chat, textMessage.admin.alterarexp.msgs.sem_grupo, message);
@@ -63,10 +65,10 @@ const command: Command = {
       if (!groupVerified)
         return await sock.replyText(id_chat, textMessage.admin.alterarexp.msgs.sem_grupo, message);
 
-      let expirado = checkExpirationDate(
-        currentdate.toLocaleDateString("pt-br"),
-        infoExp.expiracao,
-      );
+      let expirado;
+      if (infoExp.expiracao !== null) {
+        expirado = checkExpirationDate(currentdate.toLocaleDateString("pt-br"), infoExp.expiracao);
+      }
 
       if (infoExp.expiracao === null || expirado) {
         infoExp.expiracao = currentdate.toLocaleDateString("pt-br");

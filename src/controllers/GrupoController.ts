@@ -627,7 +627,7 @@ export class GrupoController {
   }
 
   async registerGroupVerified(dadosGrupo: GrupoVerificado) {
-    await GruposVerificados.create({ ...dadosGrupo, expiracao: dadosGrupo.expiracao ?? "" });
+    await GruposVerificados.create({ ...dadosGrupo, expiracao: dadosGrupo.expiracao ?? null });
   }
 
   async removeGroupVerified(nome: string) {

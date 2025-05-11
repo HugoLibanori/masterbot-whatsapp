@@ -7,7 +7,7 @@ export default class GruposVerificados extends Model<
   declare id_grupo: string;
   declare nome: string;
   declare inicio: string;
-  declare expiracao: string;
+  declare expiracao: string | null;
   static initial(sequelize: Sequelize) {
     GruposVerificados.init(
       {
