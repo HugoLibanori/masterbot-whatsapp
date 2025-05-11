@@ -1,19 +1,24 @@
-import { proto, downloadMediaMessage } from "baileys";
+import { downloadMediaMessage, proto } from "baileys";
+import { MessageContent, Command, Bot } from "../../../interfaces/interfaces.js";
 
-import { MessageContent, Command, Bot, Resposta } from "../../../interfaces/interfaces";
 import { Socket } from "../../socket/Socket.js";
-import { typeMessages } from "../../messages/contentMessage.js";
-import { criarSticker } from "../../../api/sticker.js";
+import { CommandReturn } from "../../../interfaces/interfaces.js";
 import { UserController } from "../../../controllers/UserController.js";
+import { typeMessages } from "../../messages/contentMessage.js";
 import * as api from "../../../api/sticker.js";
+import { criarTexto } from "../../../lib/utils.js";
 
 const userController = new UserController();
 
 const command: Command = {
-  name: "ssf",
-  description: "Cria figurinha sem fundo.",
+  name: "rbg",
+  description: "Remove funo de imagem",
   category: "users",
-  aliases: ["ssf"],
+  aliases: ["rbg"], // não mude o index 0 do array pode dar erro no guia dos comandos.
+  group: false,
+  admin: false,
+  owner: false,
+  isBotAdmin: false,
   exec: async (
     sock: Socket,
     message: proto.IWebMessageInfo,
@@ -21,44 +26,41 @@ const command: Command = {
     args: string[],
     dataBot: Partial<Bot>,
     textMessage,
-  ) => {
+  ): Promise<CommandReturn> => {
+    const { id_chat, quotedMsg, type, contentQuotedMsg, media, command } = messageContent;
     try {
-      const { id_chat, quotedMsg, type, contentQuotedMsg, media, command, textReceived, sender } =
-        messageContent;
-
-      const pack: string | null = await userController.getPack(sender!);
-      const author: string | null = await userController.getauthor(sender!);
-
       const { seconds } = { ...media };
-
-      const { author_sticker, pack_sticker } = dataBot;
 
       const dataMsg = {
         type: quotedMsg ? contentQuotedMsg?.type : type,
         message: quotedMsg ? (contentQuotedMsg?.message ?? message) : message,
         seconds: quotedMsg ? contentQuotedMsg?.seconds : seconds,
       };
-
       if (dataMsg.type !== typeMessages.IMAGE) {
         await sock.sendText(id_chat, textMessage.figurinhas.ssf.msgs.erro_imagem);
         return;
       }
 
       await sock.sendReact(message.key, "🕒", id_chat);
-      await sock.sendText(id_chat, textMessage.figurinhas.ssf.msgs.espera);
+      await sock.sendText(id_chat, textMessage.utilidades.rbg.msgs.espera);
 
       const bufferMidia = await downloadMediaMessage(dataMsg.message, "buffer", {});
       const bufferBg = await api.removeBackground(bufferMidia);
-
-      const { resultado: resultadoSticker } = await criarSticker(bufferBg, {
-        pack: pack ? (pack ? pack?.trim() : pack_sticker?.trim()) : pack_sticker?.trim(),
-        autor: author ? (author ? author?.trim() : author_sticker?.trim()) : author_sticker?.trim(),
-      });
-
-      await sock.sendSticker(id_chat, resultadoSticker);
+      await sock.replyFileBuffer(
+        typeMessages.IMAGE,
+        id_chat,
+        bufferBg,
+        "Sua imagem sem fundo!",
+        message,
+      );
       await sock.sendReact(message.key, "✅", id_chat);
-    } catch (error) {
-      console.log(error);
+    } catch (err: any) {
+      if (!err.erro) throw err;
+      await sock.replyText(
+        id_chat,
+        criarTexto(textMessage.outros.erro_api, command, err.erro),
+        message,
+      );
     }
   },
 };

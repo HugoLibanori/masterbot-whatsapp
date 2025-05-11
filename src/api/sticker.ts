@@ -6,9 +6,10 @@ import webp from "node-webpmux";
 import { fileTypeFromBuffer } from "file-type";
 import jimp from "jimp";
 import getEmojiMixUrl, { checkSupported } from "emoji-mixer";
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
+import FormData from "form-data";
 
-import { getPathTemp } from "../lib/utils.js";
+import { getPathTemp, getRandomFilename } from "../lib/utils.js";
 import { Resposta } from "../interfaces/interfaces.js";
 
 export const StickerTipos = {
@@ -338,4 +339,75 @@ export const mixEmojis = async (emoji1: string, emoji2: string): Promise<Respost
       }
     })();
   });
+};
+
+export const removeBackground = async (imageBuffer: Buffer) => {
+  try {
+    const URL_BASE_UPLOAD_IMAGE = "https://download1.imageonline.co/ajax_upload_file.php";
+    const URL_BASE_REMOVE_BG = "https://download1.imageonline.co/pngmaker.php";
+    const uploadFileName = getRandomFilename("png");
+    const formDataUpload = new FormData();
+    formDataUpload.append("files", imageBuffer, { filename: uploadFileName });
+    const configUpload: AxiosRequestConfig = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: URL_BASE_UPLOAD_IMAGE,
+      headers: {
+        "User-Agent":
+          " Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0",
+        Accept: " */*",
+        Origin: " https://imageonline.co",
+        Connection: " keep-alive",
+        Referer: " https://imageonline.co/",
+        "Sec-Fetch-Dest": " empty",
+        "Sec-Fetch-Mode": " cors",
+        "Sec-Fetch-Site": " same-site",
+        ...formDataUpload.getHeaders(),
+      },
+      data: formDataUpload,
+      responseType: "json",
+    };
+
+    const { data: uploadResponse } = await axios.request(configUpload);
+
+    if (!uploadResponse.isSuccess) {
+      throw new Error("Upload failed");
+    }
+
+    const formDataRemoveBg = new FormData();
+    formDataRemoveBg.append("name", uploadResponse.files[0].name);
+    formDataRemoveBg.append("originalname", uploadResponse.files[0].old_name);
+    formDataRemoveBg.append("option3", uploadResponse.files[0].extension);
+    formDataRemoveBg.append("option4", "1");
+    const configRemoveBg = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: URL_BASE_REMOVE_BG,
+      headers: {
+        "User-Agent":
+          " Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0",
+        Accept: " */*",
+        Origin: " https://imageonline.co",
+        Connection: " keep-alive",
+        Referer: " https://imageonline.co/",
+        "Sec-Fetch-Dest": " empty",
+        "Sec-Fetch-Mode": " cors",
+        "Sec-Fetch-Site": " same-site",
+      },
+      data: formDataRemoveBg,
+    };
+
+    const { data: removeBgResponse } = await axios.request(configRemoveBg);
+    const pictureUrl = removeBgResponse.match(
+      /https:\/\/download1\.imageonline\.co\/download\.php\?filename=[A-Za-z0-9]+-imageonline\.co-[0-9]+\.png/m,
+    )[0];
+    const { data: imageBufferRemovedBg } = await axios.get(pictureUrl, {
+      responseType: "arraybuffer",
+    });
+
+    return imageBufferRemovedBg as Buffer;
+  } catch (err: any) {
+    console.log(err, "removeBackground");
+    throw new Error(err);
+  }
 };

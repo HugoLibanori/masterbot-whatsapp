@@ -265,3 +265,5 @@ export interface GrupoVerificado {
   inicio: string;
   expiracao: string | null;
 }
+
+export type FileExtensions = "mp3" | "mp4" | "webp" | "png" | "jpg" | "gif" | "zip";

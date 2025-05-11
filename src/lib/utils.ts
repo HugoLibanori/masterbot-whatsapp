@@ -15,7 +15,14 @@ import stream from "stream";
 import sharp from "sharp";
 import vision from "@google-cloud/vision";
 
-import { Command, MessageContent, Bot, Comando, Grupo } from "../interfaces/interfaces.js";
+import {
+  Command,
+  MessageContent,
+  Bot,
+  Comando,
+  Grupo,
+  FileExtensions,
+} from "../interfaces/interfaces.js";
 import { comandosInfo } from "../bot/messages/textMessage.js";
 import { UserController } from "../controllers/UserController.js";
 import { typeMessages } from "../bot/messages/contentMessage.js";
@@ -124,6 +131,10 @@ export const getPathTemp = (ext: string) => {
   if (!fs.existsSync(path.join(tmpdir(), "lbot-api-midias")))
     fs.mkdirSync(path.join(tmpdir(), "lbot-api-midias"));
   return path.join(tmpdir(), "lbot-api-midias", `${crypto.randomBytes(20).toString("hex")}.${ext}`);
+};
+
+export const getRandomFilename = (ext: FileExtensions): string => {
+  return `${Math.floor(Math.random() * 10000)}.${ext}`;
 };
 
 export const commandGuide = async (
