@@ -93,7 +93,7 @@ Pronto, seu bot esta pronto para uso.
 
 Aqui estão alguns dos comandos mais importantes com exemplos de uso:
 
-#### 🖼️ Menu Figurinhas
+#### 🖼️ MENU FIGURINHAS
 
 Transforme imagens, vídeos ou texto em figurinhas com diversos estilos:
 
@@ -114,7 +114,7 @@ Transforme imagens, vídeos ou texto em figurinhas com diversos estilos:
 
 ```
 
-#### ⚒️ Menu Utilidades
+#### ⚒️ MENU UTILIDADES
 
 Ferramentas úteis de imagem e voz:
 
@@ -123,7 +123,7 @@ Ferramentas úteis de imagem e voz:
 !rbg # Remove o fundo da imagem
 ```
 
-#### 📥 Menu Downloads
+#### 📥 MENU DOWNLOADS
 
 Baixe vídeos, músicas e imagens com facilidade:
 
@@ -135,7 +135,7 @@ Baixe vídeos, músicas e imagens com facilidade:
 !img tema # Baixa imagem por tema
 ```
 
-#### 👨‍👩‍👧‍👦 Menu Grupo (admin)
+#### 👨‍👩‍👧‍👦 MENU GRUPO (admin)
 
 Gerencie seu grupo com funções avançadas (admin)
 
@@ -238,3 +238,10 @@ Gerencie seu grupo com funções avançadas (admin)
 !statusverificados # Mostra grupos autorizados a usar o BOT
 !apis nomeApi valorApi # Define a apiKey da api
 ```
+
+---
+
+## 🙏 Agradecimentos
+
+[Baileys](https://github.com/WhiskeySockets/Baileys) - Biblioteca de uso para conexão ao whatsapp
+[LBot-whatsapp](https://github.com/victorsouzaleal/lbot-whatsapp) - Bot que me basiei para esse projeto com algumas alterações prórpias.
