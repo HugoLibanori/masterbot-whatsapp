@@ -243,5 +243,6 @@ Gerencie seu grupo com funções avançadas (admin)
 
 ## 🙏 Agradecimentos
 
-[Baileys](https://github.com/WhiskeySockets/Baileys) - Biblioteca de uso para conexão ao whatsapp
-[LBot-whatsapp](https://github.com/victorsouzaleal/lbot-whatsapp) - Bot que me basiei para esse projeto com algumas alterações prórpias.
+- [Baileys](https://github.com/WhiskeySockets/Baileys) - Biblioteca de uso para conexão ao whatsapp
+
+- [LBot-whatsapp](https://github.com/victorsouzaleal/lbot-whatsapp) - Bot que me basiei para esse projeto com algumas alterações prórpias.
