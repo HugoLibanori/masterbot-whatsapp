@@ -419,7 +419,7 @@ export class BotController {
         //VERIFICA SE O USUARIO ESTÁ NA LISTA DE USUARIOS
         if (usuarioIndex != -1) {
           bot.command_rate.user[usuarioIndex].cmds++; //ADICIONA A CONTAGEM DE COMANDOS ATUAIS
-          if (bot.command_rate.user[usuarioIndex].cmds >= bot.command_rate.max_cmds_minute) {
+          if (bot.command_rate.user[usuarioIndex].cmds >= bot.command_rate.max_cmds_minute + 1) {
             //SE ATINGIR A QUANTIDADE MAXIMA DE COMANDOS POR MINUTO
             //ADICIONA A LISTA DE USUARIOS LIMITADOS
             bot.command_rate.user_limit.push({

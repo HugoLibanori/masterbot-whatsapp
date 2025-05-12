@@ -78,6 +78,7 @@ const connectWhatsapp = async () => {
       const { type } = messages;
       if (type === "notify" && fullBoot) {
         messages.messages.map(async (m) => {
+          if (m.key.fromMe) return;
           await handleMessages.message(socket, m);
         });
       } else if (type === "append") {

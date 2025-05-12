@@ -5,6 +5,7 @@ import commands from "../commands/index.js";
 import { MessageContent, Bot } from "../../interfaces/interfaces.js";
 import { escapeRegex, runCommand, commandGuide, autoSticker, logComando } from "../../lib/utils.js";
 import { Socket } from "../socket/Socket.js";
+import { typeMessages } from "./contentMessage.js";
 
 export const checkingMessage = async (
   sock: Socket,
@@ -17,6 +18,7 @@ export const checkingMessage = async (
     id_chat,
     command,
     args,
+    type,
     grupo: {
       dataBd: { autosticker },
       name: group_name,
@@ -26,8 +28,10 @@ export const checkingMessage = async (
   } = messageContent;
 
   const prefix = dataBot.prefix;
-  const autostickerpv = !isGroup && dataBot.autosticker;
-  const autostickergp = isGroup && autosticker;
+  const autostickerpv =
+    !isGroup && (type === typeMessages.IMAGE || type === typeMessages.VIDEO) && dataBot.autosticker;
+  const autostickergp =
+    isGroup && (type === typeMessages.IMAGE || type === typeMessages.VIDEO) && autosticker;
 
   if (autostickerpv || autostickergp) {
     if (!(await autoSticker(sock, message, messageContent, dataBot))) return;

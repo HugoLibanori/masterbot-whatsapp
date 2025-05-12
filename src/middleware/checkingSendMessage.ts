@@ -7,6 +7,7 @@ import { GrupoController } from "../controllers/GrupoController.js";
 import { BotController } from "../controllers/BotController.js";
 import { comandosInfo } from "../bot/messages/textMessage.js";
 import { criarTexto, checkCommandExists, checkExpirationDate } from "../lib/utils.js";
+import { typeMessages } from "../bot/messages/contentMessage.js";
 
 const userController = new UserController();
 const grupoController = new GrupoController();
@@ -21,6 +22,7 @@ export const checkingSendMessage = async (
   const { sender, pushName, command, isGroup, grupo, type, id_chat, isOwnerBot, textReceived } =
     messageContent;
   const { dataBd, id_group, isAdmin, isBotAdmin } = { ...grupo };
+  const { autosticker } = dataBd;
   const { prefix } = dataBot;
 
   const commandsInfo = comandosInfo(dataBot);
@@ -29,6 +31,11 @@ export const checkingSendMessage = async (
   const usersBlock = await sock.getBlockedContacts();
   const userBlock = usersBlock.includes(sender!);
   const msgGuia = textReceived === "guia";
+
+  const autostickerpv =
+    !isGroup && (type === typeMessages.IMAGE || type === typeMessages.VIDEO) && dataBot.autosticker;
+  const autostickergp =
+    isGroup && (type === typeMessages.IMAGE || type === typeMessages.VIDEO) && autosticker;
 
   try {
     //SE O PV DO BOT NÃO ESTIVER LIBERADO
@@ -133,7 +140,7 @@ export const checkingSendMessage = async (
     //ATUALIZE NOME DO USUÁRIO
     await userController.updateName(sender, pushName ?? "Sem nome!");
 
-    if (existCommands) {
+    if (existCommands || autostickerpv || autostickergp) {
       if (dataBot?.command_rate?.status) {
         let limiteComando = await botController.checkLimitCommand(
           sender,
@@ -175,7 +182,11 @@ export const checkingSendMessage = async (
       //SE O RECURSO DE LIMITADOR DIARIO DE COMANDOS ESTIVER ATIVADO E O COMANDO NÃO ESTIVER NA LISTA DE EXCEÇÔES/INFO/GRUPO/ADMIN
       if (dataBot.limite_diario?.status) {
         await botController.verificarExpiracaoLimite(dataBot);
-        if ((await checkCommandExists(dataBot, command)) && !msgGuia) {
+        if (
+          ((await checkCommandExists(dataBot, command)) && !msgGuia) ||
+          autostickerpv ||
+          autostickergp
+        ) {
           let ultrapassou = await userController.verificarUltrapassouLimiteComandos(
             sender,
             dataBot,

@@ -332,13 +332,21 @@ export const autoSticker = async (
   try {
     //Verificando se é imagem ou video e fazendo o sticker automaticamente
     if (type === typeMessages.IMAGE || type === typeMessages.VIDEO) {
-      if (type == typeMessages.VIDEO && seconds! > 10) return false;
+      if (type === typeMessages.VIDEO && seconds! > 10) return false;
       await sock.sendReact(message.key, "🕒", id_chat);
       let bufferMidia = await downloadMediaMessage(message, "buffer", {});
+      if (!bufferMidia) return false;
       let { resultado: resultadoSticker } = await api.criarSticker(bufferMidia, {
         pack: packSticker ? packSticker?.trim() : pack_sticker?.trim(),
         autor: autorSticker ? autorSticker?.trim() : name?.trim(),
       });
+      if (
+        !resultadoSticker ||
+        typeof resultadoSticker !== "object" ||
+        resultadoSticker.length === 0
+      ) {
+        return false;
+      }
       await sock.sendSticker(id_chat, resultadoSticker);
       await sock.sendReact(message.key, "✅", id_chat);
       return false;
