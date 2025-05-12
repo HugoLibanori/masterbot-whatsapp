@@ -241,7 +241,7 @@ export const menuGrupo = (admin: boolean, botInfo: Partial<Bot>) => {
 ╰╼❥ ⌬ Dev: ${nome_adm?.trim()} | *© ${nome_bot?.trim()}™*`;
   } else {
     return `
-➤ ❔ Para saber como usar o comando: *\`${prefixo}enquete guia\`*
+➤ ❔ Para saber como usar o comando: *\`${prefixo}regras guia\`*
 
 ╒═══════════════╕
 │     ⟪ 👨‍👩‍👧‍👦 GRUPO ⟫    │
@@ -298,7 +298,7 @@ export const menuDiversao = (grupo: boolean, botInfo: Partial<Bot>) => {
 ╰╼❥ ⌬ Dev: ${nome_adm?.trim()} | *© ${nome_bot?.trim()}™*`;
   } else {
     return `
-➤ ❔ Para saber como usar o comando: *\`${prefixo}ppt guia\`*
+➤ ❔ Para saber como usar o comando: *\`${prefixo}simi guia\`*
 
 ╒═══════════════╕
 │             ⟪ 🕹️ JOGOS ⟫               │
