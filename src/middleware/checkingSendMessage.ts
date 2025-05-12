@@ -113,7 +113,7 @@ export const checkingSendMessage = async (
     }
 
     // OBTENDO DADOS ATUALIZADOS DO USUÁRIO
-    const dadosUsuario = await userController.getUser(sender);
+    const dataUser = await userController.getUser(sender);
 
     //SE O CONTADOR TIVER ATIVADO E FOR UMA MENSAGEM DE GRUPO, VERIFICA SE O USUARIO EXISTE NO CONTADOR , REGISTRA ELE E ADICIONA A CONTAGEM
     if (isGroup && dataBd?.contador.status) {
@@ -134,6 +134,19 @@ export const checkingSendMessage = async (
     await userController.updateName(sender, pushName ?? "Sem nome!");
 
     if (existCommands) {
+      if (dataBot?.command_rate?.status) {
+        let limiteComando = await botController.checkLimitCommand(
+          sender,
+          dataUser?.tipo ?? "comum",
+          isAdmin,
+          dataBot,
+        );
+        if (limiteComando.comando_bloqueado) {
+          if (limiteComando.msg != undefined)
+            await sock.replyText(id_chat, limiteComando.msg, message);
+          return false;
+        }
+      }
       //BLOQUEIO GLOBAL DE COMANDOS
       if (
         (await botController.verificarComandosBloqueadosGlobal(command, dataBot)) &&
@@ -162,7 +175,7 @@ export const checkingSendMessage = async (
       //SE O RECURSO DE LIMITADOR DIARIO DE COMANDOS ESTIVER ATIVADO E O COMANDO NÃO ESTIVER NA LISTA DE EXCEÇÔES/INFO/GRUPO/ADMIN
       if (dataBot.limite_diario?.status) {
         await botController.verificarExpiracaoLimite(dataBot);
-        if (!checkCommandExists(dataBot, command) && !msgGuia) {
+        if ((await checkCommandExists(dataBot, command)) && !msgGuia) {
           let ultrapassou = await userController.verificarUltrapassouLimiteComandos(
             sender,
             dataBot,
