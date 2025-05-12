@@ -1,6 +1,6 @@
 {
   "name": "master-bot-whatsapp",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "dist/app.js",
   "type": "module",
   "description": "Bot para gerenciamento de grupos do WhatsApp.",
