@@ -362,4 +362,95 @@ export class BotController {
 
     await this.updateBotData(bot);
   }
+
+  async checkLimitCommand(
+    usuario_id: string,
+    tipo_usuario: string,
+    isAdmin: boolean,
+    botInfo: Partial<IBot>,
+  ): Promise<{ comando_bloqueado: boolean; msg: string }> {
+    let bot = botInfo;
+    let resposta: { comando_bloqueado: boolean; msg: string } = {
+      comando_bloqueado: false,
+      msg: "",
+    };
+    const timestamp_atual = Math.round(new Date().getTime() / 1000);
+    const comandos_info = comandosInfo(bot);
+
+    if (!bot.command_rate) {
+      resposta.comando_bloqueado = false;
+      return resposta;
+    }
+
+    const userLimitArray = Array.from(bot.command_rate.user_limit.values());
+
+    //VERIFICA OS USUARIOS LIMITADOS QUE JÁ ESTÃO EXPIRADOS E REMOVE ELES DA LISTA
+    for (let i = 0; i < userLimitArray.length; i++) {
+      if (userLimitArray[i].horario_liberacao <= timestamp_atual)
+        bot.command_rate.user_limit.splice(i, 1);
+    }
+
+    //VERIFICA OS USUARIOS QUE JÁ ESTÃO COM COMANDO EXPIRADOS NO ULTIMO MINUTO
+    for (let i = 0; i < bot.command_rate.user.length; i++) {
+      if (bot.command_rate.user[i].expiracao <= timestamp_atual) bot.command_rate.user.splice(i, 1);
+    }
+
+    //SE NÃO FOR UM USUARIO DO TIPO DONO OU FOR ADMINISTRADOR DO GRUPO , NÃO FAÇA A CONTAGEM.
+    if (tipo_usuario == "dono" || isAdmin) {
+      resposta.comando_bloqueado = false;
+    } else {
+      //VERIFICA SE O USUARIO ESTÁ LIMITADO
+      let usuarioIndexLimitado = bot.command_rate.user_limit.findIndex(
+        (usuario) => usuario.usuario_id == usuario_id,
+      );
+      if (usuarioIndexLimitado != -1) {
+        resposta = {
+          comando_bloqueado: true,
+          msg: criarTexto(
+            comandos_info.admin.taxacomandos.msgs.resposta_usuario_limitado,
+            bot.command_rate.block_time.toString(),
+          ),
+        };
+      } else {
+        //OBTEM O INDICE DO USUARIO NA LISTA DE USUARIOS
+        let usuarioIndex = bot.command_rate.user.findIndex(
+          (usuario) => usuario.usuario_id == usuario_id,
+        );
+        //VERIFICA SE O USUARIO ESTÁ NA LISTA DE USUARIOS
+        if (usuarioIndex != -1) {
+          bot.command_rate.user[usuarioIndex].cmds++; //ADICIONA A CONTAGEM DE COMANDOS ATUAIS
+          if (bot.command_rate.user[usuarioIndex].cmds >= bot.command_rate.max_cmds_minute) {
+            //SE ATINGIR A QUANTIDADE MAXIMA DE COMANDOS POR MINUTO
+            //ADICIONA A LISTA DE USUARIOS LIMITADOS
+            bot.command_rate.user_limit.push({
+              usuario_id,
+              horario_liberacao: timestamp_atual + bot.command_rate.block_time,
+            });
+            bot.command_rate.user.splice(usuarioIndex, 1);
+            resposta = {
+              comando_bloqueado: true,
+              msg: criarTexto(
+                comandos_info.admin.taxacomandos.msgs.resposta_usuario_limitado,
+                bot.command_rate.block_time.toString(),
+              ),
+            };
+          } else {
+            //SE NÃO ATINGIU A QUANTIDADE MÁXIMA DE COMANDOS
+            resposta.comando_bloqueado = false;
+          }
+        } else {
+          //SE NÃO EXISTIR NA LISTA
+          bot.command_rate.user.push({
+            usuario_id,
+            cmds: 1,
+            expiracao: timestamp_atual + 60,
+          });
+          resposta.comando_bloqueado = false;
+        }
+      }
+    }
+
+    await this.updateBotData(bot); //ATUALIZA OS DADOS NO ARQUIVO E RETORNO
+    return resposta;
+  }
 }
