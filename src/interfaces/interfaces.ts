@@ -75,6 +75,25 @@ export interface Command {
   ) => Promise<CommandReturn>;
 }
 
+interface UsuarioComando {
+  usuario_id: string;
+  cmds: number;
+  expiracao: number;
+}
+
+interface UsuarioLimitado {
+  usuario_id: string;
+  horario_liberacao: number;
+}
+
+interface CommandRate {
+  status: boolean;
+  max_cmds_minute: number;
+  block_time: number;
+  user: UsuarioComando[];
+  user_limit: UsuarioLimitado[];
+}
+
 export interface Bot {
   started: Date;
   number_bot: string;
@@ -113,13 +132,7 @@ export interface Bot {
     };
   };
   commands_pv: boolean;
-  command_rate: {
-    status: boolean;
-    max_cmds_minute: number;
-    block_time: number;
-    user: string[];
-    user_limit: string[];
-  };
+  command_rate: CommandRate;
   grupo_oficial: string | null;
   apis: {
     google: {
