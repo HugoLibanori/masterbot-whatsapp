@@ -424,6 +424,8 @@ export const menuAdmin = (botInfo: Partial<Bot>) => {
 • *\`${prefixo}oficialgrupo link(PV do bot)\`* - _Adiciona o grupo como oficial do bot._
 
 • *\`${prefixo}statusverificados\`* - _Verifica os grupos permitidos para uso do BOT._
+
+• *\`${prefixo}apis nome_api valor_apiKey\`* - _Adiciona apiKey de uma api._
 ╰━━━━━━━━━━━━━╯
 
 ╘══════════════╛

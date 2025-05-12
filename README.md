@@ -101,7 +101,7 @@ Transforme imagens, vídeos ou texto em figurinhas com diversos estilos:
 !s # Transformar imagem/vídeo em figurinha
 !s 1 # Recorta vídeo/GIF
 !s 2 # Sticker circular
-!snome pack, autor# Renomeia o sticker
+!snome pack, autor # Renomeia o sticker
 !simg # Sticker → Foto
 !ssf # Sticker sem fundo
 !emojimix 💩+😀 # 2 Emojis → Sticker
@@ -186,4 +186,55 @@ Gerencie seu grupo com funções avançadas (admin)
 !bv # Mensagem de boas-vindas
 !afake # Anti-fake
 !aflood # Anti-flood
+```
+
+#### 👑 MENU ADMIN (Administração do bot)
+
+```bash
+!nomebot nome # Altera nome do bot e atualiza menus
+!nomeadm nome # Altera nome do administrador e atualiza menus
+!nomesticker nome # Altera nome do pacote de figurinhas
+!prefixo símbolo # Altera o prefixo dos comandos
+!fotobot # Altera foto do BOT
+
+!infobot # Informação completa do BOT
+!bloquear @usuario # Bloqueia o usuário mencionado
+!desbloquear @usuario # Desbloqueia o usuário mencionado
+!listablock # Lista usuários bloqueados
+!bcgrupos mensagem # Envia mensagem de broadcast para todos os grupos
+
+!verdados @usuario # Mostra os dados de um usuário
+!usuarios tipo # Lista usuários de determinado tipo
+!tipos # Lista todos os tipos de usuário
+!novotipo tipo,titulo,cmds # Cria novo tipo de usuário
+!tipotitulo tipo,titulo # Altera título de um tipo de usuário
+!deltipo tipo # Remove tipo de usuário
+!usuariotipo tipo @usuario # Altera tipo de usuário
+!limpartipo tipo # Remove todos usuários desse tipo
+!limparcomandos # Limpa os comandos de todos os usuários
+
+!bcmdglobal cmd1 cmd2 # Bloqueia comandos globalmente
+!dcmdglobal cmd1 cmd2 # Desbloqueia comandos globalmente
+
+!limitediario # Ativa/desativa limite diário de comandos
+!tipocomandos tipo qtd # Define limite de comandos por tipo
+!rtodos # Reseta comandos diários de todos usuários
+!r @usuario # Reseta comandos diários de um usuário
+
+!taxacomandos quantidade # Define taxa de comandos por minuto
+
+!pvliberado # Ativa/desativa comandos em mensagens privadas
+!autostickerpv # Ativa/desativa stickers automáticos no PV
+
+!grupos # Lista os grupos onde o BOT está
+!linkgrupo número # Mostra o link de um grupo
+!sair # Sai do grupo atual
+!sairgrupos # Sai de todos os grupos
+!entrargrupo link # Entra em um grupo pelo link
+!addgrupo link # Libera o BOT para funcionar em grupo
+!removegrupo nome # Remove o BOT do grupo
+!alterarexp link # Adiciona mais 30 dias ao grupo
+!oficialgrupo link # Marca grupo como oficial do BOT
+!statusverificados # Mostra grupos autorizados a usar o BOT
+!apis nomeApi valorApi # Define a apiKey da api
 ```
