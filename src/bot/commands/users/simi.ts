@@ -32,6 +32,8 @@ const command: Command = {
       if (dataBot?.apis?.simi.api_key === "")
         return await sock.replyText(id_chat, textMessage.diversao.simi.msgs.sem_api, message);
 
+      await sock.sendReact(message.key, "🕒", id_chat);
+
       let perguntaSimi = textReceived;
       let { resultado: resultadoTexto } = await api.obterRespostaSimi(perguntaSimi, dataBot);
       await sock.replyText(
