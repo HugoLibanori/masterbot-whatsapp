@@ -1064,6 +1064,9 @@ export class GrupoController {
             type === typeMessages.STICKER ||
             type === typeMessages.VIDEO)
         ) {
+          if (botInfo.apis?.google?.api_key === "")
+            return await sock.replyText(id_group, comandos_info.admin.apis.msgs.sem_api, message);
+
           let bufferMidia = await downloadMediaMessage(message, "buffer", {});
           let animado;
           if (type === typeMessages.STICKER) {
@@ -1074,8 +1077,6 @@ export class GrupoController {
           } else if (type === typeMessages.STICKER && animado === "animado") {
             bufferMidia = await webpBufferToImageSharp(bufferMidia);
           }
-          if (!botInfo.apis?.google?.api_key)
-            return await sock.replyText(id_group, comandos_info.admin.apis.msgs.sem_api, message);
 
           try {
             const resp = await obterNsfw(bufferMidia, botInfo, sock);
@@ -1083,21 +1084,40 @@ export class GrupoController {
             const usuarioExiste = participantes.includes(sender);
 
             if (resp && usuarioExiste) {
-              await sock.deleteMessage(message);
-              await sock.removerParticipant(id_group, sender);
+              await userController.changeWarning(sender, 1);
+              const advertencia = await userController.getUserWarning(sender);
+              if (advertencia <= 3) {
+                await sock.sendTextWithMentions(
+                  id_group,
+                  criarTexto(
+                    comandos_info.grupo.aporno.msgs.advertido,
+                    sender.replace("@s.whatsapp.net", ""),
+                    advertencia ? advertencia.toString() : "0",
+                  ),
+                  [sender],
+                );
+              }
 
-              await sock.sendTextWithMentions(
-                id_group,
-                criarTexto(
-                  comandos_info.outros.resposta_ban,
-                  sender.replace("@s.whatsapp.net", ""),
-                  comandos_info.grupo.aporno.msgs.motivo,
-                  botInfo.number_bot!,
-                ),
-                [sender],
-              );
+              if (advertencia === 3) {
+                await sock.removerParticipant(id_group, sender);
+
+                await sock.sendTextWithMentions(
+                  id_group,
+                  criarTexto(
+                    comandos_info.outros.resposta_ban,
+                    sender.replace("@s.whatsapp.net", ""),
+                    comandos_info.grupo.aporno.msgs.motivo,
+                    botInfo.number_bot!.replace("@s.whatsapp.net", ""),
+                  ),
+                  [sender, botInfo.number_bot!],
+                );
+              }
+
+              await sock.deleteMessage(message);
+              return false;
             } else if (resp && !usuarioExiste) {
               await sock.deleteMessage(message);
+              return false;
             }
             return true;
           } catch (err: any) {

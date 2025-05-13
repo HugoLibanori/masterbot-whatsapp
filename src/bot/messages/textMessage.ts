@@ -911,6 +911,9 @@ export function comandosInfo(botInfo?: Partial<Bot>) {
             "🤖 Ei @{p1}, o ANTI-PORNO está ativado e uma possível imagem +18 foi detectado na sua mensagem, ela foi apagada por segurança.",
           ligado: "✅ O recurso de ANTI-PORNO foi ativado com sucesso",
           desligado: "✅ O recurso de ANTI-PORNO foi desativado com sucesso",
+          advertido:
+            "[❗] @{p1} Você foi advertido pelo ANTI-PORNO, tome cuidado ou será expulso.\n" +
+            "Advertências : {p2}/3",
         },
       },
       autosticker: {
@@ -1747,7 +1750,7 @@ export function comandosInfo(botInfo?: Partial<Bot>) {
           `> ⌬ Estabelecendo conexão com o servidor...`,
         msgs: {
           sucesso: "✅ Apikey adicionada com sucesso.",
-          sem_api: "[❗] Apikey nao configurada.",
+          sem_api: "[❗] ANTI-PORNO ativado, mas sua Apikey do ANTI-PORNO não está configurada.",
         },
       },
     },
