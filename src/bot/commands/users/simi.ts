@@ -33,7 +33,7 @@ const command: Command = {
       await sock.sendReact(message.key, "🕒", id_chat);
 
       let perguntaSimi = textReceived;
-      let { resultado: resultadoTexto } = await api.obterRespostaSimi(perguntaSimi);
+      let { resultado: resultadoTexto } = await api.obterRespostaSimi(perguntaSimi, dataBot);
       await sock.replyText(
         id_chat,
         criarTexto(textMessage.diversao.simi.msgs.resposta, resultadoTexto!),

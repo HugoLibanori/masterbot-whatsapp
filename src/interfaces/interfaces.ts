@@ -138,6 +138,9 @@ export interface Bot {
     google: {
       api_key: string;
     };
+    simi: {
+      api_key: string;
+    };
   };
 }
 

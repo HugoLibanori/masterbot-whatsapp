@@ -1,14 +1,16 @@
 import axios from "axios";
+import { Bot } from "../interfaces/interfaces";
 
 export const obterRespostaSimi = async (
   texto: string,
+  dataBot: Partial<Bot>,
 ): Promise<{ resultado?: string; erro?: string }> => {
   return new Promise((resolve, reject) => {
     (async () => {
       try {
         let resposta: { resultado?: string; erro?: string } = {};
         const url = "https://wsapi.simsimi.com/190410/talk";
-        const apiKey = "9uu6Vwr4MnL~iox6SBCuv9waJY5-yKgn3YuYgP-.";
+        const apiKey = dataBot?.apis?.simi.api_key;
 
         const data = {
           utext: texto,
