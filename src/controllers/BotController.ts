@@ -55,6 +55,9 @@ export class BotController {
             google: {
               api_key: "",
             },
+            simi: {
+              api_key: "",
+            },
           },
         },
       });
@@ -351,7 +354,7 @@ export class BotController {
     const bot = botInfo;
 
     if (!bot.apis) {
-      bot.apis = { google: { api_key: apikey } };
+      bot.apis = { google: { api_key: apikey }, simi: { api_key: apikey } };
     }
 
     if (!bot.apis[nameApi as keyof typeof bot.apis]) {
