@@ -773,7 +773,7 @@ export function comandosInfo(botInfo?: Partial<Bot>) {
       },
       add: {
         descricao: "",
-        guia: `📱 *[Comando: ${prefixo}add]*\n🧠 Sintaxe:\n- *\`${prefixo}add 5512xxxxxxxxx\`*\n- *\${prefixo}add 5512xxxxxxxxx, 5512xxxxxxxxx*\n📥 Descrição: Adiciona o número com o código do país ao grupo.\n> ⌬ Estabelecendo conexão com o servidor...`,
+        guia: `📱 *[Comando: ${prefixo}add]*\n🧠 Sintaxe:\n- *\`${prefixo}add 5512xxxxxxxxx\`*\n- ${prefixo}add 5512xxxxxxxxx, 5512xxxxxxxxx*\n📥 Descrição: Adiciona o número com o código do país ao grupo.\n> ⌬ Estabelecendo conexão com o servidor...`,
         msgs: {
           add_erro:
             "[❗] O número +{p1} não pode ser adicionado. Provavelmente está com privacidade ativada, já está no grupo ou o grupo não aceita mais membros.",
@@ -783,7 +783,7 @@ export function comandosInfo(botInfo?: Partial<Bot>) {
       },
       ban: {
         descricao: "",
-        guia: `🚫 *[Comando: ${prefixo}ban]*\n🧠 Sintaxe:\n- *\`${prefixo}ban @membro\`*\n- *Responda alguém com \${prefixo}ban*\n📥 Descrição: Bane um membro marcando ou respondendo ele.\n> ⌬ Estabelecendo conexão com o servidor...`,
+        guia: `🚫 *[Comando: ${prefixo}ban]*\n🧠 Sintaxe:\n- *\`${prefixo}ban @membro\`*\n- *Responda alguém com ${prefixo}ban*\n📥 Descrição: Bane um membro marcando ou respondendo ele.\n> ⌬ Estabelecendo conexão com o servidor...`,
         msgs: {
           banir_admin: "[❗] O bot não pode banir um administrador",
           motivo: "Banimento manual",
@@ -793,7 +793,7 @@ export function comandosInfo(botInfo?: Partial<Bot>) {
       },
       promover: {
         descricao: "",
-        guia: `🌟 *[Comando: ${prefixo}promover]*\n🧠 Sintaxe:\n- *\`${prefixo}promover @membro\`*\n- *Responda alguém com \${prefixo}promover*\n📥 Descrição: Promove um membro a *ADMINISTRADOR* marcando ou respondendo ele.\n> ⌬ Estabelecendo conexão com o servidor...`,
+        guia: `🌟 *[Comando: ${prefixo}promover]*\n🧠 Sintaxe:\n- *\`${prefixo}promover @membro\`*\n- *Responda alguém com ${prefixo}promover*\n📥 Descrição: Promove um membro a *ADMINISTRADOR* marcando ou respondendo ele.\n> ⌬ Estabelecendo conexão com o servidor...`,
         msgs: {
           erro_bot: "[❗] O BOT não pode ser promovido por ele mesmo.",
           sucesso_usuario: "➥ @{p1} virou *ADMINISTRADOR*.\n",
@@ -803,7 +803,7 @@ export function comandosInfo(botInfo?: Partial<Bot>) {
       },
       rebaixar: {
         descricao: "",
-        guia: `🔽 *[Comando: ${prefixo}rebaixar]*\n🧠 Sintaxe:\n- *\`${prefixo}rebaixar @admin\`*\n- *Responda alguém com \${prefixo}rebaixar*\n📥 Descrição: Rebaixa um administrador a *MEMBRO* marcando ou respondendo ele.\n> ⌬ Estabelecendo conexão com o servidor...`,
+        guia: `🔽 *[Comando: ${prefixo}rebaixar]*\n🧠 Sintaxe:\n- *\`${prefixo}rebaixar @admin\`*\n- *Responda alguém com ${prefixo}rebaixar*\n📥 Descrição: Rebaixa um administrador a *MEMBRO* marcando ou respondendo ele.\n> ⌬ Estabelecendo conexão com o servidor...`,
         msgs: {
           erro_bot: "[❗] O BOT não pode ser rebaixado por ele mesmo.",
           sucesso_usuario: "➥ @{p1} virou *MEMBRO*.\n",
@@ -813,7 +813,7 @@ export function comandosInfo(botInfo?: Partial<Bot>) {
       },
       mt: {
         descricao: "",
-        guia: `⚡ *[Comando: ${prefixo}mt]*\n🧠 Sintaxe:\n- *\`${prefixo}mt\`*\n- *\${prefixo}mt mensagem*\n📥 Descrição: Marca todos os *MEMBROS/ADMIN* do grupo, podendo incluir uma mensagem.\n> ⌬ Estabelecendo conexão com o servidor...`,
+        guia: `⚡ *[Comando: ${prefixo}mt]*\n🧠 Sintaxe:\n- *\`${prefixo}mt\`*\n- *${prefixo}mt mensagem*\`n📥 Descrição: Marca todos os *MEMBROS/ADMIN* do grupo, podendo incluir uma mensagem.\n> ⌬ Estabelecendo conexão com o servidor...`,
         msgs: {
           resposta: "〘 🤖 Marquei os *{p1}* membros/admins 〙\n",
           resposta_motivo: "〘 🤖 Marquei os *{p1}* membros/admins 〙\n\n" + "Mensagem: *{p2}*\n",
@@ -821,12 +821,17 @@ export function comandosInfo(botInfo?: Partial<Bot>) {
       },
       mm: {
         descricao: "",
-        guia: `⚡ *[Comando: ${prefixo}mm]*\n🧠 Sintaxe:\n- *\`${prefixo}mm\`*\n- *\${prefixo}mm mensagem*\n📥 Descrição: Marca todos os *MEMBROS* do grupo, podendo incluir uma mensagem.\n> ⌬ Estabelecendo conexão com o servidor...`,
+        guia: `⚡ *[Comando: ${prefixo}mm]*\n🧠 Sintaxe:\n- *\`${prefixo}mm\`*\n- *${prefixo}mm mensagem*\`n📥 Descrição: Marca todos os *MEMBROS* do grupo, podendo incluir uma mensagem.\n> ⌬ Estabelecendo conexão com o servidor...`,
         msgs: {
           resposta: "〘 🤖 Marquei os *{p1}* membros 〙\n",
           resposta_motivo: "〘 🤖 Marquei os *{p1}* membros 〙\n\n" + "Mensagem: *{p2}*\n",
           sem_membros: "[❗] Não existem membros comuns para serem marcados.\n",
         },
+      },
+      hidetag: {
+        descricao: "",
+        guia: `⚡ *[Comando: ${prefixo}hidetag]*\n🧠 Sintaxe:\n- *\`${prefixo}hidetag\`*\n- *${prefixo}hidetag* - Respondendo ou enviando uma IMAGEM ou um VIDEO ou uma FIGURINHA.\n📥 Descrição: Marca todos os *MEMBROS/ADMIN* do grupo, podendo incluir uma IMAGEM/VIDEO/STICKER na mensagem.\n> ⌬ Estabelecendo conexão com o servidor...`,
+        msgs: {},
       },
       rt: {
         descricao: "",
@@ -835,7 +840,7 @@ export function comandosInfo(botInfo?: Partial<Bot>) {
       },
       adms: {
         descricao: "",
-        guia: `👑 *[Comando: ${prefixo}adms]*\n🧠 Sintaxe:\n- *\`${prefixo}adms\`*\n- Responder com *\${prefixo}adms*\n📥 Descrição: Marca os *ADMINISTRADORES* do grupo ou os *ADMINISTRADORES* na mensagem respondida.\n> ⌬ Estabelecendo conexão com o servidor...`,
+        guia: `👑 *[Comando: ${prefixo}adms]*\n🧠 Sintaxe:\n- *\`${prefixo}adms\`*\n- Responder com *${prefixo}adms*\n📥 Descrição: Marca os *ADMINISTRADORES* do grupo ou os *ADMINISTRADORES* na mensagem respondida.\n> ⌬ Estabelecendo conexão com o servidor...`,
         msgs: {
           resposta_titulo: "〘 🤖 Marquei os *{p1}* admins 〙\n\n",
           mensagem: "Mensagem: *{p1}* \n\n",

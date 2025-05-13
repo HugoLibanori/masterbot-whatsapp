@@ -158,6 +158,8 @@ export const menuGrupo = (admin: boolean, botInfo: Partial<Bot>) => {
 
 ➤ *\`${prefixo}mm mensagem\`* - _Marca os MEMBROS com uma mensagem._
 
+➤ *\`${prefixo}hidetag\`* - _Marca os MEMBROS/ADMINS com a mensagem de IMAGEM/VIDEO/STICKER enviada ou respondida._
+
 ➤ *\`${prefixo}dono\`* - _Mostra dono do grupo._
 
 ➤ *\`${prefixo}fixar\`* - _Fixa uma mensagem do grupo._

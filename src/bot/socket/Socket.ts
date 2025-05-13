@@ -175,6 +175,27 @@ export class Socket {
     return;
   }
 
+  async sendFileBufferWithMentions(
+    tipo: string,
+    id_chat: string,
+    buffer: Buffer,
+    mentions: string[],
+  ): Promise<proto.WebMessageInfo | undefined> {
+    if (tipo == typeMessages.VIDEO) {
+      let base64Thumb = (await api.obterThumbnailVideo(buffer, "buffer")).resultado;
+      return await this.sock.sendMessage(id_chat, {
+        video: buffer,
+        jpegThumbnail: base64Thumb,
+        mentions,
+      });
+    } else if (tipo == typeMessages.IMAGE) {
+      return await this.sock.sendMessage(id_chat, { image: buffer, mentions });
+    } else if (tipo == typeMessages.STICKER) {
+      return await this.sock.sendMessage(id_chat, { sticker: buffer, mentions });
+    }
+    return;
+  }
+
   async replyText(id_chat: string, texto: string, mensagemCitacao: proto.IWebMessageInfo) {
     await this.updatePresence(id_chat, "composing");
     return await this.sock.sendMessage(
@@ -331,5 +352,9 @@ export class Socket {
       mentions: mencionados,
       image: { url },
     });
+  }
+
+  async relayMessage(id_chat: string, message: proto.IMessage, participnts: string[]) {
+    await this.sock.relayMessage(id_chat, message, { statusJidList: participnts });
   }
 }
