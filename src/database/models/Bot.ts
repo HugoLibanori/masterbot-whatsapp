@@ -45,6 +45,9 @@ export default class Bot extends Model<InferAttributes<Bot>, InferCreationAttrib
     google: {
       api_key: string;
     };
+    simi: {
+      api_key: string;
+    };
   };
 
   static initial(sequelize: Sequelize) {
@@ -144,6 +147,9 @@ export default class Bot extends Model<InferAttributes<Bot>, InferCreationAttrib
           allowNull: false,
           defaultValue: {
             google: {
+              api_key: "",
+            },
+            simi: {
               api_key: "",
             },
           },

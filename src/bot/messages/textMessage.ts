@@ -458,6 +458,7 @@ export function comandosInfo(botInfo?: Partial<Bot>) {
         guia: `🤖 *[Comando: simi]*\n🧠 Sintaxe: *\`${prefixo}simi texto\`*\n📡 Descrição: Sua pergunta será respondida pela SimSimi.\n> ⌬ Estabelecendo conexão com o servidor...\n`,
         msgs: {
           resposta: `🐤 *SIMI* : \n\n` + `{p1}`,
+          sem_api: `[❗] - Nenhuma chave de API foi fornecida para o comando *${prefixo}simi*, use o comando *${prefixo}apis* para adicionar uma chave de API.`,
         },
       },
       viadometro: {

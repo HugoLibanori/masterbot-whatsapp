@@ -29,8 +29,8 @@ const command: Command = {
     try {
       if (!args.length)
         return await sock.replyText(id_chat, commandErrorMsg(command, botInfo), message);
-
-      await sock.sendReact(message.key, "🕒", id_chat);
+      if (dataBot?.apis?.simi.api_key === "")
+        return await sock.replyText(id_chat, textMessage.diversao.simi.msgs.sem_api, message);
 
       let perguntaSimi = textReceived;
       let { resultado: resultadoTexto } = await api.obterRespostaSimi(perguntaSimi, dataBot);

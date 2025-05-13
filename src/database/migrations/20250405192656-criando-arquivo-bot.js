@@ -96,6 +96,9 @@ export async function up(queryInterface, Sequelize) {
         google: {
           api_key: "",
         },
+        simi: {
+          api_key: "",
+        },
       },
     },
     created_at: {
