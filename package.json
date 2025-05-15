@@ -6,7 +6,7 @@
   "description": "Bot para gerenciamento de grupos do WhatsApp.",
   "scripts": {
     "build": "tsc",
-    "start": "tsc && node dist/app.js"
+    "start": "npx tsc && node dist/app.js"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +23,7 @@
     "i": "^0.3.7",
     "npm": "^11.3.0",
     "prettier": "3.5.3",
+    "typescript": "^5.8.3",
     "typescript-eslint": "^8.27.0"
   },
   "dependencies": {
