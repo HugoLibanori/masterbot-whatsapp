@@ -27,6 +27,12 @@ npm i
 Depois que instalar os modulos você digita:
 
 ```bash
+npx tsc
+```
+
+e depois:
+
+```bash
 npm start
 ```
 
