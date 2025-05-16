@@ -71,14 +71,13 @@ const connectWhatsapp = async () => {
     }
 
     if (ev["messages.upsert"]) {
-      const messages = ev["messages.upsert"];
+      const { messages, type } = ev["messages.upsert"];
       if (!messages) return;
-      const { type } = messages;
       if (type === "notify" && fullBoot) {
-        messages.messages.map(async (m) => {
+        for (const m of messages) {
           if (m.key.fromMe) return;
           await handleMessages.message(socket, m);
-        });
+        }
       } else if (type === "append") {
         return;
       }
