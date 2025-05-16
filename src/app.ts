@@ -32,9 +32,7 @@ const connectWhatsapp = async () => {
 
   const usePairingCode = process.argv.includes("use-pairing-code");
 
-  const sock: WASocket = makeWASocket(
-    configWaSocket(state, retryCache, version, messagesCache, usePairingCode),
-  );
+  const sock: WASocket = makeWASocket(configWaSocket(state, retryCache, version, messagesCache));
 
   type SocketType = InstanceType<typeof Socket>;
   const socket: SocketType = new Socket(sock);

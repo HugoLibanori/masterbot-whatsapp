@@ -16,11 +16,9 @@ export default function configWaSocket(
   retryCache: NodeCache,
   version: WAVersion,
   messagesCache: NodeCache,
-  usePairingCode: boolean,
 ) {
   const config: UserFacingSocketConfig = {
     logger: pino({ level: "silent" }),
-    printQRInTerminal: !usePairingCode,
     browser: ["Chrome (Linux)", "", ""],
     auth: {
       creds: state.creds,
