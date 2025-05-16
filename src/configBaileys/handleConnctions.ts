@@ -4,6 +4,7 @@ import fs from "fs";
 import { BotController } from "../controllers/BotController.js";
 import { Event } from "../bot/socket/Event.js";
 import { Socket } from "../bot/socket/Socket.js";
+import qrcode from "qrcode-terminal";
 
 import { comandosInfo } from "../bot/messages/textMessage.js";
 import { Bot } from "../interfaces/interfaces.js";
@@ -45,7 +46,11 @@ export async function handleConnectionUpdate(
   fullBootRef: { value: boolean },
   reconnectCallback: () => Promise<void>,
 ): Promise<boolean> {
-  const { connection } = connectionState;
+  const { connection, qr } = connectionState;
+
+  if (qr) {
+    console.log(qrcode.generate(qr, { small: true }));
+  }
 
   if (connection === "open") {
     let botInfo = await botController.getBotData();
