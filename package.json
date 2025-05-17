@@ -43,7 +43,7 @@
     "format-duration-time": "^1.5.4",
     "g-i-s": "^2.1.7",
     "gifencoder": "^2.0.1",
-    "instagram-url-direct": "^2.0.5",
+    "instagram-url-direct": "^2.0.6",
     "jimp": "^0.16.13",
     "long": "^5.3.2",
     "moment-timezone": "^0.5.48",
